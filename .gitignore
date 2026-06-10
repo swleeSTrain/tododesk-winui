@@ -1,0 +1,50 @@
+# Build outputs
+bin/
+obj/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+x86/
+x64/
+ARM64/
+
+# Visual Studio and Rider
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# .NET
+project.assets.json
+project.nuget.cache
+*.nupkg
+*.snupkg
+
+# WinUI / MSIX packaging artifacts
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+*.appx
+*.appxbundle
+*.appxupload
+*.msix
+*.msixbundle
+*.cer
+*.pfx
+
+# Local app data and logs
+*.log
+*.binlog
+
+# Codex/local assistant artifacts
+.codex/
+.agents/
+
+# OS cruft
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
