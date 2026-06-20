@@ -45,6 +45,7 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         _visualTheme = VisualThemeManager.LoadSavedTheme();
+        VisualThemeManager.Apply(_visualTheme);
 
         InitializeComponent();
 
@@ -68,11 +69,6 @@ public sealed partial class MainPage : Page
         }
 
         UpdateThemeSurfaceMode();
-
-        if (!UsesNativeFluentSurface && CustomThemeRoot.Resources["LiquidGlassDriftStoryboard"] is Storyboard storyboard)
-        {
-            storyboard.Begin();
-        }
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
@@ -340,17 +336,15 @@ public sealed partial class MainPage : Page
 
     private void UpdateThemeSurfaceMode()
     {
-        var useNativeFluent = UsesNativeFluentSurface;
+        var definition = VisualThemeManager.CurrentDefinition;
+        var useNativeFluent = definition.WindowTreatment == AppWindowTreatment.Opaque;
         CustomThemeRoot.Visibility = useNativeFluent ? Visibility.Collapsed : Visibility.Visible;
         FluentNativeRoot.Visibility = useNativeFluent ? Visibility.Visible : Visibility.Collapsed;
+        UpdateDecorativeGlassLayers(definition);
 
         if (useNativeFluent)
         {
             CloseFilterOverlay();
-        }
-        else if (CustomThemeRoot.Resources["LiquidGlassDriftStoryboard"] is Storyboard storyboard)
-        {
-            storyboard.Begin();
         }
 
         SyncNavigationSelection();
@@ -364,6 +358,32 @@ public sealed partial class MainPage : Page
         else
         {
             LoadIssueIntoEditor(_selectedIssue);
+        }
+    }
+
+    private void UpdateDecorativeGlassLayers(ThemeDefinition definition)
+    {
+        var showDecorativeLayers = !UsesNativeFluentSurface && definition.UsesDecorativeGlassLayers;
+        var visibility = showDecorativeLayers ? Visibility.Visible : Visibility.Collapsed;
+
+        ContentInfusionLayer.Visibility = visibility;
+        PrimaryRefractionLayer.Visibility = visibility;
+        SecondaryRefractionLayer.Visibility = visibility;
+        SheenRefractionLayer.Visibility = visibility;
+        DistortionRefractionLayer.Visibility = visibility;
+
+        if (CustomThemeRoot.Resources["LiquidGlassDriftStoryboard"] is not Storyboard storyboard)
+        {
+            return;
+        }
+
+        if (showDecorativeLayers)
+        {
+            storyboard.Begin();
+        }
+        else
+        {
+            storyboard.Stop();
         }
     }
 
@@ -607,7 +627,7 @@ public sealed partial class MainPage : Page
 
         RefreshViews(keepSelection: true);
         LoadIssueIntoEditor(_selectedIssue);
-        await SaveIssuesAsync();
+        await TrySaveIssuesAsync();
     }
 
     private async void FluentSaveIssue_Click(object sender, RoutedEventArgs e)
@@ -628,7 +648,7 @@ public sealed partial class MainPage : Page
 
         RefreshViews(keepSelection: true);
         LoadIssueIntoEditor(_selectedIssue);
-        await SaveIssuesAsync();
+        await TrySaveIssuesAsync();
     }
 
     private async void DeleteSelectedIssue_Click(object sender, RoutedEventArgs e)
@@ -646,7 +666,7 @@ public sealed partial class MainPage : Page
         _isRefreshingSelection = false;
         UpdateDetailVisibility(hasSelection: false);
         RefreshViews();
-        await SaveIssuesAsync();
+        await TrySaveIssuesAsync();
     }
 
     private async Task AddIssueAsync(string title, bool selectAfterCreate)
@@ -677,7 +697,7 @@ public sealed partial class MainPage : Page
             SelectIssue(issue);
         }
 
-        await SaveIssuesAsync();
+        await TrySaveIssuesAsync();
     }
 
     private async Task LoadIssuesAsync()
@@ -766,6 +786,36 @@ public sealed partial class MainPage : Page
         _issues.Add(new IssueItem(Guid.NewGuid().ToString("N"), "TD-105", "완료된 샘플 이슈", "완료 상태와 완료율 메트릭을 확인하기 위한 샘플입니다.", "Done", "Medium", "나", "Growth", "2026-06-03", "sample"));
     }
 
+    private async Task<bool> TrySaveIssuesAsync()
+    {
+        try
+        {
+            await SaveIssuesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            await ShowStorageErrorAsync(
+                "이슈를 저장하지 못했습니다.",
+                "앱을 닫기 전에 다시 저장해 주세요.",
+                ex);
+            return false;
+        }
+    }
+
+    private async Task ShowStorageErrorAsync(string title, string message, Exception exception)
+    {
+        var dialog = new ContentDialog
+        {
+            Title = title,
+            Content = $"{message}\n\n{exception.Message}",
+            CloseButtonText = "확인",
+            XamlRoot = XamlRoot
+        };
+
+        await dialog.ShowAsync();
+    }
+
     private async Task SaveIssuesAsync()
     {
         if (_isLoading)
@@ -809,6 +859,7 @@ public sealed partial class MainPage : Page
 
         _isRefreshingSelection = true;
         IssueListView.SelectedItem = _selectedIssue;
+        FluentIssueListView.SelectedItem = _selectedIssue;
         _isRefreshingSelection = false;
     }
 

@@ -41,7 +41,7 @@
         <StaticResource x:Key="TextControlHeaderForeground" ResourceKey="LiquidGlassTextSecondaryBrush" />
         <StaticResource x:Key="TextControlHeaderForegroundFocused" ResourceKey="LiquidGlassTextPrimaryBrush" />
         <Thickness x:Key="TextControlBorderThemeThicknessFocused">1</Thickness>
-        <CornerRadius x:Key="TextControlCornerRadius">18</CornerRadius>
+        <StaticResource x:Key="TextControlCornerRadius" ResourceKey="LiquidGlassControlCornerRadius" />
 
         <StaticResource x:Key="ButtonBackground" ResourceKey="LiquidGlassToolbarBrush" />
         <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="LiquidGlassHoverBrush" />
@@ -92,19 +92,19 @@
         <Thickness x:Key="ComboBoxDropdownBorderThickness">1</Thickness>
         <Thickness x:Key="ComboBoxDropdownBorderPadding">2</Thickness>
         <Thickness x:Key="ComboBoxDropdownContentMargin">6,8</Thickness>
-        <CornerRadius x:Key="OverlayCornerRadius">24</CornerRadius>
-        <CornerRadius x:Key="ComboBoxCornerRadius">18</CornerRadius>
-        <CornerRadius x:Key="ComboBoxDropDownButtonBackgroundCornerRadius">18</CornerRadius>
-        <CornerRadius x:Key="ComboBoxHiglightBorderCornerRadius">16</CornerRadius>
-        <CornerRadius x:Key="ComboBoxItemCornerRadius">14</CornerRadius>
-        <CornerRadius x:Key="ComboBoxItemPillCornerRadius">7</CornerRadius>
+        <StaticResource x:Key="OverlayCornerRadius" ResourceKey="LiquidGlassOverlayCornerRadius" />
+        <StaticResource x:Key="ComboBoxCornerRadius" ResourceKey="LiquidGlassControlCornerRadius" />
+        <StaticResource x:Key="ComboBoxDropDownButtonBackgroundCornerRadius" ResourceKey="LiquidGlassControlCornerRadius" />
+        <StaticResource x:Key="ComboBoxHiglightBorderCornerRadius" ResourceKey="LiquidGlassControlCornerRadius" />
+        <StaticResource x:Key="ComboBoxItemCornerRadius" ResourceKey="LiquidGlassControlCornerRadius" />
+        <StaticResource x:Key="ComboBoxItemPillCornerRadius" ResourceKey="LiquidGlassControlCornerRadius" />
 
         <Thickness x:Key="NavigationViewItemButtonMargin">8,3</Thickness>
         <x:Double x:Key="NavigationViewItemOnLeftMinHeight">40</x:Double>
         <x:Double x:Key="NavigationViewSelectionIndicatorWidth">2</x:Double>
         <x:Double x:Key="NavigationViewSelectionIndicatorHeight">18</x:Double>
         <x:Double x:Key="NavigationViewSelectionIndicatorRadius">2</x:Double>
-        <CornerRadius x:Key="ListViewItemCornerRadius">18</CornerRadius>
+        <StaticResource x:Key="ListViewItemCornerRadius" ResourceKey="LiquidGlassControlCornerRadius" />
         <x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">False</x:Boolean>
         <x:Double x:Key="ListViewItemSelectedBorderThemeThickness">0</x:Double>
         <CornerRadius x:Key="ListViewItemSelectionIndicatorCornerRadius">3</CornerRadius>
@@ -113,7 +113,7 @@
             <Setter Property="Background" Value="{ThemeResource ContentMaterialSurfaceBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource ContentMaterialStrokeBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="28" />
+            <Setter Property="CornerRadius" Value="{ThemeResource LiquidGlassPanelCornerRadius}" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
             <Setter Property="Shadow" Value="{StaticResource LiquidGlassPanelShadow}" />
         </Style>
@@ -121,14 +121,14 @@
         <Style x:Key="ContentMaterialInnerHighlightStyle" TargetType="Border">
             <Setter Property="BorderBrush" Value="{ThemeResource ContentMaterialStrokeBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="28" />
+            <Setter Property="CornerRadius" Value="{ThemeResource LiquidGlassPanelCornerRadius}" />
             <Setter Property="Opacity" Value="0.42" />
         </Style>
 
         <Style x:Key="LiquidGlassInnerHighlightStyle" TargetType="Border">
             <Setter Property="BorderBrush" Value="{ThemeResource LiquidGlassEdgeGlowBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="28" />
+            <Setter Property="CornerRadius" Value="{ThemeResource LiquidGlassPanelCornerRadius}" />
             <Setter Property="Opacity" Value="0.72" />
         </Style>
 
@@ -136,7 +136,7 @@
             <Setter Property="Background" Value="{ThemeResource ContentMaterialRowBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource ContentMaterialStrokeBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="CornerRadius" Value="{ThemeResource LiquidGlassCardCornerRadius}" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Stretch" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
@@ -147,7 +147,7 @@
             <Setter Property="Background" Value="{ThemeResource ContentMaterialSurfaceBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource ContentMaterialStrokeBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="24" />
+            <Setter Property="CornerRadius" Value="{ThemeResource LiquidGlassLaneCornerRadius}" />
             <Setter Property="Padding" Value="10" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
             <Setter Property="Shadow" Value="{StaticResource LiquidGlassPanelShadow}" />
@@ -157,7 +157,7 @@
             <Setter Property="Background" Value="{ThemeResource ContentMaterialRowBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource ContentMaterialStrokeBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="CornerRadius" Value="{ThemeResource LiquidGlassHeaderCornerRadius}" />
             <Setter Property="Padding" Value="10,7" />
         </Style>
 
@@ -166,7 +166,7 @@
             <Setter Property="BorderBrush" Value="{ThemeResource LiquidGlassRimBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Foreground" Value="{ThemeResource LiquidGlassTextPrimaryBrush}" />
-            <Setter Property="CornerRadius" Value="19" />
+            <Setter Property="CornerRadius" Value="{ThemeResource LiquidGlassButtonCornerRadius}" />
             <Setter Property="MinHeight" Value="38" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -243,7 +243,7 @@
                                     Margin="8,1,8,0"
                                     VerticalAlignment="Top"
                                     Background="{ThemeResource LiquidGlassSpecularBrush}"
-                                    CornerRadius="6"
+                                    CornerRadius="3"
                                     IsHitTestVisible="False"
                                     Opacity="0.16" />
                                 <Border
@@ -273,14 +273,14 @@
             <Setter Property="Width" Value="40" />
             <Setter Property="Height" Value="36" />
             <Setter Property="MinHeight" Value="36" />
-            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="CornerRadius" Value="3" />
         </Style>
 
         <Style x:Key="LiquidGlassControlGroupStyle" TargetType="Border">
             <Setter Property="Background" Value="{ThemeResource LiquidGlassToolbarBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource LiquidGlassRimBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="24" />
+            <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Shadow" Value="{StaticResource LiquidGlassCardShadow}" />
         </Style>
 
@@ -288,7 +288,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="CornerRadius" Value="3" />
             <Setter Property="Width" Value="40" />
             <Setter Property="Height" Value="36" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -387,7 +387,7 @@
             <Setter Property="BorderBrush" Value="{ThemeResource LiquidGlassRimBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Foreground" Value="{ThemeResource LiquidGlassTextPrimaryBrush}" />
-            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="CornerRadius" Value="3" />
             <Setter Property="MinHeight" Value="38" />
             <Setter Property="Padding" Value="14,8" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
@@ -397,7 +397,7 @@
             <Setter Property="Background" Value="{ThemeResource LiquidGlassToolbarBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource LiquidGlassRimBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="CornerRadius" Value="3" />
             <Setter Property="MinHeight" Value="40" />
             <Setter Property="Padding" Value="13,7" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -501,7 +501,7 @@
                                     Margin="8,0,8,0"
                                     VerticalAlignment="Top"
                                     Background="{ThemeResource LiquidGlassSpecularBrush}"
-                                    CornerRadius="6"
+                                    CornerRadius="3"
                                     IsHitTestVisible="False"
                                     Opacity="0.14" />
                                 <Border
@@ -540,7 +540,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="CornerRadius" Value="3" />
             <Setter Property="Foreground" Value="{ThemeResource LiquidGlassTextPrimaryBrush}" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
             <Setter Property="MinHeight" Value="30" />
@@ -591,20 +591,20 @@
                                     x:Name="SelectedPill"
                                     Margin="1"
                                     Background="{TemplateBinding Background}"
-                                    CornerRadius="13"
+                                    CornerRadius="3"
                                     IsHitTestVisible="False" />
                                 <Border
                                     x:Name="HoverPill"
                                     Margin="1"
                                     Background="{ThemeResource LiquidGlassHoverBrush}"
-                                    CornerRadius="13"
+                                    CornerRadius="3"
                                     IsHitTestVisible="False"
                                     Opacity="0" />
                                 <Border
                                     x:Name="PressedPill"
                                     Margin="1"
                                     Background="{ThemeResource LiquidGlassSelectedBrush}"
-                                    CornerRadius="13"
+                                    CornerRadius="3"
                                     IsHitTestVisible="False"
                                     Opacity="0" />
                                 <ContentPresenter
@@ -777,19 +777,19 @@
                 Translation="0,0,12">
                 <Grid MinHeight="72">
                     <Border
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Loaded="BackdropDistortion_Loaded"
                         Tag="Card"
                         Unloaded="BackdropDistortion_Unloaded" />
                     <Border
                         Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.058" />
                     <Border
                         Background="{ThemeResource LiquidGlassRefractionBrush}"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.085">
                         <Border.RenderTransform>
@@ -801,7 +801,7 @@
                         Margin="14,3,14,0"
                         VerticalAlignment="Top"
                         Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="7"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.16" />
                     <Border
@@ -813,12 +813,12 @@
                         Opacity="0.22" />
                     <Border
                         Background="{ThemeResource LiquidGlassCausticBrush}"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.034" />
                     <Border
                         Background="{ThemeResource LiquidGlassDistortionBrush}"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.004">
                         <Border.RenderTransform>
@@ -828,32 +828,32 @@
                     <Border
                         BorderBrush="{ThemeResource LiquidGlassChromaticCoolStrokeBrush}"
                         BorderThickness="1,0,0,1"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.070"
                         Translation="-1,0,0" />
                     <Border
                         BorderBrush="{ThemeResource LiquidGlassChromaticWarmStrokeBrush}"
                         BorderThickness="0,1,1,0"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.055"
                         Translation="1,0,0" />
                     <Border
                         BorderBrush="{ThemeResource ContentMaterialStrokeBrush}"
                         BorderThickness="1"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.24" />
                     <Border
                         Background="{ThemeResource LiquidGlassSelectedBrush}"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="{x:Bind SelectionFillOpacity, Mode=OneWay}" />
                     <Border
                         BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                         BorderThickness="1"
-                        CornerRadius="17"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="{x:Bind SelectionRingOpacity, Mode=OneWay}" />
                     <Grid Padding="10,8" RowSpacing="6">
@@ -923,38 +923,38 @@
         <Border
             Margin="0,5,0,-5"
             Background="{ThemeResource LiquidGlassCastShadowBrush}"
-            CornerRadius="28"
+            CornerRadius="6"
             Opacity="0.34" />
         <Border
             Background="{ThemeResource LiquidGlassSidebarBrush}"
             BorderBrush="{ThemeResource LiquidGlassRimBrush}"
             BorderThickness="1"
-            CornerRadius="28" />
+            CornerRadius="6" />
         <Border
-            CornerRadius="28"
+            CornerRadius="6"
             Loaded="BackdropDistortion_Loaded"
             Tag="Sidebar"
             Unloaded="BackdropDistortion_Unloaded" />
         <Border
             Background="{ThemeResource LiquidGlassSidebarBrush}"
-            CornerRadius="28"
+            CornerRadius="6"
             IsHitTestVisible="False"
             Opacity="0.38" />
         <Border
             Background="{ThemeResource LiquidGlassRegularWashBrush}"
-            CornerRadius="28"
+            CornerRadius="6"
             IsHitTestVisible="False"
             Opacity="0.58" />
         <Border
             Margin="1"
             BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
             BorderThickness="1"
-            CornerRadius="27"
+            CornerRadius="5"
             Opacity="0.34" />
         <Border
             Margin="2"
             Background="{ThemeResource LiquidGlassSpecularBrush}"
-            CornerRadius="26"
+            CornerRadius="4"
             Opacity="0.14" />
         <Border
             Width="54"
@@ -962,7 +962,7 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Background="{ThemeResource LiquidGlassCausticBrush}"
-            CornerRadius="27"
+            CornerRadius="5"
             Opacity="0.10" />
         <Border
             Width="1"
@@ -1009,7 +1009,7 @@
             <StaticResource x:Key="NavigationViewItemForegroundSelectedPointerOver" ResourceKey="LiquidGlassTextPrimaryBrush" />
             <StaticResource x:Key="NavigationViewItemForegroundSelectedPressed" ResourceKey="LiquidGlassTextPrimaryBrush" />
             <Style TargetType="NavigationViewItem">
-                <Setter Property="CornerRadius" Value="18" />
+                <Setter Property="CornerRadius" Value="3" />
                 <Setter Property="UseSystemFocusVisuals" Value="False" />
             </Style>
         </NavigationView.Resources>
@@ -1309,12 +1309,12 @@
                     <Border
                         Margin="0,4,0,-4"
                         Background="{ThemeResource LiquidGlassCastShadowBrush}"
-                        CornerRadius="24"
+                        CornerRadius="4"
                         IsHitTestVisible="False"
                         Opacity="0.34" />
                     <Border Style="{StaticResource LiquidGlassControlGroupStyle}" />
                     <Border
-                        CornerRadius="24"
+                        CornerRadius="4"
                         IsHitTestVisible="False"
                         Loaded="BackdropDistortion_Loaded"
                         Tag="Toolbar"
@@ -1323,7 +1323,7 @@
                         Margin="1"
                         BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                         BorderThickness="1"
-                        CornerRadius="23"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.34" />
                     <Border
@@ -1341,6 +1341,7 @@
                         <DropDownButton
                             x:Name="ThemeDropDownButton"
                             Width="54"
+                            AutomationProperties.AutomationId="ThemeDropDownButton"
                             AutomationProperties.Name="테마"
                             Click="ThemeDropDownButton_Click"
                             PointerEntered="GlassSurface_PointerEntered"
@@ -1353,6 +1354,7 @@
                             <SymbolIcon Symbol="Setting" />
                         </DropDownButton>
                         <Button
+                            AutomationProperties.AutomationId="NewIssueButton"
                             AutomationProperties.Name="새 이슈"
                             Click="NewIssue_Click"
                             PointerEntered="GlassSurface_PointerEntered"
@@ -1366,6 +1368,7 @@
                         </Button>
                         <ToggleButton
                             x:Name="ListModeButton"
+                            AutomationProperties.AutomationId="ListModeButton"
                             AutomationProperties.Name="리스트 보기"
                             Click="ListMode_Click"
                             IsChecked="True"
@@ -1380,6 +1383,7 @@
                         </ToggleButton>
                         <ToggleButton
                             x:Name="BoardModeButton"
+                            AutomationProperties.AutomationId="BoardModeButton"
                             AutomationProperties.Name="보드 보기"
                             Click="BoardMode_Click"
                             PointerEntered="GlassSurface_PointerEntered"
@@ -1404,12 +1408,12 @@
                     <Border
                         Margin="0,5,0,-5"
                         Background="{ThemeResource LiquidGlassCastShadowBrush}"
-                        CornerRadius="30"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.52" />
                 <Border Style="{StaticResource LiquidGlassPanelStyle}" Translation="0,0,24" />
                 <Border
-                    CornerRadius="28"
+                    CornerRadius="6"
                     IsHitTestVisible="False"
                     Loaded="BackdropDistortion_Loaded"
                     Tag="Toolbar"
@@ -1446,9 +1450,9 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="180" />
-                        <ColumnDefinition Width="136" />
-                        <ColumnDefinition Width="136" />
+                        <ColumnDefinition Width="160" />
+                        <ColumnDefinition Width="128" />
+                        <ColumnDefinition Width="128" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -1474,6 +1478,7 @@
                         Grid.Column="4"
                         MinWidth="180"
                         VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="QuickIssueTextBox"
                         KeyDown="QuickIssueTextBox_KeyDown"
                         PlaceholderText="새 이슈 제목"
                         Style="{StaticResource LiquidGlassTextBoxStyle}" />
@@ -1481,6 +1486,7 @@
                         x:Name="SearchTextBox"
                         Grid.Column="5"
                         VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="SearchTextBox"
                         PlaceholderText="검색"
                         Style="{StaticResource LiquidGlassTextBoxStyle}"
                         TextChanged="SearchTextBox_TextChanged" />
@@ -1488,6 +1494,7 @@
                         x:Name="StatusFilterDropDownButton"
                         Grid.Column="6"
                         VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="StatusFilterDropDownButton"
                         Click="StatusFilterDropDownButton_Click"
                         Content="모든 상태"
                         Style="{StaticResource LiquidGlassDropDownButtonStyle}"
@@ -1496,6 +1503,7 @@
                         x:Name="PriorityFilterDropDownButton"
                         Grid.Column="7"
                         VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="PriorityFilterDropDownButton"
                         Click="PriorityFilterDropDownButton_Click"
                         Content="모든 우선순위"
                         Style="{StaticResource LiquidGlassDropDownButtonStyle}"
@@ -1503,6 +1511,8 @@
                     <Button
                         Grid.Column="8"
                         VerticalAlignment="Center"
+                        AutomationProperties.AutomationId="AddQuickIssueButton"
+                        AutomationProperties.Name="빠른 이슈 추가"
                         Click="AddQuickIssue_Click"
                         PointerEntered="GlassSurface_PointerEntered"
                         PointerMoved="GlassSurface_PointerMoved"
@@ -1519,7 +1529,7 @@
             <Grid Grid.Row="2" ColumnSpacing="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="360" />
+                    <ColumnDefinition Width="320" />
                 </Grid.ColumnDefinitions>
 
                 <Grid
@@ -1529,12 +1539,12 @@
                     <Border
                         Margin="0,5,0,-5"
                         Background="{ThemeResource LiquidGlassCastShadowBrush}"
-                        CornerRadius="30"
+                        CornerRadius="6"
                         IsHitTestVisible="False"
                         Opacity="0.48" />
                     <Border Style="{StaticResource LiquidGlassPanelStyle}" Translation="0,0,24" />
                     <Border
-                        CornerRadius="28"
+                        CornerRadius="6"
                         IsHitTestVisible="False"
                         Loaded="BackdropDistortion_Loaded"
                         Tag="ContentPanel"
@@ -1545,19 +1555,19 @@
                     <Border
                         Margin="2"
                         Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="26"
+                        CornerRadius="4"
                         IsHitTestVisible="False"
                         Opacity="0.13" />
                     <Border
                         Margin="3"
                         Background="{ThemeResource LiquidGlassCausticBrush}"
-                        CornerRadius="25"
+                        CornerRadius="4"
                         IsHitTestVisible="False"
                         Opacity="0.08" />
                     <Border
                         Margin="3"
                         Background="{ThemeResource LiquidGlassDistortionBrush}"
-                        CornerRadius="25"
+                        CornerRadius="4"
                         IsHitTestVisible="False"
                         Opacity="0.010">
                         <Border.RenderTransform>
@@ -1597,6 +1607,7 @@
                         x:Name="IssueListView"
                         Grid.Row="1"
                         Margin="0,6,0,0"
+                        AutomationProperties.AutomationId="IssueListView"
                         Background="Transparent"
                         ItemContainerStyle="{StaticResource IssueListViewItemStyle}"
                         ItemsSource="{x:Bind VisibleIssues, Mode=OneWay}"
@@ -1633,7 +1644,7 @@
                                     Background="{ThemeResource ContentMaterialRowBrush}"
                                     BorderBrush="{ThemeResource ContentMaterialStrokeBrush}"
                                     BorderThickness="1"
-                                    CornerRadius="18"
+                                    CornerRadius="4"
                                     PointerEntered="GlassSurface_PointerEntered"
                                     PointerMoved="GlassSurface_PointerMoved"
                                     PointerExited="GlassSurface_PointerExited"
@@ -1643,19 +1654,19 @@
                                     Translation="0,0,6">
                                     <Grid>
                                         <Border
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Loaded="BackdropDistortion_Loaded"
                                             Tag="Card"
                                             Unloaded="BackdropDistortion_Unloaded" />
                                         <Border
                                             Background="{ThemeResource LiquidGlassSpecularBrush}"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.058" />
                                         <Border
                                             Background="{ThemeResource LiquidGlassRefractionBrush}"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.082">
                                             <Border.RenderTransform>
@@ -1667,7 +1678,7 @@
                                             Margin="14,3,14,0"
                                             VerticalAlignment="Top"
                                             Background="{ThemeResource LiquidGlassSpecularBrush}"
-                                            CornerRadius="6"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.15" />
                                         <Border
@@ -1679,12 +1690,12 @@
                                             Opacity="0.22" />
                                         <Border
                                             Background="{ThemeResource LiquidGlassCausticBrush}"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.030" />
                                         <Border
                                             Background="{ThemeResource LiquidGlassDistortionBrush}"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.004">
                                             <Border.RenderTransform>
@@ -1694,32 +1705,32 @@
                                         <Border
                                             BorderBrush="{ThemeResource LiquidGlassChromaticCoolStrokeBrush}"
                                             BorderThickness="1,0,0,1"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.065"
                                             Translation="-1,0,0" />
                                         <Border
                                             BorderBrush="{ThemeResource LiquidGlassChromaticWarmStrokeBrush}"
                                             BorderThickness="0,1,1,0"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.050"
                                             Translation="1,0,0" />
                                         <Border
                                             BorderBrush="{ThemeResource ContentMaterialStrokeBrush}"
                                             BorderThickness="1"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.24" />
                                         <Border
                                             Background="{ThemeResource LiquidGlassSelectedBrush}"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="{x:Bind SelectionFillOpacity, Mode=OneWay}" />
                                         <Border
                                             BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                                             BorderThickness="1"
-                                            CornerRadius="17"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="{x:Bind SelectionRingOpacity, Mode=OneWay}" />
                                 <Grid MinHeight="58" Padding="10,6" ColumnSpacing="12">
@@ -1804,12 +1815,19 @@
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
                                 <Grid>
-                                    <Border CornerRadius="23" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
+                                    <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
                                             <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="백로그" />
                                         </Border>
-                                        <ItemsControl ItemTemplate="{StaticResource BoardIssueTemplate}" ItemsSource="{x:Bind BacklogIssues, Mode=OneWay}" />
+                                        <ListView
+                                            AutomationProperties.AutomationId="BacklogBoardListView"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ItemTemplate="{StaticResource BoardIssueTemplate}"
+                                            ItemsSource="{x:Bind BacklogIssues, Mode=OneWay}"
+                                            MaxHeight="640"
+                                            SelectionMode="None" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -1821,12 +1839,19 @@
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
                                 <Grid>
-                                    <Border CornerRadius="23" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
+                                    <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
                                             <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="예정" />
                                         </Border>
-                                        <ItemsControl ItemTemplate="{StaticResource BoardIssueTemplate}" ItemsSource="{x:Bind TodoIssues, Mode=OneWay}" />
+                                        <ListView
+                                            AutomationProperties.AutomationId="TodoBoardListView"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ItemTemplate="{StaticResource BoardIssueTemplate}"
+                                            ItemsSource="{x:Bind TodoIssues, Mode=OneWay}"
+                                            MaxHeight="640"
+                                            SelectionMode="None" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -1838,12 +1863,19 @@
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
                                 <Grid>
-                                    <Border CornerRadius="23" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
+                                    <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
                                             <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="진행 중" />
                                         </Border>
-                                        <ItemsControl ItemTemplate="{StaticResource BoardIssueTemplate}" ItemsSource="{x:Bind InProgressIssues, Mode=OneWay}" />
+                                        <ListView
+                                            AutomationProperties.AutomationId="InProgressBoardListView"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ItemTemplate="{StaticResource BoardIssueTemplate}"
+                                            ItemsSource="{x:Bind InProgressIssues, Mode=OneWay}"
+                                            MaxHeight="640"
+                                            SelectionMode="None" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -1855,12 +1887,19 @@
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
                                 <Grid>
-                                    <Border CornerRadius="23" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
+                                    <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
                                             <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="리뷰" />
                                         </Border>
-                                        <ItemsControl ItemTemplate="{StaticResource BoardIssueTemplate}" ItemsSource="{x:Bind ReviewIssues, Mode=OneWay}" />
+                                        <ListView
+                                            AutomationProperties.AutomationId="ReviewBoardListView"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ItemTemplate="{StaticResource BoardIssueTemplate}"
+                                            ItemsSource="{x:Bind ReviewIssues, Mode=OneWay}"
+                                            MaxHeight="640"
+                                            SelectionMode="None" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -1872,12 +1911,19 @@
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
                                 <Grid>
-                                    <Border CornerRadius="23" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
+                                    <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
                                             <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="완료" />
                                         </Border>
-                                        <ItemsControl ItemTemplate="{StaticResource BoardIssueTemplate}" ItemsSource="{x:Bind DoneIssues, Mode=OneWay}" />
+                                        <ListView
+                                            AutomationProperties.AutomationId="DoneBoardListView"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            ItemTemplate="{StaticResource BoardIssueTemplate}"
+                                            ItemsSource="{x:Bind DoneIssues, Mode=OneWay}"
+                                            MaxHeight="640"
+                                            SelectionMode="None" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -1913,12 +1959,12 @@
                     <Border
                         Margin="0,5,0,-5"
                         Background="{ThemeResource LiquidGlassCastShadowBrush}"
-                        CornerRadius="30"
+                        CornerRadius="6"
                         IsHitTestVisible="False"
                         Opacity="0.48" />
                     <Border Style="{StaticResource LiquidGlassPanelStyle}" Translation="0,0,24" />
                     <Border
-                        CornerRadius="28"
+                        CornerRadius="6"
                         IsHitTestVisible="False"
                         Loaded="BackdropDistortion_Loaded"
                         Tag="ContentPanel"
@@ -1929,19 +1975,19 @@
                     <Border
                         Margin="2"
                         Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="26"
+                        CornerRadius="4"
                         IsHitTestVisible="False"
                         Opacity="0.16" />
                     <Border
                         Margin="3"
                         Background="{ThemeResource LiquidGlassCausticBrush}"
-                        CornerRadius="25"
+                        CornerRadius="4"
                         IsHitTestVisible="False"
                         Opacity="0.08" />
                     <Border
                         Margin="3"
                         Background="{ThemeResource LiquidGlassDistortionBrush}"
-                        CornerRadius="25"
+                        CornerRadius="4"
                         IsHitTestVisible="False"
                         Opacity="0.010">
                         <Border.RenderTransform>
@@ -1978,11 +2024,13 @@
                                 </Grid>
                                 <TextBox
                                     x:Name="IssueTitleTextBox"
+                                    AutomationProperties.AutomationId="IssueTitleTextBox"
                                     PlaceholderText="제목"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}" />
                                 <TextBox
                                     x:Name="IssueDescriptionTextBox"
                                     AcceptsReturn="True"
+                                    AutomationProperties.AutomationId="IssueDescriptionTextBox"
                                     Height="104"
                                     PlaceholderText="설명"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}"
@@ -1995,12 +2043,14 @@
                                     </Grid.ColumnDefinitions>
                                     <DropDownButton
                                         x:Name="DetailStatusDropDownButton"
+                                        AutomationProperties.AutomationId="DetailStatusDropDownButton"
                                         Click="DetailStatusDropDownButton_Click"
                                         Content="상태"
                                         Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
                                     <DropDownButton
                                         x:Name="DetailPriorityDropDownButton"
                                         Grid.Column="1"
+                                        AutomationProperties.AutomationId="DetailPriorityDropDownButton"
                                         Click="DetailPriorityDropDownButton_Click"
                                         Content="우선순위"
                                         Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
@@ -2013,12 +2063,14 @@
                                     </Grid.ColumnDefinitions>
                                     <DropDownButton
                                         x:Name="DetailProjectDropDownButton"
+                                        AutomationProperties.AutomationId="DetailProjectDropDownButton"
                                         Click="DetailProjectDropDownButton_Click"
                                         Content="프로젝트"
                                         Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
                                     <DropDownButton
                                         x:Name="DetailAssigneeDropDownButton"
                                         Grid.Column="1"
+                                        AutomationProperties.AutomationId="DetailAssigneeDropDownButton"
                                         Click="DetailAssigneeDropDownButton_Click"
                                         Content="담당자"
                                         Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
@@ -2026,10 +2078,12 @@
 
                                 <TextBox
                                     x:Name="IssueDueDateTextBox"
+                                    AutomationProperties.AutomationId="IssueDueDateTextBox"
                                     PlaceholderText="기한: 2026-06-12"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}" />
                                 <TextBox
                                     x:Name="IssueLabelsTextBox"
+                                    AutomationProperties.AutomationId="IssueLabelsTextBox"
                                     PlaceholderText="라벨: ux, data"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}" />
 
@@ -2050,12 +2104,12 @@
                                         <Border
                                             Margin="0,4,0,-4"
                                             Background="{ThemeResource LiquidGlassCastShadowBrush}"
-                                            CornerRadius="24"
+                                            CornerRadius="4"
                                             IsHitTestVisible="False"
                                             Opacity="0.26" />
                                         <Border Style="{StaticResource LiquidGlassControlGroupStyle}" />
                                         <Border
-                                            CornerRadius="24"
+                                            CornerRadius="4"
                                             IsHitTestVisible="False"
                                             Loaded="BackdropDistortion_Loaded"
                                             Tag="Toolbar"
@@ -2064,7 +2118,7 @@
                                             Margin="1"
                                             BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                                             BorderThickness="1"
-                                            CornerRadius="23"
+                                            CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="0.30" />
                                         <StackPanel
@@ -2072,6 +2126,7 @@
                                             Orientation="Horizontal"
                                             Spacing="2">
                                             <Button
+                                                AutomationProperties.AutomationId="SaveIssueButton"
                                                 AutomationProperties.Name="이슈 저장"
                                                 Click="SaveIssue_Click"
                                                 PointerEntered="GlassSurface_PointerEntered"
@@ -2084,6 +2139,7 @@
                                                 <SymbolIcon Symbol="Save" />
                                             </Button>
                                             <Button
+                                                AutomationProperties.AutomationId="DeleteIssueButton"
                                                 AutomationProperties.Name="이슈 삭제"
                                                 Click="DeleteSelectedIssue_Click"
                                                 PointerEntered="GlassSurface_PointerEntered"
@@ -2119,7 +2175,7 @@
                 Background="{ThemeResource LiquidGlassDropDownBrush}"
                 BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                 BorderThickness="1"
-                CornerRadius="24"
+                CornerRadius="4"
                 Shadow="{StaticResource LiquidGlassPanelShadow}"
                 Tapped="FilterOverlayPanel_Tapped"
                 Translation="0,0,96"
@@ -2127,14 +2183,14 @@
                 <Grid>
                     <Border
                         Background="{ThemeResource LiquidGlassRefractionBrush}"
-                        CornerRadius="23"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.22" />
                     <Border
                         Margin="1"
                         BorderBrush="{ThemeResource LiquidGlassSpecularBrush}"
                         BorderThickness="1"
-                        CornerRadius="23"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.38" />
                     <Border
@@ -2142,7 +2198,7 @@
                         Margin="12,3,12,0"
                         VerticalAlignment="Top"
                         Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="6"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.18" />
                     <StackPanel>
@@ -2161,7 +2217,7 @@
                 Background="{ThemeResource LiquidGlassDropDownBrush}"
                 BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                 BorderThickness="1"
-                CornerRadius="24"
+                CornerRadius="4"
                 Shadow="{StaticResource LiquidGlassPanelShadow}"
                 Tapped="FilterOverlayPanel_Tapped"
                 Translation="0,0,96"
@@ -2169,14 +2225,14 @@
                 <Grid>
                     <Border
                         Background="{ThemeResource LiquidGlassRefractionBrush}"
-                        CornerRadius="23"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.22" />
                     <Border
                         Margin="1"
                         BorderBrush="{ThemeResource LiquidGlassSpecularBrush}"
                         BorderThickness="1"
-                        CornerRadius="23"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.38" />
                     <Border
@@ -2184,7 +2240,7 @@
                         Margin="12,3,12,0"
                         VerticalAlignment="Top"
                         Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="6"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.18" />
                     <StackPanel>
@@ -2205,7 +2261,7 @@
                 Background="{ThemeResource LiquidGlassDropDownBrush}"
                 BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                 BorderThickness="1"
-                CornerRadius="24"
+                CornerRadius="4"
                 Shadow="{StaticResource LiquidGlassPanelShadow}"
                 Tapped="FilterOverlayPanel_Tapped"
                 Translation="0,0,96"
@@ -2213,14 +2269,14 @@
                 <Grid>
                     <Border
                         Background="{ThemeResource LiquidGlassRefractionBrush}"
-                        CornerRadius="23"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.22" />
                     <Border
                         Margin="1"
                         BorderBrush="{ThemeResource LiquidGlassSpecularBrush}"
                         BorderThickness="1"
-                        CornerRadius="23"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.38" />
                     <Border
@@ -2228,7 +2284,7 @@
                         Margin="12,3,12,0"
                         VerticalAlignment="Top"
                         Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="6"
+                        CornerRadius="3"
                         IsHitTestVisible="False"
                         Opacity="0.18" />
                     <StackPanel>
@@ -2248,15 +2304,15 @@
                 Background="{ThemeResource LiquidGlassDropDownBrush}"
                 BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                 BorderThickness="1"
-                CornerRadius="24"
+                CornerRadius="4"
                 Shadow="{StaticResource LiquidGlassPanelShadow}"
                 Tapped="FilterOverlayPanel_Tapped"
                 Translation="0,0,96"
                 Visibility="Collapsed">
                 <Grid>
-                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="23" IsHitTestVisible="False" Opacity="0.22" />
-                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="23" IsHitTestVisible="False" Opacity="0.38" />
-                    <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="6" IsHitTestVisible="False" Opacity="0.18" />
+                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.22" />
+                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
+                    <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.18" />
                     <StackPanel>
                         <Button Click="DetailStatusMenuFlyoutItem_Click" Content="백로그" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backlog" />
                         <Button Click="DetailStatusMenuFlyoutItem_Click" Content="예정" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Todo" />
@@ -2274,15 +2330,15 @@
                 Background="{ThemeResource LiquidGlassDropDownBrush}"
                 BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                 BorderThickness="1"
-                CornerRadius="24"
+                CornerRadius="4"
                 Shadow="{StaticResource LiquidGlassPanelShadow}"
                 Tapped="FilterOverlayPanel_Tapped"
                 Translation="0,0,96"
                 Visibility="Collapsed">
                 <Grid>
-                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="23" IsHitTestVisible="False" Opacity="0.22" />
-                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="23" IsHitTestVisible="False" Opacity="0.38" />
-                    <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="6" IsHitTestVisible="False" Opacity="0.18" />
+                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.22" />
+                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
+                    <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.18" />
                     <StackPanel>
                         <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="긴급" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Urgent" />
                         <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="높음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="High" />
@@ -2299,14 +2355,14 @@
                 Background="{ThemeResource LiquidGlassDropDownBrush}"
                 BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                 BorderThickness="1"
-                CornerRadius="24"
+                CornerRadius="4"
                 Shadow="{StaticResource LiquidGlassPanelShadow}"
                 Tapped="FilterOverlayPanel_Tapped"
                 Translation="0,0,96"
                 Visibility="Collapsed">
                 <Grid>
-                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="23" IsHitTestVisible="False" Opacity="0.22" />
-                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="23" IsHitTestVisible="False" Opacity="0.38" />
+                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.22" />
+                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
                     <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="6" IsHitTestVisible="False" Opacity="0.18" />
                     <StackPanel>
                         <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Platform" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Platform" />
@@ -2324,14 +2380,14 @@
                 Background="{ThemeResource LiquidGlassDropDownBrush}"
                 BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
                 BorderThickness="1"
-                CornerRadius="24"
+                CornerRadius="4"
                 Shadow="{StaticResource LiquidGlassPanelShadow}"
                 Tapped="FilterOverlayPanel_Tapped"
                 Translation="0,0,96"
                 Visibility="Collapsed">
                 <Grid>
-                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="23" IsHitTestVisible="False" Opacity="0.22" />
-                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="23" IsHitTestVisible="False" Opacity="0.38" />
+                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.22" />
+                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
                     <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="6" IsHitTestVisible="False" Opacity="0.18" />
                     <StackPanel>
                         <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="나" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="나" />
@@ -2404,12 +2460,14 @@
                     DefaultLabelPosition="Collapsed"
                     IsOpen="False">
                     <AppBarButton
+                        AutomationProperties.AutomationId="FluentNewIssueButton"
                         Icon="Add"
                         Label="새 이슈"
                         Click="FluentNewIssue_Click" />
                     <AppBarSeparator />
                     <AppBarToggleButton
                         x:Name="FluentListModeButton"
+                        AutomationProperties.AutomationId="FluentListModeButton"
                         Icon="List"
                         IsChecked="True"
                         Label="리스트" />
@@ -2418,33 +2476,38 @@
 
             <Grid Grid.Row="1" ColumnSpacing="12">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180" />
+                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="180" />
-                    <ColumnDefinition Width="160" />
-                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="145" />
+                    <ColumnDefinition Width="145" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
 
                 <TextBox
                     x:Name="FluentQuickIssueTextBox"
+                    AutomationProperties.AutomationId="FluentQuickIssueTextBox"
                     PlaceholderText="새 이슈 제목"
                     KeyDown="FluentQuickIssueTextBox_KeyDown" />
                 <Button
                     Grid.Column="1"
+                    AutomationProperties.AutomationId="FluentAddQuickIssueButton"
+                    AutomationProperties.Name="빠른 이슈 추가"
                     Click="FluentAddQuickIssue_Click">
                     <SymbolIcon Symbol="Add" />
                 </Button>
                 <TextBox
                     x:Name="FluentSearchTextBox"
                     Grid.Column="2"
+                    AutomationProperties.AutomationId="FluentSearchTextBox"
                     PlaceholderText="검색"
                     TextChanged="FluentSearchTextBox_TextChanged" />
                 <ComboBox
                     x:Name="FluentStatusFilterComboBox"
                     Grid.Column="3"
-                    MinWidth="150"
+                    MinWidth="140"
+                    AutomationProperties.AutomationId="FluentStatusFilterComboBox"
                     SelectionChanged="FluentStatusFilterComboBox_SelectionChanged">
                     <ComboBoxItem Content="모든 상태" Tag="All" />
                     <ComboBoxItem Content="백로그" Tag="Backlog" />
@@ -2456,7 +2519,8 @@
                 <ComboBox
                     x:Name="FluentPriorityFilterComboBox"
                     Grid.Column="4"
-                    MinWidth="150"
+                    MinWidth="140"
+                    AutomationProperties.AutomationId="FluentPriorityFilterComboBox"
                     SelectionChanged="FluentPriorityFilterComboBox_SelectionChanged">
                     <ComboBoxItem Content="모든 우선순위" Tag="All" />
                     <ComboBoxItem Content="긴급" Tag="Urgent" />
@@ -2467,7 +2531,8 @@
                 <ComboBox
                     x:Name="FluentThemeComboBox"
                     Grid.Column="6"
-                    MinWidth="160"
+                    MinWidth="145"
+                    AutomationProperties.AutomationId="FluentThemeComboBox"
                     SelectionChanged="FluentThemeComboBox_SelectionChanged">
                     <ComboBoxItem Content="WinUI Fluent" Tag="fluent" />
                     <ComboBoxItem Content="Liquid Glass" Tag="liquid" />
@@ -2506,6 +2571,7 @@
                     <ListView
                         x:Name="FluentIssueListView"
                         Grid.Row="1"
+                        AutomationProperties.AutomationId="FluentIssueListView"
                         ItemsSource="{x:Bind VisibleIssues, Mode=OneWay}"
                         SelectionChanged="FluentIssueListView_SelectionChanged"
                         SelectionMode="Single">
@@ -2606,10 +2672,12 @@
 
                             <TextBox
                                 x:Name="FluentIssueTitleTextBox"
+                                AutomationProperties.AutomationId="FluentIssueTitleTextBox"
                                 Header="제목" />
                             <TextBox
                                 x:Name="FluentIssueDescriptionTextBox"
                                 AcceptsReturn="True"
+                                AutomationProperties.AutomationId="FluentIssueDescriptionTextBox"
                                 Header="설명"
                                 Height="104"
                                 TextWrapping="Wrap" />
@@ -2621,6 +2689,7 @@
                                 </Grid.ColumnDefinitions>
                                 <ComboBox
                                     x:Name="FluentDetailStatusComboBox"
+                                    AutomationProperties.AutomationId="FluentDetailStatusComboBox"
                                     Header="상태"
                                     HorizontalAlignment="Stretch">
                                     <ComboBoxItem Content="백로그" Tag="Backlog" />
@@ -2632,6 +2701,7 @@
                                 <ComboBox
                                     x:Name="FluentDetailPriorityComboBox"
                                     Grid.Column="1"
+                                    AutomationProperties.AutomationId="FluentDetailPriorityComboBox"
                                     Header="우선순위"
                                     HorizontalAlignment="Stretch">
                                     <ComboBoxItem Content="긴급" Tag="Urgent" />
@@ -2648,6 +2718,7 @@
                                 </Grid.ColumnDefinitions>
                                 <ComboBox
                                     x:Name="FluentDetailProjectComboBox"
+                                    AutomationProperties.AutomationId="FluentDetailProjectComboBox"
                                     Header="프로젝트"
                                     HorizontalAlignment="Stretch">
                                     <ComboBoxItem Content="Platform" Tag="Platform" />
@@ -2658,6 +2729,7 @@
                                 <ComboBox
                                     x:Name="FluentDetailAssigneeComboBox"
                                     Grid.Column="1"
+                                    AutomationProperties.AutomationId="FluentDetailAssigneeComboBox"
                                     Header="담당자"
                                     HorizontalAlignment="Stretch">
                                     <ComboBoxItem Content="나" Tag="나" />
@@ -2669,9 +2741,11 @@
 
                             <TextBox
                                 x:Name="FluentIssueDueDateTextBox"
+                                AutomationProperties.AutomationId="FluentIssueDueDateTextBox"
                                 Header="기한" />
                             <TextBox
                                 x:Name="FluentIssueLabelsTextBox"
+                                AutomationProperties.AutomationId="FluentIssueLabelsTextBox"
                                 Header="라벨" />
 
                             <Grid ColumnSpacing="8">
@@ -2688,10 +2762,12 @@
                                     DefaultLabelPosition="Collapsed"
                                     IsOpen="False">
                                     <AppBarButton
+                                        AutomationProperties.AutomationId="FluentSaveIssueButton"
                                         Icon="Save"
                                         Label="저장"
                                         Click="FluentSaveIssue_Click" />
                                     <AppBarButton
+                                        AutomationProperties.AutomationId="FluentDeleteIssueButton"
                                         Icon="Delete"
                                         Label="삭제"
                                         Click="DeleteSelectedIssue_Click" />

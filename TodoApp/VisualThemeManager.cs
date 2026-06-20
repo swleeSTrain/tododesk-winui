@@ -30,18 +30,21 @@ internal sealed record ThemeDefinition(
     ThemePalette DarkPalette,
     string[] Aliases)
 {
-    public bool UsesAcrylicBackdrop => WindowTreatment == AppWindowTreatment.LiquidGlass;
+    public bool UsesAcrylicBackdrop => WindowTreatment == AppWindowTreatment.LiquidGlass && Theme != AppVisualTheme.WindowsXp;
 
     public bool UsesCustomTitleBar => WindowTreatment == AppWindowTreatment.LiquidGlass;
 
-    public bool UsesLiquidBackdrop => WindowTreatment == AppWindowTreatment.LiquidGlass;
+    public bool UsesLiquidBackdrop => WindowTreatment == AppWindowTreatment.LiquidGlass && Theme != AppVisualTheme.WindowsXp;
 
-    public byte WindowAlpha => WindowTreatment == AppWindowTreatment.LiquidGlass ? (byte)248 : (byte)255;
+    public bool UsesDecorativeGlassLayers => Theme is AppVisualTheme.Liquid or AppVisualTheme.Aero;
+
+    public byte WindowAlpha => Theme == AppVisualTheme.WindowsXp || WindowTreatment == AppWindowTreatment.Opaque ? (byte)255 : (byte)248;
 }
 
 internal sealed record ThemePalette(
     IReadOnlyDictionary<string, string> Solids,
-    IReadOnlyDictionary<string, string[]> Gradients);
+    IReadOnlyDictionary<string, string[]> Gradients,
+    IReadOnlyDictionary<string, CornerRadius> CornerRadii);
 
 internal static class VisualThemeManager
 {
@@ -178,6 +181,11 @@ internal static class VisualThemeManager
         foreach (var entry in palette.Solids)
         {
             SetSolid(dictionary, entry.Key, entry.Value);
+        }
+
+        foreach (var entry in palette.CornerRadii)
+        {
+            SetCornerRadius(dictionary, entry.Key, entry.Value);
         }
     }
 
@@ -319,46 +327,47 @@ internal static class VisualThemeManager
         return CreatePalette(
             new[]
             {
-                ("ContentMaterialStrokeBrush", "#B8A7D4FF"),
-                ("LiquidGlassSurfaceBrush", "#8C1A4E8A"),
-                ("LiquidGlassToolbarBrush", "#76205EA7"),
-                ("LiquidGlassRowBrush", "#5C153A72"),
-                ("LiquidGlassControlCheckedBrush", "#7C4E8F23"),
-                ("LiquidGlassHighlightBrush", "#80D8EDFF"),
-                ("LiquidGlassHoverBrush", "#4A7DBBFF"),
-                ("LiquidGlassSelectedBrush", "#9A79B63A"),
-                ("LiquidGlassStrokeBrush", "#B5C8E8FF"),
-                ("LiquidGlassShadowStrokeBrush", "#AA031338"),
-                ("LiquidGlassCastShadowBrush", "#8A000E2F"),
+                ("ContentMaterialStrokeBrush", "#FF0A246A"),
+                ("LiquidGlassSurfaceBrush", "#FFECE9D8"),
+                ("LiquidGlassToolbarBrush", "#FFECE9D8"),
+                ("LiquidGlassRowBrush", "#FFF7F3E3"),
+                ("LiquidGlassControlCheckedBrush", "#FF6DA843"),
+                ("LiquidGlassHighlightBrush", "#FFFFFFFF"),
+                ("LiquidGlassHoverBrush", "#FFD7E8FF"),
+                ("LiquidGlassSelectedBrush", "#FF8CC152"),
+                ("LiquidGlassStrokeBrush", "#FF316AC5"),
+                ("LiquidGlassShadowStrokeBrush", "#66000000"),
+                ("LiquidGlassCastShadowBrush", "#44000000"),
                 ("LiquidGlassTextPrimaryBrush", "#FFFFFFFF"),
-                ("LiquidGlassTextSecondaryBrush", "#E8E9F4FF"),
-                ("LiquidGlassAccentBrush", "#FF77B638"),
-                ("LiquidGlassAccentSoftBrush", "#6677B638"),
-                ("LiquidGlassChromaticWarmStrokeBrush", "#9AF6C45C"),
-                ("LiquidGlassChromaticCoolStrokeBrush", "#A06EB6FF"),
+                ("LiquidGlassTextSecondaryBrush", "#FFECE9D8"),
+                ("LiquidGlassAccentBrush", "#FF316AC5"),
+                ("LiquidGlassAccentSoftBrush", "#FF9DB9E8"),
+                ("LiquidGlassChromaticWarmStrokeBrush", "#FF6DA843"),
+                ("LiquidGlassChromaticCoolStrokeBrush", "#FF316AC5"),
                 ("LiquidGlassWarningBrush", "#FFFFC54C"),
-                ("LiquidGlassReviewBrush", "#FFC18BFF")
+                ("LiquidGlassReviewBrush", "#FF734D9A")
             },
             new[]
             {
-                Gradient("LiquidGlassWindowBrush", "#F2143768", "#F01F4F8E", "#F00A2C54"),
-                Gradient("LiquidGlassRegularWashBrush", "#5A0A2E62", "#3E1D5A99", "#4E09234D"),
-                Gradient("LiquidGlassContentBackdropWashBrush", "#52092652", "#382D73B8", "#460B315E"),
-                Gradient("ContentMaterialSurfaceBrush", "#B4183765", "#9E275E9B", "#AC102D58"),
-                Gradient("ContentMaterialRowBrush", "#8A173A6C", "#74285D98", "#7C0F305E"),
-                Gradient("LiquidGlassSidebarBrush", "#C0143A70", "#A4265E98", "#B00D315E"),
-                Gradient("LiquidGlassDropDownBrush", "#E91C4F8A", "#DA2F74B7", "#E014386A"),
-                Gradient("LiquidGlassContentInfusionBrush", "#00143B72", "#354395D6", "#4077B638", "#2056A7E8", "#221C4F8A"),
-                Gradient("LiquidGlassCoolContentBrush", "#00386FCE", "#4869AEFF", "#294DD0FF", "#001B56A0"),
-                Gradient("LiquidGlassWarmContentBrush", "#0077B638", "#3A77B638", "#24F6C45C", "#000B315E"),
-                Gradient("LiquidGlassRefractionBrush", "#000B315E", "#46CDE8FF", "#2A6EB6FF", "#3277B638", "#000B315E"),
-                Gradient("LiquidGlassSecondaryRefractionBrush", "#000B315E", "#307DBBFF", "#36FFFFFF", "#2477B638", "#000B315E"),
-                Gradient("LiquidGlassSpecularBrush", "#A8F5FBFF", "#2CEAF7FF", "#06FFFFFF"),
-                Gradient("LiquidGlassEdgeGlowBrush", "#F2F8FDFF", "#284A8FE8", "#6B77B638"),
-                Gradient("LiquidGlassRimBrush", "#F4FFFFFF", "#647DBBFF", "#4A77B638", "#95D8EDFF"),
-                Gradient("LiquidGlassCausticBrush", "#00000000", "#46CDE8FF", "#2F5BA3E6", "#4077B638", "#00000000"),
-                Gradient("LiquidGlassDistortionBrush", "#00000000", "#2677B638", "#46FFFFFF", "#3469AEFF", "#00000000", "#20F6C45C", "#00000000")
-            });
+                Gradient("LiquidGlassWindowBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
+                Gradient("LiquidGlassRegularWashBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
+                Gradient("LiquidGlassContentBackdropWashBrush", "#FFECE9D8", "#FFF7F3E3", "#FFE5E0C9"),
+                Gradient("ContentMaterialSurfaceBrush", "#FFF7F3E3", "#FFECE9D8", "#FFF7F3E3"),
+                Gradient("ContentMaterialRowBrush", "#FFFFFFFF", "#FFF7F3E3", "#FFFFFFFF"),
+                Gradient("LiquidGlassSidebarBrush", "#FFD6E9FF", "#FFC2DCF9", "#FFD6E9FF"),
+                Gradient("LiquidGlassDropDownBrush", "#FFFFFFFF", "#FFF7F3E3", "#FFFFFFFF"),
+                Gradient("LiquidGlassContentInfusionBrush", "#FF245EDB", "#FF3F8CFF", "#FF245EDB"),
+                Gradient("LiquidGlassCoolContentBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
+                Gradient("LiquidGlassWarmContentBrush", "#FF6DA843", "#FF8CC152", "#FF6DA843"),
+                Gradient("LiquidGlassRefractionBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF"),
+                Gradient("LiquidGlassSecondaryRefractionBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF"),
+                Gradient("LiquidGlassSpecularBrush", "#55FFFFFF", "#22FFFFFF", "#00FFFFFF"),
+                Gradient("LiquidGlassEdgeGlowBrush", "#FF7BA9E5", "#FF316AC5", "#FF0A246A"),
+                Gradient("LiquidGlassRimBrush", "#FFFFFFFF", "#FF7BA9E5", "#FF316AC5"),
+                Gradient("LiquidGlassCausticBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF"),
+                Gradient("LiquidGlassDistortionBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF")
+            },
+            CreateWindowsXpCornerRadii());
     }
 
     private static ThemePalette CreateWindowsXpLightPalette()
@@ -366,48 +375,78 @@ internal static class VisualThemeManager
         return CreatePalette(
             new[]
             {
-                ("ContentMaterialStrokeBrush", "#FF7EADE3"),
-                ("LiquidGlassSurfaceBrush", "#BFEAF6FF"),
-                ("LiquidGlassToolbarBrush", "#A8D7ECFF"),
-                ("LiquidGlassRowBrush", "#86FFFFFF"),
-                ("LiquidGlassControlCheckedBrush", "#BB77B638"),
-                ("LiquidGlassHighlightBrush", "#E8FFFFFF"),
-                ("LiquidGlassHoverBrush", "#629FDBFF"),
-                ("LiquidGlassSelectedBrush", "#9677B638"),
-                ("LiquidGlassStrokeBrush", "#F0FFFFFF"),
-                ("LiquidGlassShadowStrokeBrush", "#7A0B3F85"),
-                ("LiquidGlassCastShadowBrush", "#5402397A"),
+                ("ContentMaterialStrokeBrush", "#FF7BA9E5"),
+                ("LiquidGlassSurfaceBrush", "#FFECE9D8"),
+                ("LiquidGlassToolbarBrush", "#FFECE9D8"),
+                ("LiquidGlassRowBrush", "#FFFFFFFF"),
+                ("LiquidGlassControlCheckedBrush", "#FF8CC152"),
+                ("LiquidGlassHighlightBrush", "#FFFFFFFF"),
+                ("LiquidGlassHoverBrush", "#FFD7E8FF"),
+                ("LiquidGlassSelectedBrush", "#FF8CC152"),
+                ("LiquidGlassStrokeBrush", "#FF316AC5"),
+                ("LiquidGlassShadowStrokeBrush", "#66000000"),
+                ("LiquidGlassCastShadowBrush", "#44000000"),
                 ("LiquidGlassTextPrimaryBrush", "#FF061C48"),
                 ("LiquidGlassTextSecondaryBrush", "#D8061C48"),
-                ("LiquidGlassAccentBrush", "#FF3C8D0D"),
-                ("LiquidGlassAccentSoftBrush", "#5677B638"),
-                ("LiquidGlassChromaticWarmStrokeBrush", "#88F6C45C"),
-                ("LiquidGlassChromaticCoolStrokeBrush", "#8A539DFF"),
+                ("LiquidGlassAccentBrush", "#FF316AC5"),
+                ("LiquidGlassAccentSoftBrush", "#FF9DB9E8"),
+                ("LiquidGlassChromaticWarmStrokeBrush", "#FF6DA843"),
+                ("LiquidGlassChromaticCoolStrokeBrush", "#FF316AC5"),
                 ("LiquidGlassWarningBrush", "#FFFFB000"),
-                ("LiquidGlassReviewBrush", "#FF8E5BD6")
+                ("LiquidGlassReviewBrush", "#FF734D9A")
             },
             new[]
             {
-                Gradient("LiquidGlassWindowBrush", "#F1539DFF", "#F17DBBFF", "#F0A8D8FF"),
-                Gradient("LiquidGlassRegularWashBrush", "#70EAF5FF", "#55CFE9FF", "#68F7FBFF"),
-                Gradient("LiquidGlassContentBackdropWashBrush", "#72E4F2FF", "#55F8FBFF", "#62CFE8FF"),
-                Gradient("ContentMaterialSurfaceBrush", "#DDF7FBFF", "#CBE6F4FF", "#D8FFFFFF"),
-                Gradient("ContentMaterialRowBrush", "#C8FFFFFF", "#AEE8F5FF", "#BDF9FEFF"),
-                Gradient("LiquidGlassSidebarBrush", "#E7DDEEFF", "#D2BBD9FF", "#E7F8FBFF"),
-                Gradient("LiquidGlassDropDownBrush", "#F6F5FBFF", "#E8DDEEFF", "#F2C6E8FF"),
-                Gradient("LiquidGlassContentInfusionBrush", "#00FFFFFF", "#30539DFF", "#3477B638", "#2A9FDBFF", "#20FFFFFF"),
-                Gradient("LiquidGlassCoolContentBrush", "#00539DFF", "#5C69AEFF", "#3C9FDBFF", "#00539DFF"),
-                Gradient("LiquidGlassWarmContentBrush", "#0077B638", "#4A77B638", "#35F6C45C", "#009FDBFF"),
-                Gradient("LiquidGlassRefractionBrush", "#00FFFFFF", "#73FFFFFF", "#3869AEFF", "#4077B638", "#00FFFFFF"),
-                Gradient("LiquidGlassSecondaryRefractionBrush", "#00FFFFFF", "#449FDBFF", "#66FFFFFF", "#3977B638", "#00FFFFFF"),
-                Gradient("LiquidGlassSpecularBrush", "#F2FFFFFF", "#5CFFFFFF", "#0FFFFFFF"),
-                Gradient("LiquidGlassEdgeGlowBrush", "#FFFFFFFF", "#2EFFFFFF", "#A677B638"),
-                Gradient("LiquidGlassRimBrush", "#FFFFFFFF", "#8CFFFFFF", "#6277B638", "#D6FFFFFF"),
-                Gradient("LiquidGlassCausticBrush", "#00FFFFFF", "#68FFFFFF", "#3569AEFF", "#5277B638", "#00FFFFFF"),
-                Gradient("LiquidGlassDistortionBrush", "#00FFFFFF", "#2C77B638", "#60FFFFFF", "#3F69AEFF", "#00FFFFFF", "#38F6C45C", "#00FFFFFF")
-            });
+                Gradient("LiquidGlassWindowBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
+                Gradient("LiquidGlassRegularWashBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
+                Gradient("LiquidGlassContentBackdropWashBrush", "#FFECE9D8", "#FFF7F3E3", "#FFE5E0C9"),
+                Gradient("ContentMaterialSurfaceBrush", "#FFF7F3E3", "#FFECE9D8", "#FFF7F3E3"),
+                Gradient("ContentMaterialRowBrush", "#FFFFFFFF", "#FFF7F3E3", "#FFFFFFFF"),
+                Gradient("LiquidGlassSidebarBrush", "#FFD6E9FF", "#FFC2DCF9", "#FFD6E9FF"),
+                Gradient("LiquidGlassDropDownBrush", "#FFFFFFFF", "#FFF7F3E3", "#FFFFFFFF"),
+                Gradient("LiquidGlassContentInfusionBrush", "#FF245EDB", "#FF3F8CFF", "#FF245EDB"),
+                Gradient("LiquidGlassCoolContentBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
+                Gradient("LiquidGlassWarmContentBrush", "#FF6DA843", "#FF8CC152", "#FF6DA843"),
+                Gradient("LiquidGlassRefractionBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF"),
+                Gradient("LiquidGlassSecondaryRefractionBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF"),
+                Gradient("LiquidGlassSpecularBrush", "#55FFFFFF", "#22FFFFFF", "#00FFFFFF"),
+                Gradient("LiquidGlassEdgeGlowBrush", "#FF7BA9E5", "#FF316AC5", "#FF0A246A"),
+                Gradient("LiquidGlassRimBrush", "#FFFFFFFF", "#FF7BA9E5", "#FF316AC5"),
+                Gradient("LiquidGlassCausticBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF"),
+                Gradient("LiquidGlassDistortionBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF")
+            },
+            CreateWindowsXpCornerRadii());
     }
 
+    private static (string Key, CornerRadius Radius)[] CreateWindowsXpCornerRadii()
+    {
+        return new[]
+        {
+            Radius("LiquidGlassPanelCornerRadius", 6),
+            Radius("LiquidGlassCardCornerRadius", 4),
+            Radius("LiquidGlassLaneCornerRadius", 4),
+            Radius("LiquidGlassHeaderCornerRadius", 3),
+            Radius("LiquidGlassControlCornerRadius", 3),
+            Radius("LiquidGlassButtonCornerRadius", 3),
+            Radius("LiquidGlassOverlayCornerRadius", 4),
+            Radius("LiquidGlassOverlayInnerCornerRadius", 3)
+        };
+    }
+
+    private static (string Key, CornerRadius Radius)[] CreateDefaultCornerRadii()
+    {
+        return new[]
+        {
+            Radius("LiquidGlassPanelCornerRadius", 28),
+            Radius("LiquidGlassCardCornerRadius", 18),
+            Radius("LiquidGlassLaneCornerRadius", 24),
+            Radius("LiquidGlassHeaderCornerRadius", 18),
+            Radius("LiquidGlassControlCornerRadius", 18),
+            Radius("LiquidGlassButtonCornerRadius", 19),
+            Radius("LiquidGlassOverlayCornerRadius", 24),
+            Radius("LiquidGlassOverlayInnerCornerRadius", 23)
+        };
+    }
     private static ThemePalette CreateAeroDarkPalette()
     {
         return CreatePalette(
@@ -598,7 +637,8 @@ internal static class VisualThemeManager
 
     private static ThemePalette CreatePalette(
         (string Key, string Color)[] solids,
-        (string Key, string[] Colors)[] gradients)
+        (string Key, string[] Colors)[] gradients,
+        (string Key, CornerRadius Radius)[]? cornerRadii = null)
     {
         var solidMap = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var solid in solids)
@@ -612,12 +652,28 @@ internal static class VisualThemeManager
             gradientMap[gradient.Key] = gradient.Colors;
         }
 
-        return new ThemePalette(solidMap, gradientMap);
+        var cornerRadiusMap = new Dictionary<string, CornerRadius>(StringComparer.Ordinal);
+        foreach (var radius in cornerRadii ?? CreateDefaultCornerRadii())
+        {
+            cornerRadiusMap[radius.Key] = radius.Radius;
+        }
+
+        return new ThemePalette(solidMap, gradientMap, cornerRadiusMap);
     }
 
     private static (string Key, string[] Colors) Gradient(string key, params string[] colors)
     {
         return (key, colors);
+    }
+
+    private static (string Key, CornerRadius Radius) Radius(string key, double radius)
+    {
+        return (key, new CornerRadius(radius));
+    }
+
+    private static void SetCornerRadius(ResourceDictionary dictionary, string key, CornerRadius radius)
+    {
+        dictionary[key] = radius;
     }
 
     private static void SetSolid(ResourceDictionary dictionary, string key, string color)

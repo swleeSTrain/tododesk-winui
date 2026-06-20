@@ -409,6 +409,14 @@
             <CornerRadius x:Key="ComboBoxHiglightBorderCornerRadius">16</CornerRadius>
             <CornerRadius x:Key="ComboBoxItemCornerRadius">14</CornerRadius>
             <CornerRadius x:Key="ComboBoxItemPillCornerRadius">7</CornerRadius>
+            <CornerRadius x:Key="LiquidGlassPanelCornerRadius">6</CornerRadius>
+            <CornerRadius x:Key="LiquidGlassCardCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="LiquidGlassLaneCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="LiquidGlassHeaderCornerRadius">3</CornerRadius>
+            <CornerRadius x:Key="LiquidGlassControlCornerRadius">3</CornerRadius>
+            <CornerRadius x:Key="LiquidGlassButtonCornerRadius">3</CornerRadius>
+            <CornerRadius x:Key="LiquidGlassOverlayCornerRadius">4</CornerRadius>
+            <CornerRadius x:Key="LiquidGlassOverlayInnerCornerRadius">3</CornerRadius>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

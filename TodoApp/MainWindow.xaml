@@ -23,7 +23,7 @@
             Background="{ThemeResource LiquidGlassRegularWashBrush}"
             IsHitTestVisible="False" />
 
-        <Grid x:Name="CustomTitleBarHost" Height="44">
+        <Grid x:Name="CustomTitleBarHost" Height="36">
             <Border
                 Background="{ThemeResource LiquidGlassRegularWashBrush}"
                 Opacity="0.16" />
@@ -40,19 +40,19 @@
                 IsHitTestVisible="False"
                 Opacity="0.040" />
             <Border
-                Height="10"
+                Height="5"
                 Margin="72,3,190,0"
                 VerticalAlignment="Top"
                 Background="{ThemeResource LiquidGlassSpecularBrush}"
-                CornerRadius="5"
+                CornerRadius="2"
                 IsHitTestVisible="False"
                 Opacity="0.055" />
             <Border
-                Height="14"
+                Height="6"
                 Margin="360,1,280,0"
                 VerticalAlignment="Center"
                 Background="{ThemeResource LiquidGlassCausticBrush}"
-                CornerRadius="7"
+                CornerRadius="2"
                 IsHitTestVisible="False"
                 Opacity="0.026" />
             <Border
@@ -71,102 +71,138 @@
             <Grid
                 x:Name="AppTitleBar"
                 Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="150" />
-                </Grid.ColumnDefinitions>
-                <Border
-                    Grid.Column="2"
-                    Margin="4,6,10,6"
-                    Background="{ThemeResource LiquidGlassToolbarBrush}"
-                    BorderBrush="{ThemeResource LiquidGlassRimBrush}"
-                    BorderThickness="1"
-                    CornerRadius="16"
-                    Loaded="BackdropDistortion_Loaded"
-                    Tag="TitleCapsule"
-                    Unloaded="BackdropDistortion_Unloaded"
-                    IsHitTestVisible="False">
-                    <Grid>
-                        <Border
-                            Background="{ThemeResource LiquidGlassRefractionBrush}"
-                            CornerRadius="15"
-                            IsHitTestVisible="False"
-                            Opacity="0.18" />
-                        <Border
-                            Background="{ThemeResource LiquidGlassSpecularBrush}"
-                            CornerRadius="15"
-                            IsHitTestVisible="False"
-                            Opacity="0.20" />
-                        <Border
-                            Height="10"
-                            Margin="14,2,14,0"
-                            VerticalAlignment="Top"
-                            Background="{ThemeResource LiquidGlassSpecularBrush}"
-                            CornerRadius="5"
-                            IsHitTestVisible="False"
-                            Opacity="0.18" />
-                        <Border
-                            Margin="1"
-                            BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                            BorderThickness="1"
-                            CornerRadius="15"
-                            IsHitTestVisible="False"
-                            Opacity="0.34" />
-                        <Border
-                            Margin="2"
-                            Background="{ThemeResource LiquidGlassCausticBrush}"
-                            CornerRadius="14"
-                            IsHitTestVisible="False"
-                            Opacity="0.06" />
-                    </Grid>
-                </Border>
-                <Border
-                    Margin="10,7,0,7"
-                    Padding="8,0,11,0"
-                    HorizontalAlignment="Left"
-                    Background="{ThemeResource LiquidGlassToolbarBrush}"
-                    BorderBrush="{ThemeResource LiquidGlassRimBrush}"
-                    BorderThickness="1"
-                    CornerRadius="15"
-                    Loaded="BackdropDistortion_Loaded"
-                    Tag="TitleCapsule"
-                    Unloaded="BackdropDistortion_Unloaded"
-                    IsHitTestVisible="False">
-                    <Grid ColumnSpacing="8">
+                <Grid x:Name="LiquidTitleBarLayer">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="150" />
+                    </Grid.ColumnDefinitions>
+                    <Border
+                        Grid.Column="2"
+                        Margin="4,5,10,5"
+                        Background="{ThemeResource LiquidGlassToolbarBrush}"
+                        BorderBrush="{ThemeResource LiquidGlassRimBrush}"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IsHitTestVisible="False"
+                        Loaded="BackdropDistortion_Loaded"
+                        Tag="TitleCapsule"
+                        Unloaded="BackdropDistortion_Unloaded">
+                        <Grid>
+                            <Border
+                                Background="{ThemeResource LiquidGlassRefractionBrush}"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.18" />
+                            <Border
+                                Background="{ThemeResource LiquidGlassSpecularBrush}"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.20" />
+                            <Border
+                                Height="4"
+                                Margin="14,2,14,0"
+                                VerticalAlignment="Top"
+                                Background="{ThemeResource LiquidGlassSpecularBrush}"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.18" />
+                            <Border
+                                Margin="1"
+                                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
+                                BorderThickness="1"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.34" />
+                            <Border
+                                Margin="2"
+                                Background="{ThemeResource LiquidGlassCausticBrush}"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.06" />
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="10,5,0,5"
+                        Padding="8,0,11,0"
+                        HorizontalAlignment="Left"
+                        Background="{ThemeResource LiquidGlassToolbarBrush}"
+                        BorderBrush="{ThemeResource LiquidGlassRimBrush}"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IsHitTestVisible="False"
+                        Loaded="BackdropDistortion_Loaded"
+                        Tag="TitleCapsule"
+                        Unloaded="BackdropDistortion_Unloaded">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Grid.ColumnSpan="2"
+                                Background="{ThemeResource LiquidGlassRefractionBrush}"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.18" />
+                            <Border
+                                Grid.ColumnSpan="2"
+                                Background="{ThemeResource LiquidGlassSpecularBrush}"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.21" />
+                            <Border
+                                Grid.ColumnSpan="2"
+                                Height="4"
+                                Margin="11,2,11,0"
+                                VerticalAlignment="Top"
+                                Background="{ThemeResource LiquidGlassSpecularBrush}"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.18" />
+                            <Border
+                                Grid.ColumnSpan="2"
+                                Margin="1"
+                                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
+                                BorderThickness="1"
+                                CornerRadius="2"
+                                IsHitTestVisible="False"
+                                Opacity="0.36" />
+                            <Image
+                                Width="16"
+                                Height="16"
+                                VerticalAlignment="Center"
+                                Source="Assets/AppIcon.ico" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource LiquidGlassTextPrimaryBrush}"
+                                Text="TodoDesk" />
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Grid
+                    x:Name="XpTitleBarLayer"
+                    IsHitTestVisible="False"
+                    Visibility="Collapsed">
+                    <Border Background="{ThemeResource LiquidGlassWindowBrush}" />
+                    <Border
+                        Height="1"
+                        VerticalAlignment="Top"
+                        Background="#FF7BA9E5" />
+                    <Border
+                        Height="1"
+                        VerticalAlignment="Bottom"
+                        Background="#FF0A246A" />
+                    <Grid Margin="6,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="138" />
                         </Grid.ColumnDefinitions>
-                        <Border
-                            Grid.ColumnSpan="2"
-                            Background="{ThemeResource LiquidGlassRefractionBrush}"
-                            CornerRadius="14"
-                            IsHitTestVisible="False"
-                            Opacity="0.18" />
-                        <Border
-                            Grid.ColumnSpan="2"
-                            Background="{ThemeResource LiquidGlassSpecularBrush}"
-                            CornerRadius="14"
-                            IsHitTestVisible="False"
-                            Opacity="0.21" />
-                        <Border
-                            Grid.ColumnSpan="2"
-                            Height="9"
-                            Margin="11,2,11,0"
-                            VerticalAlignment="Top"
-                            Background="{ThemeResource LiquidGlassSpecularBrush}"
-                            CornerRadius="5"
-                            IsHitTestVisible="False"
-                            Opacity="0.18" />
-                        <Border
-                            Grid.ColumnSpan="2"
-                            Margin="1"
-                            BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                            BorderThickness="1"
-                            CornerRadius="14"
-                            IsHitTestVisible="False"
-                            Opacity="0.36" />
                         <Image
                             Width="16"
                             Height="16"
@@ -174,13 +210,72 @@
                             Source="Assets/AppIcon.ico" />
                         <TextBlock
                             Grid.Column="1"
+                            Margin="6,0,0,1"
                             VerticalAlignment="Center"
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Foreground="{ThemeResource LiquidGlassTextPrimaryBrush}"
+                            FontFamily="Segoe UI"
+                            FontSize="13"
+                            FontWeight="Bold"
+                            Foreground="White"
                             Text="TodoDesk" />
+                        <Grid
+                            Grid.Column="2"
+                            Margin="0,4,0,4"
+                            HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="46" />
+                                <ColumnDefinition Width="46" />
+                                <ColumnDefinition Width="46" />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Width="22"
+                                HorizontalAlignment="Center"
+                                BorderBrush="#FF0A246A"
+                                BorderThickness="1"
+                                CornerRadius="3">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0" />
+                                        <GradientStop Color="#FF7BB6FF" Offset="0.18" />
+                                        <GradientStop Color="#FF1D63D8" Offset="0.58" />
+                                        <GradientStop Color="#FF0640A5" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                            <Border
+                                Grid.Column="1"
+                                Width="22"
+                                HorizontalAlignment="Center"
+                                BorderBrush="#FF0A246A"
+                                BorderThickness="1"
+                                CornerRadius="3">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFFFFFF" Offset="0" />
+                                        <GradientStop Color="#FF7BB6FF" Offset="0.18" />
+                                        <GradientStop Color="#FF1D63D8" Offset="0.58" />
+                                        <GradientStop Color="#FF0640A5" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                            <Border
+                                Grid.Column="2"
+                                Width="22"
+                                HorizontalAlignment="Center"
+                                BorderBrush="#FF6A1B00"
+                                BorderThickness="1"
+                                CornerRadius="3">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFFD7C6" Offset="0" />
+                                        <GradientStop Color="#FFFF8D6B" Offset="0.22" />
+                                        <GradientStop Color="#FFE13B16" Offset="0.62" />
+                                        <GradientStop Color="#FFA51B00" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                        </Grid>
                     </Grid>
-                </Border>
+                </Grid>
             </Grid>
         </Grid>
 

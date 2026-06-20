@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Windows.Graphics;
 using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -22,6 +23,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        SizeWindowForMainLayout();
 
         var requestedTheme = GetRequestedThemeOverride();
         RootLayout.RequestedTheme = requestedTheme;
@@ -36,6 +38,15 @@ public sealed partial class MainWindow : Window
 
         // Navigate the root frame to the main page on startup.
         RootFrame.Navigate(typeof(MainPage));
+    }
+
+    private void SizeWindowForMainLayout()
+    {
+        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+        var scale = GetDpiForWindow(hwnd) / 96.0;
+        AppWindow.Resize(new SizeInt32(
+            (int)Math.Round(1440 * scale),
+            (int)Math.Round(860 * scale)));
     }
 
     private static ElementTheme GetRequestedThemeOverride()
@@ -84,6 +95,7 @@ public sealed partial class MainWindow : Window
         var definition = VisualThemeManager.GetDefinition(theme);
         var useCustomTitleBar = definition.UsesCustomTitleBar;
         CustomTitleBarHost.Visibility = useCustomTitleBar ? Visibility.Visible : Visibility.Collapsed;
+        ApplyCustomTitleBarLayer(definition, useCustomTitleBar);
         ExtendsContentIntoTitleBar = useCustomTitleBar;
         SetTitleBar(useCustomTitleBar ? AppTitleBar : null);
         SystemBackdrop = definition.UsesAcrylicBackdrop ? new DesktopAcrylicBackdrop() : null;
@@ -92,11 +104,32 @@ public sealed partial class MainWindow : Window
         LiquidBackdropEffect.RefreshTree(RootLayout);
     }
 
+    private void ApplyCustomTitleBarLayer(ThemeDefinition definition, bool useCustomTitleBar)
+    {
+        var useXpTitleBar = useCustomTitleBar && definition.Theme == AppVisualTheme.WindowsXp;
+        CustomTitleBarHost.Height = useXpTitleBar ? 30 : 36;
+        LiquidTitleBarLayer.Visibility = useCustomTitleBar && !useXpTitleBar ? Visibility.Visible : Visibility.Collapsed;
+        XpTitleBarLayer.Visibility = useXpTitleBar ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private void ApplyTitleBar(ThemeDefinition definition)
     {
         var titleBar = AppWindow.TitleBar;
         var transparent = Color.FromArgb(0, 0, 0, 0);
         var isDark = RootLayout?.ActualTheme == ElementTheme.Dark;
+
+        if (definition.Theme == AppVisualTheme.WindowsXp)
+        {
+            titleBar.BackgroundColor = transparent;
+            titleBar.InactiveBackgroundColor = transparent;
+            titleBar.ButtonBackgroundColor = transparent;
+            titleBar.ButtonInactiveBackgroundColor = transparent;
+            titleBar.ButtonHoverBackgroundColor = transparent;
+            titleBar.ButtonPressedBackgroundColor = transparent;
+            titleBar.ButtonForegroundColor = Color.FromArgb(255, 255, 255, 255);
+            titleBar.ButtonInactiveForegroundColor = Color.FromArgb(175, 255, 255, 255);
+            return;
+        }
 
         if (definition.WindowTreatment == AppWindowTreatment.Opaque)
         {
@@ -179,4 +212,7 @@ public sealed partial class MainWindow : Window
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern bool SetLayeredWindowAttributes(IntPtr hWnd, uint crKey, byte bAlpha, uint dwFlags);
+
+    [DllImport("user32.dll")]
+    private static extern uint GetDpiForWindow(IntPtr hWnd);
 }

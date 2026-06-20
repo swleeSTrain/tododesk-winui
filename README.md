@@ -45,6 +45,21 @@ dotnet run --project .\TodoApp\TodoApp.csproj -p:Platform=x64
 
 The app stores issue data as `issues.json` in the app's local application data folder.
 
+## Symphony
+
+This repo includes a root `WORKFLOW.md` for [openai/symphony](https://github.com/openai/symphony). It configures Linear polling, per-issue workspaces, WinUI-aware setup hooks, and Codex app-server guidance for TodoDesk work.
+
+Before running Symphony, set:
+
+```powershell
+$env:LINEAR_API_KEY = "<linear-api-key>"
+$env:SYMPHONY_LINEAR_PROJECT_SLUG = "<linear-project-slug>"
+$env:SYMPHONY_WORKSPACE_ROOT = "$HOME\code\tododesk-symphony-workspaces"
+$env:SYMPHONY_REPO_URL = "https://github.com/<owner>/<repo>.git"
+```
+
+The included hooks clone the repo into each fresh workspace and restore `TodoApp/TodoApp.csproj` for `x64`. Keep Linear issues labeled `symphony` to make them dispatch candidates.
+
 ## Project Layout
 
 ```text
