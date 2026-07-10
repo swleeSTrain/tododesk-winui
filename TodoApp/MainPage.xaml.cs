@@ -1,46 +1,42 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
+using System.Globalization;
 using Microsoft.UI;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Foundation;
-using Windows.Storage;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 
 namespace TodoApp;
 
 public sealed partial class MainPage : Page
 {
-    private const string IssuesFileName = "issues.json";
-    private const string LegacyTodosFileName = "todos.json";
-
-    private readonly ObservableCollection<IssueItem> _issues = new();
-    private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+    private readonly IssueWorkspaceViewModel _viewModel = new();
+    private readonly IssueRepository _issueRepository = new();
+    private readonly UISettings _uiSettings = new();
+    private Task? _initialLoadTask;
     private IssueItem? _selectedIssue;
-    private string _navScope = "All";
     private bool _isLoading;
     private bool _isRefreshingSelection;
     private bool _isSyncingNativeControls;
     private bool _isSyncingNavigation;
     private bool _hasAnimatedViewSurface;
     private AppVisualTheme _visualTheme = AppVisualTheme.Liquid;
-    private string _searchQuery = string.Empty;
-    private string _statusFilter = "All";
-    private string _priorityFilter = "All";
+    private bool _isNarrowLayout;
+    private bool _isShowingNarrowDetail;
 
-    public ObservableCollection<IssueItem> VisibleIssues { get; } = new();
-    public ObservableCollection<IssueItem> BacklogIssues { get; } = new();
-    public ObservableCollection<IssueItem> TodoIssues { get; } = new();
-    public ObservableCollection<IssueItem> InProgressIssues { get; } = new();
-    public ObservableCollection<IssueItem> ReviewIssues { get; } = new();
-    public ObservableCollection<IssueItem> DoneIssues { get; } = new();
+    public ObservableCollection<IssueItem> VisibleIssues => _viewModel.VisibleIssues;
+    public ObservableCollection<IssueItem> BacklogIssues => _viewModel.BacklogIssues;
+    public ObservableCollection<IssueItem> TodoIssues => _viewModel.TodoIssues;
+    public ObservableCollection<IssueItem> InProgressIssues => _viewModel.InProgressIssues;
+    public ObservableCollection<IssueItem> ReviewIssues => _viewModel.ReviewIssues;
+    public ObservableCollection<IssueItem> DoneIssues => _viewModel.DoneIssues;
 
     public MainPage()
     {
@@ -48,6 +44,7 @@ public sealed partial class MainPage : Page
         VisualThemeManager.Apply(_visualTheme);
 
         InitializeComponent();
+        ApplyLocalizedAutomationProperties();
 
         VisualThemeManager.ThemeApplied += VisualThemeManager_ThemeApplied;
         Unloaded += Page_Unloaded;
@@ -55,26 +52,130 @@ public sealed partial class MainPage : Page
         ShellNavigation.SelectedItem = AllIssuesNavItem;
         SelectDropDownByTag(StatusFilterDropDownButton, "All");
         SelectDropDownByTag(PriorityFilterDropDownButton, "All");
-        SelectComboBoxByTag(FluentStatusFilterComboBox, _statusFilter);
-        SelectComboBoxByTag(FluentPriorityFilterComboBox, _priorityFilter);
+        SelectComboBoxByTag(FluentStatusFilterComboBox, _viewModel.StatusFilter);
+        SelectComboBoxByTag(FluentPriorityFilterComboBox, _viewModel.PriorityFilter);
         UpdateThemeSurfaceMode();
-        _ = LoadIssuesAsync();
+        SetLoadingState(isLoading: true);
+        _initialLoadTask = LoadIssuesAsync();
     }
 
-    private void Page_Loaded(object sender, RoutedEventArgs e)
+    private void ApplyLocalizedAutomationProperties()
     {
+        AutomationProperties.SetName(QuickIssueTextBox, AppResources.Get("NewIssueTitle"));
+        AutomationProperties.SetName(FluentQuickIssueTextBox, AppResources.Get("NewIssueTitle"));
+        AutomationProperties.SetName(SearchTextBox, AppResources.Get("SearchName"));
+        AutomationProperties.SetName(FluentSearchTextBox, AppResources.Get("SearchName"));
+        AutomationProperties.SetName(StatusFilterDropDownButton, AppResources.Get("StatusFilterName"));
+        AutomationProperties.SetName(FluentStatusFilterComboBox, AppResources.Get("StatusFilterName"));
+        AutomationProperties.SetName(PriorityFilterDropDownButton, AppResources.Get("PriorityFilterName"));
+        AutomationProperties.SetName(FluentPriorityFilterComboBox, AppResources.Get("PriorityFilterName"));
+        AutomationProperties.SetName(FluentThemeComboBox, AppResources.Get("ThemeFilterName"));
+        AutomationProperties.SetName(ThemeDropDownButton, AppResources.Get("ThemeFilterName"));
+        AutomationProperties.SetName(IssueDueDatePicker, AppResources.Get("DueDateName"));
+        AutomationProperties.SetName(FluentIssueDueDatePicker, AppResources.Get("DueDateName"));
+        AutomationProperties.SetName(CustomNewIssueButton, AppResources.Get("NewIssueTitle"));
+        AutomationProperties.SetName(ListModeButton, AppResources.Get("ListViewName"));
+        AutomationProperties.SetName(BoardModeButton, AppResources.Get("BoardViewName"));
+        AutomationProperties.SetName(CustomAddQuickIssueButton, AppResources.Get("AddIssueName"));
+        AutomationProperties.SetName(CustomSaveIssueButton, AppResources.Get("SaveIssueName"));
+        AutomationProperties.SetName(CustomDeleteIssueButton, AppResources.Get("DeleteIssueName"));
+        AutomationProperties.SetName(LoadingProgressRing, AppResources.Get("LoadingTitle"));
+        ToolTipService.SetToolTip(CustomNewIssueButton, AppResources.Get("NewIssueTitle"));
+        ToolTipService.SetToolTip(ThemeDropDownButton, AppResources.Get("ThemeFilterName"));
+        ToolTipService.SetToolTip(ListModeButton, AppResources.Get("ListViewName"));
+        ToolTipService.SetToolTip(BoardModeButton, AppResources.Get("BoardViewName"));
+        ToolTipService.SetToolTip(CustomAddQuickIssueButton, AppResources.Get("AddIssueName"));
+        ToolTipService.SetToolTip(CustomSaveIssueButton, AppResources.Get("SaveIssueName"));
+        ToolTipService.SetToolTip(CustomDeleteIssueButton, AppResources.Get("DeleteIssueName"));
+    }
+
+    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (_initialLoadTask is not null)
+        {
+            await _initialLoadTask;
+        }
+
         if (_visualTheme != AppVisualTheme.Liquid)
         {
             DispatcherQueue.TryEnqueue(() => ApplyVisualTheme(_visualTheme, save: false));
         }
 
         UpdateThemeSurfaceMode();
+        ApplyResponsiveLayout(ActualWidth);
+    }
+
+    private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        ApplyResponsiveLayout(e.NewSize.Width);
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
     {
         VisualThemeManager.ThemeApplied -= VisualThemeManager_ThemeApplied;
         Unloaded -= Page_Unloaded;
+    }
+
+    private void ApplyResponsiveLayout(double width)
+    {
+        var useNarrowLayout = width > 0 && width < 840;
+        if (_isNarrowLayout == useNarrowLayout && width > 0)
+        {
+            return;
+        }
+
+        _isNarrowLayout = useNarrowLayout;
+        ShellNavigation.PaneDisplayMode = useNarrowLayout
+            ? NavigationViewPaneDisplayMode.LeftMinimal
+            : NavigationViewPaneDisplayMode.Auto;
+        FluentNativeRoot.PaneDisplayMode = useNarrowLayout
+            ? NavigationViewPaneDisplayMode.LeftMinimal
+            : NavigationViewPaneDisplayMode.Auto;
+
+        CustomContentRoot.Padding = useNarrowLayout ? new Thickness(8) : new Thickness(18, 14, 18, 18);
+        FluentContentRoot.Padding = useNarrowLayout ? new Thickness(12) : new Thickness(24, 18, 24, 24);
+        CustomSplitGrid.ColumnSpacing = useNarrowLayout ? 0 : 12;
+        FluentSplitGrid.ColumnSpacing = useNarrowLayout ? 0 : 16;
+
+        Grid.SetColumn(CustomDetailPane, useNarrowLayout ? 0 : 1);
+        Grid.SetColumn(FluentDetailPane, useNarrowLayout ? 0 : 1);
+        CustomDetailColumn.Width = useNarrowLayout ? new GridLength(0) : new GridLength(320);
+        FluentDetailColumn.Width = useNarrowLayout ? new GridLength(0) : new GridLength(360);
+        CustomDetailPane.MinWidth = useNarrowLayout ? 0 : 320;
+        CustomBackToListButton.Visibility = useNarrowLayout ? Visibility.Visible : Visibility.Collapsed;
+        FluentBackToListButton.Visibility = useNarrowLayout ? Visibility.Visible : Visibility.Collapsed;
+
+        if (!useNarrowLayout)
+        {
+            _isShowingNarrowDetail = false;
+        }
+
+        UpdateNarrowSurfaceVisibility();
+    }
+
+    private void BackToList_Click(object sender, RoutedEventArgs e)
+    {
+        _isShowingNarrowDetail = false;
+        UpdateNarrowSurfaceVisibility();
+        (UsesNativeFluentSurface ? FluentIssueListView : IssueListView).Focus(FocusState.Programmatic);
+    }
+
+    private void UpdateNarrowSurfaceVisibility()
+    {
+        if (!_isNarrowLayout)
+        {
+            CustomIssueSurface.Visibility = Visibility.Visible;
+            CustomDetailPane.Visibility = Visibility.Visible;
+            FluentIssueSurface.Visibility = Visibility.Visible;
+            FluentDetailPane.Visibility = Visibility.Visible;
+            return;
+        }
+
+        var showDetail = _isShowingNarrowDetail && _selectedIssue is not null;
+        CustomIssueSurface.Visibility = showDetail ? Visibility.Collapsed : Visibility.Visible;
+        CustomDetailPane.Visibility = showDetail ? Visibility.Visible : Visibility.Collapsed;
+        FluentIssueSurface.Visibility = showDetail ? Visibility.Collapsed : Visibility.Visible;
+        FluentDetailPane.Visibility = showDetail ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void VisualThemeManager_ThemeApplied(AppVisualTheme theme)
@@ -103,10 +204,6 @@ public sealed partial class MainPage : Page
         AnimateGlassSurface(sender, translateY: 0, opacity: 0.99, scale: 1.0, skewX: 0, durationMilliseconds: 180);
     }
 
-    private void GlassSurface_PointerMoved(object sender, PointerRoutedEventArgs e)
-    {
-    }
-
     private void GlassSurface_PointerExited(object sender, PointerRoutedEventArgs e)
     {
         AnimateGlassSurface(sender, translateY: 0, opacity: 1, scale: 1, skewX: 0, durationMilliseconds: 210);
@@ -122,7 +219,7 @@ public sealed partial class MainPage : Page
         AnimateGlassSurface(sender, translateY: 0, opacity: 0.99, scale: 1.0, skewX: 0, durationMilliseconds: 135);
     }
 
-    private static void AnimateGlassSurface(object sender, double translateY, double opacity, double scale, double skewX, double durationMilliseconds)
+    private void AnimateGlassSurface(object sender, double translateY, double opacity, double scale, double skewX, double durationMilliseconds)
     {
         if (sender is not FrameworkElement element)
         {
@@ -134,6 +231,20 @@ public sealed partial class MainPage : Page
         if (element.RenderTransform is not CompositeTransform)
         {
             element.RenderTransform = new CompositeTransform();
+        }
+
+        if (!_uiSettings.AnimationsEnabled)
+        {
+            element.Opacity = opacity;
+            if (element.RenderTransform is CompositeTransform finalTransform)
+            {
+                finalTransform.TranslateY = translateY;
+                finalTransform.ScaleX = scale;
+                finalTransform.ScaleY = scale;
+                finalTransform.SkewX = skewX;
+            }
+
+            return;
         }
 
         var storyboard = new Storyboard();
@@ -199,11 +310,13 @@ public sealed partial class MainPage : Page
 
     private async void NewIssue_Click(object sender, RoutedEventArgs e)
     {
-        await AddIssueAsync("새 이슈", selectAfterCreate: true);
+        await EnsureInitialLoadAsync();
+        await AddIssueAsync(AppResources.Get("NewIssueTitle"), selectAfterCreate: true);
     }
 
     private async void AddQuickIssue_Click(object sender, RoutedEventArgs e)
     {
+        await EnsureInitialLoadAsync();
         await AddIssueAsync(QuickIssueTextBox.Text, selectAfterCreate: true);
     }
 
@@ -215,6 +328,7 @@ public sealed partial class MainPage : Page
         }
 
         e.Handled = true;
+        await EnsureInitialLoadAsync();
         await AddIssueAsync(QuickIssueTextBox.Text, selectAfterCreate: true);
     }
 
@@ -225,7 +339,7 @@ public sealed partial class MainPage : Page
             return;
         }
 
-        _searchQuery = SearchTextBox.Text.Trim();
+        _viewModel.SearchQuery = SearchTextBox.Text.Trim();
         SyncSearchTextBoxes(SearchTextBox);
         RefreshViews();
     }
@@ -237,18 +351,20 @@ public sealed partial class MainPage : Page
             return;
         }
 
-        _searchQuery = FluentSearchTextBox.Text.Trim();
+        _viewModel.SearchQuery = FluentSearchTextBox.Text.Trim();
         SyncSearchTextBoxes(FluentSearchTextBox);
         RefreshViews();
     }
 
     private async void FluentNewIssue_Click(object sender, RoutedEventArgs e)
     {
-        await AddIssueAsync("새 이슈", selectAfterCreate: true);
+        await EnsureInitialLoadAsync();
+        await AddIssueAsync(AppResources.Get("NewIssueTitle"), selectAfterCreate: true);
     }
 
     private async void FluentAddQuickIssue_Click(object sender, RoutedEventArgs e)
     {
+        await EnsureInitialLoadAsync();
         await AddIssueAsync(FluentQuickIssueTextBox.Text, selectAfterCreate: true);
     }
 
@@ -260,6 +376,7 @@ public sealed partial class MainPage : Page
         }
 
         e.Handled = true;
+        await EnsureInitialLoadAsync();
         await AddIssueAsync(FluentQuickIssueTextBox.Text, selectAfterCreate: true);
     }
 
@@ -270,8 +387,8 @@ public sealed partial class MainPage : Page
             return;
         }
 
-        _statusFilter = ReadSelectedComboBoxTag(FluentStatusFilterComboBox, "All");
-        SelectDropDownByTag(StatusFilterDropDownButton, _statusFilter);
+        _viewModel.StatusFilter = ReadSelectedComboBoxTag(FluentStatusFilterComboBox, "All");
+        SelectDropDownByTag(StatusFilterDropDownButton, _viewModel.StatusFilter);
         RefreshViews();
     }
 
@@ -282,8 +399,8 @@ public sealed partial class MainPage : Page
             return;
         }
 
-        _priorityFilter = ReadSelectedComboBoxTag(FluentPriorityFilterComboBox, "All");
-        SelectDropDownByTag(PriorityFilterDropDownButton, _priorityFilter);
+        _viewModel.PriorityFilter = ReadSelectedComboBoxTag(FluentPriorityFilterComboBox, "All");
+        SelectDropDownByTag(PriorityFilterDropDownButton, _viewModel.PriorityFilter);
         RefreshViews();
     }
 
@@ -332,7 +449,7 @@ public sealed partial class MainPage : Page
         UpdateThemeSurfaceMode();
     }
 
-    private bool UsesNativeFluentSurface => VisualThemeManager.CurrentDefinition.WindowTreatment == AppWindowTreatment.Opaque;
+    private static bool UsesNativeFluentSurface => VisualThemeManager.CurrentDefinition.WindowTreatment == AppWindowTreatment.Opaque;
 
     private void UpdateThemeSurfaceMode()
     {
@@ -429,8 +546,8 @@ public sealed partial class MainPage : Page
     private void StatusFilterMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
     {
         UpdateDropDownSelection(StatusFilterDropDownButton, sender);
-        _statusFilter = ReadSelectedTag(StatusFilterDropDownButton, "All");
-        SelectComboBoxByTag(FluentStatusFilterComboBox, _statusFilter);
+        _viewModel.StatusFilter = ReadSelectedTag(StatusFilterDropDownButton, "All");
+        SelectComboBoxByTag(FluentStatusFilterComboBox, _viewModel.StatusFilter);
         CloseFilterOverlay();
         RefreshViews();
     }
@@ -438,8 +555,8 @@ public sealed partial class MainPage : Page
     private void PriorityFilterMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
     {
         UpdateDropDownSelection(PriorityFilterDropDownButton, sender);
-        _priorityFilter = ReadSelectedTag(PriorityFilterDropDownButton, "All");
-        SelectComboBoxByTag(FluentPriorityFilterComboBox, _priorityFilter);
+        _viewModel.PriorityFilter = ReadSelectedTag(PriorityFilterDropDownButton, "All");
+        SelectComboBoxByTag(FluentPriorityFilterComboBox, _viewModel.PriorityFilter);
         CloseFilterOverlay();
         RefreshViews();
     }
@@ -534,7 +651,7 @@ public sealed partial class MainPage : Page
 
         if (args.SelectedItem is NavigationViewItem { Tag: string tag })
         {
-            _navScope = tag;
+            _viewModel.NavigationScope = tag;
             SyncNavigationSelection();
             RefreshViews();
         }
@@ -549,7 +666,7 @@ public sealed partial class MainPage : Page
 
         if (args.SelectedItem is NavigationViewItem { Tag: string tag })
         {
-            _navScope = tag;
+            _viewModel.NavigationScope = tag;
             SyncNavigationSelection();
             RefreshViews();
         }
@@ -602,7 +719,7 @@ public sealed partial class MainPage : Page
             return;
         }
 
-        var issue = _issues.FirstOrDefault(item => item.Id == id);
+        var issue = _viewModel.Issues.FirstOrDefault(item => item.Id == id);
         if (issue is not null)
         {
             SelectIssue(issue);
@@ -611,54 +728,84 @@ public sealed partial class MainPage : Page
 
     private async void SaveIssue_Click(object sender, RoutedEventArgs e)
     {
+        await EnsureInitialLoadAsync();
         if (_selectedIssue is null)
         {
             return;
         }
 
-        _selectedIssue.Title = NormalizeTitle(IssueTitleTextBox.Text);
-        _selectedIssue.Description = IssueDescriptionTextBox.Text.Trim();
-        _selectedIssue.Status = ReadSelectedTag(DetailStatusDropDownButton, "Todo");
-        _selectedIssue.Priority = ReadSelectedTag(DetailPriorityDropDownButton, "Medium");
-        _selectedIssue.Project = ReadSelectedTag(DetailProjectDropDownButton, "Platform");
-        _selectedIssue.Assignee = ReadSelectedTag(DetailAssigneeDropDownButton, "나");
-        _selectedIssue.DueDate = IssueDueDateTextBox.Text.Trim();
-        _selectedIssue.Labels = IssueLabelsTextBox.Text.Trim();
+        var editedIssue = _selectedIssue;
+        editedIssue.Title = NormalizeTitle(IssueTitleTextBox.Text);
+        editedIssue.Description = IssueDescriptionTextBox.Text.Trim();
+        editedIssue.Status = ReadSelectedTag(DetailStatusDropDownButton, "Todo");
+        editedIssue.Priority = ReadSelectedTag(DetailPriorityDropDownButton, "Medium");
+        editedIssue.Project = ReadSelectedTag(DetailProjectDropDownButton, "Platform");
+        editedIssue.Assignee = ReadSelectedTag(DetailAssigneeDropDownButton, "Me");
+        editedIssue.DueDate = FormatStorageDate(IssueDueDatePicker.Date);
+        editedIssue.Labels = IssueLabelsTextBox.Text.Trim();
 
         RefreshViews(keepSelection: true);
-        LoadIssueIntoEditor(_selectedIssue);
+        if (ReferenceEquals(_selectedIssue, editedIssue))
+        {
+            LoadIssueIntoEditor(editedIssue);
+        }
+
         await TrySaveIssuesAsync();
     }
 
     private async void FluentSaveIssue_Click(object sender, RoutedEventArgs e)
     {
+        await EnsureInitialLoadAsync();
         if (_selectedIssue is null)
         {
             return;
         }
 
-        _selectedIssue.Title = NormalizeTitle(FluentIssueTitleTextBox.Text);
-        _selectedIssue.Description = FluentIssueDescriptionTextBox.Text.Trim();
-        _selectedIssue.Status = ReadSelectedComboBoxTag(FluentDetailStatusComboBox, "Todo");
-        _selectedIssue.Priority = ReadSelectedComboBoxTag(FluentDetailPriorityComboBox, "Medium");
-        _selectedIssue.Project = ReadSelectedComboBoxTag(FluentDetailProjectComboBox, "Platform");
-        _selectedIssue.Assignee = ReadSelectedComboBoxTag(FluentDetailAssigneeComboBox, "나");
-        _selectedIssue.DueDate = FluentIssueDueDateTextBox.Text.Trim();
-        _selectedIssue.Labels = FluentIssueLabelsTextBox.Text.Trim();
+        var editedIssue = _selectedIssue;
+        editedIssue.Title = NormalizeTitle(FluentIssueTitleTextBox.Text);
+        editedIssue.Description = FluentIssueDescriptionTextBox.Text.Trim();
+        editedIssue.Status = ReadSelectedComboBoxTag(FluentDetailStatusComboBox, "Todo");
+        editedIssue.Priority = ReadSelectedComboBoxTag(FluentDetailPriorityComboBox, "Medium");
+        editedIssue.Project = ReadSelectedComboBoxTag(FluentDetailProjectComboBox, "Platform");
+        editedIssue.Assignee = ReadSelectedComboBoxTag(FluentDetailAssigneeComboBox, "Me");
+        editedIssue.DueDate = FormatStorageDate(FluentIssueDueDatePicker.Date);
+        editedIssue.Labels = FluentIssueLabelsTextBox.Text.Trim();
 
         RefreshViews(keepSelection: true);
-        LoadIssueIntoEditor(_selectedIssue);
+        if (ReferenceEquals(_selectedIssue, editedIssue))
+        {
+            LoadIssueIntoEditor(editedIssue);
+        }
+
         await TrySaveIssuesAsync();
     }
 
     private async void DeleteSelectedIssue_Click(object sender, RoutedEventArgs e)
     {
+        await EnsureInitialLoadAsync();
         if (_selectedIssue is null)
         {
             return;
         }
 
-        _issues.Remove(_selectedIssue);
+        var issueToDelete = _selectedIssue;
+        var confirmationDialog = new ContentDialog
+        {
+            Title = AppResources.Format("DeleteDialogTitle", issueToDelete.Title),
+            Content = AppResources.Get("DeleteDialogMessage"),
+            PrimaryButtonText = AppResources.Get("DeleteButtonText"),
+            CloseButtonText = AppResources.Get("CancelButtonText"),
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = XamlRoot
+        };
+
+        if (await confirmationDialog.ShowAsync() != ContentDialogResult.Primary)
+        {
+            return;
+        }
+
+        var originalIndex = _viewModel.Issues.IndexOf(issueToDelete);
+        _viewModel.Issues.Remove(issueToDelete);
         _selectedIssue = null;
         _isRefreshingSelection = true;
         IssueListView.SelectedItem = null;
@@ -666,7 +813,16 @@ public sealed partial class MainPage : Page
         _isRefreshingSelection = false;
         UpdateDetailVisibility(hasSelection: false);
         RefreshViews();
-        await TrySaveIssuesAsync();
+        if (!await TrySaveIssuesAsync())
+        {
+            _viewModel.Issues.Insert(Math.Clamp(originalIndex, 0, _viewModel.Issues.Count), issueToDelete);
+            RefreshViews(keepSelection: false);
+            SelectIssue(issueToDelete);
+            ShowStatus(
+                InfoBarSeverity.Warning,
+                AppResources.Get("DeleteFailedTitle"),
+                AppResources.Get("DeleteFailedMessage"));
+        }
     }
 
     private async Task AddIssueAsync(string title, bool selectAfterCreate)
@@ -686,8 +842,8 @@ public sealed partial class MainPage : Page
             return;
         }
 
-        var issue = IssueItem.Create(NextIssueKey(), title);
-        _issues.Insert(0, issue);
+        var issue = IssueItem.Create(_viewModel.NextIssueKey(), title);
+        _viewModel.Issues.Insert(0, issue);
         QuickIssueTextBox.Text = string.Empty;
         FluentQuickIssueTextBox.Text = string.Empty;
         RefreshViews(keepSelection: false);
@@ -706,154 +862,121 @@ public sealed partial class MainPage : Page
 
         try
         {
-            if (await ApplicationData.Current.LocalFolder.TryGetItemAsync(IssuesFileName) is StorageFile issueFile)
+            var result = await _issueRepository.LoadAsync();
+            _viewModel.Issues.Clear();
+            foreach (var issue in result.Issues)
             {
-                var json = await FileIO.ReadTextAsync(issueFile);
-                var snapshots = JsonSerializer.Deserialize<List<IssueSnapshot>>(json);
-                LoadSnapshots(snapshots);
+                _viewModel.Issues.Add(issue);
             }
-            else if (await ApplicationData.Current.LocalFolder.TryGetItemAsync(LegacyTodosFileName) is StorageFile legacyFile)
+
+            if (result.Status == IssueLoadStatus.RecoveredBackup)
             {
-                await LoadLegacyTodosAsync(legacyFile);
+                ShowStatus(
+                    InfoBarSeverity.Warning,
+                    AppResources.Get("BackupRecoveredTitle"),
+                    AppResources.Format(
+                        "BackupRecoveredMessage",
+                        result.PreservedFileName ?? AppResources.Get("UntitledIssue")));
             }
-            else
+            else if (result.Status == IssueLoadStatus.RecoveredWithSamples)
             {
-                SeedIssues();
+                ShowStatus(
+                    InfoBarSeverity.Error,
+                    IsAccessDenied(result.Error) ? AppResources.Get("PermissionDeniedTitle") : AppResources.Get("LoadFailedTitle"),
+                    IsAccessDenied(result.Error) ? AppResources.Get("PermissionDeniedMessage") : AppResources.Get("LoadFailedMessage"));
             }
         }
-        catch
+        catch (Exception exception)
         {
-            _issues.Clear();
-            SeedIssues();
+            _viewModel.Issues.Clear();
+            ShowStatus(
+                InfoBarSeverity.Error,
+                IsAccessDenied(exception) ? AppResources.Get("PermissionDeniedTitle") : AppResources.Get("LoadFailedTitle"),
+                IsAccessDenied(exception) ? AppResources.Get("PermissionDeniedMessage") : AppResources.Format("SaveFailedMessage", exception.Message));
         }
         finally
         {
             _isLoading = false;
             RefreshViews();
-            SelectIssue(VisibleIssues.FirstOrDefault() ?? _issues.FirstOrDefault());
+            SelectIssue(VisibleIssues.FirstOrDefault() ?? _viewModel.Issues.FirstOrDefault());
+            SetLoadingState(isLoading: false);
         }
-    }
-
-    private async Task LoadLegacyTodosAsync(StorageFile legacyFile)
-    {
-        var json = await FileIO.ReadTextAsync(legacyFile);
-        var todos = JsonSerializer.Deserialize<List<LegacyTodoSnapshot>>(json);
-        if (todos is null || todos.Count == 0)
-        {
-            SeedIssues();
-            return;
-        }
-
-        var index = 101;
-        foreach (var todo in todos)
-        {
-            _issues.Add(new IssueItem(
-                id: string.IsNullOrWhiteSpace(todo.Id) ? Guid.NewGuid().ToString("N") : todo.Id,
-                key: $"TD-{index++}",
-                title: NormalizeTitle(todo.Title),
-                description: "기존 Todo 항목에서 가져온 이슈입니다.",
-                status: todo.IsCompleted ? "Done" : "Todo",
-                priority: "Medium",
-                assignee: "나",
-                project: "Platform",
-                dueDate: string.Empty,
-                labels: "migrated"));
-        }
-    }
-
-    private void LoadSnapshots(List<IssueSnapshot>? snapshots)
-    {
-        _issues.Clear();
-        if (snapshots is null || snapshots.Count == 0)
-        {
-            SeedIssues();
-            return;
-        }
-
-        foreach (var snapshot in snapshots)
-        {
-            _issues.Add(IssueItem.FromSnapshot(snapshot));
-        }
-    }
-
-    private void SeedIssues()
-    {
-        _issues.Clear();
-        _issues.Add(new IssueItem(Guid.NewGuid().ToString("N"), "TD-101", "이슈 리스트와 상세 패널 정리", "리스트에서 바로 선택하고 오른쪽에서 상태, 담당자, 기한을 편집합니다.", "InProgress", "High", "나", "Platform", "2026-06-07", "ux,core"));
-        _issues.Add(new IssueItem(Guid.NewGuid().ToString("N"), "TD-102", "보드 보기에서 업무 흐름 확인", "상태별 칼럼으로 백로그부터 완료까지 흐름을 확인합니다.", "Todo", "Medium", "Design", "Platform", "2026-06-10", "board"));
-        _issues.Add(new IssueItem(Guid.NewGuid().ToString("N"), "TD-103", "릴리즈 체크리스트 작성", "배포 전에 아이콘, 패키지 이름, 실행 경로를 한 번 더 점검합니다.", "Backlog", "Low", "QA", "Ops", "2026-06-14", "release"));
-        _issues.Add(new IssueItem(Guid.NewGuid().ToString("N"), "TD-104", "저장 데이터 마이그레이션", "기존 Todo 데이터를 새 이슈 모델로 옮기는 경로를 유지합니다.", "Review", "High", "Backend", "Platform", "2026-06-06", "data"));
-        _issues.Add(new IssueItem(Guid.NewGuid().ToString("N"), "TD-105", "완료된 샘플 이슈", "완료 상태와 완료율 메트릭을 확인하기 위한 샘플입니다.", "Done", "Medium", "나", "Growth", "2026-06-03", "sample"));
     }
 
     private async Task<bool> TrySaveIssuesAsync()
     {
+        if (_isLoading)
+        {
+            return false;
+        }
+
         try
         {
-            await SaveIssuesAsync();
+            await _issueRepository.SaveAsync(_viewModel.Issues);
             return true;
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            await ShowStorageErrorAsync(
-                "이슈를 저장하지 못했습니다.",
-                "앱을 닫기 전에 다시 저장해 주세요.",
-                ex);
+            ShowStatus(
+                InfoBarSeverity.Error,
+                IsAccessDenied(exception) ? AppResources.Get("PermissionDeniedTitle") : AppResources.Get("SaveFailedTitle"),
+                IsAccessDenied(exception) ? AppResources.Get("PermissionDeniedMessage") : AppResources.Format("SaveFailedMessage", exception.Message));
             return false;
         }
     }
 
-    private async Task ShowStorageErrorAsync(string title, string message, Exception exception)
+    private static bool IsAccessDenied(Exception? exception)
     {
-        var dialog = new ContentDialog
-        {
-            Title = title,
-            Content = $"{message}\n\n{exception.Message}",
-            CloseButtonText = "확인",
-            XamlRoot = XamlRoot
-        };
-
-        await dialog.ShowAsync();
+        const int AccessDeniedHResult = unchecked((int)0x80070005);
+        return exception is UnauthorizedAccessException || exception?.HResult == AccessDeniedHResult;
     }
 
-    private async Task SaveIssuesAsync()
+    private async Task EnsureInitialLoadAsync()
     {
-        if (_isLoading)
+        if (_initialLoadTask is not null)
         {
-            return;
+            await _initialLoadTask;
         }
+    }
 
-        var snapshots = _issues.Select(IssueSnapshot.FromItem).ToList();
-        var json = JsonSerializer.Serialize(snapshots, _jsonOptions);
-        var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(
-            IssuesFileName,
-            CreationCollisionOption.ReplaceExisting);
+    private void SetLoadingState(bool isLoading)
+    {
+        CustomThemeRoot.IsHitTestVisible = !isLoading;
+        FluentNativeRoot.IsEnabled = !isLoading;
+        LoadingOverlay.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
+        LoadingProgressRing.IsActive = isLoading;
+    }
 
-        await FileIO.WriteTextAsync(file, json);
+    private void ShowStatus(InfoBarSeverity severity, string title, string message)
+    {
+        StatusInfoBar.IsOpen = false;
+        StatusInfoBar.Severity = severity;
+        StatusInfoBar.Title = title;
+        StatusInfoBar.Message = message;
+        StatusInfoBar.IsOpen = true;
     }
 
     private void RefreshViews(bool keepSelection = true)
     {
-        var filtered = _issues.Where(MatchesCurrentScope).Where(MatchesFilters).ToList();
-
-        ReplaceItems(VisibleIssues, filtered);
-        ReplaceItems(BacklogIssues, filtered.Where(issue => issue.Status == "Backlog"));
-        ReplaceItems(TodoIssues, filtered.Where(issue => issue.Status == "Todo"));
-        ReplaceItems(InProgressIssues, filtered.Where(issue => issue.Status == "InProgress"));
-        ReplaceItems(ReviewIssues, filtered.Where(issue => issue.Status == "Review"));
-        ReplaceItems(DoneIssues, filtered.Where(issue => issue.Status == "Done"));
+        var filtered = _viewModel.Refresh();
 
         UpdateMetrics(filtered);
         UpdateEmptyState(filtered.Count == 0);
 
-        if (!keepSelection || _selectedIssue is null)
+        if (!keepSelection)
         {
+            return;
+        }
+
+        if (_selectedIssue is null)
+        {
+            SelectIssue(filtered.Count > 0 ? filtered[0] : null);
             return;
         }
 
         if (!filtered.Contains(_selectedIssue))
         {
-            SelectIssue(filtered.FirstOrDefault());
+            SelectIssue(filtered.Count > 0 ? filtered[0] : null);
             return;
         }
 
@@ -861,37 +984,6 @@ public sealed partial class MainPage : Page
         IssueListView.SelectedItem = _selectedIssue;
         FluentIssueListView.SelectedItem = _selectedIssue;
         _isRefreshingSelection = false;
-    }
-
-    private bool MatchesCurrentScope(IssueItem issue)
-    {
-        return _navScope switch
-        {
-            "Mine" => issue.Assignee == "나",
-            "Release" => issue.Labels.Contains("release", StringComparison.OrdinalIgnoreCase) || issue.Project == "Ops",
-            "Done" => issue.Status == "Done",
-            _ => true
-        };
-    }
-
-    private bool MatchesFilters(IssueItem issue)
-    {
-        var query = _searchQuery;
-        var status = _statusFilter;
-        var priority = _priorityFilter;
-
-        var matchesQuery = string.IsNullOrWhiteSpace(query)
-            || issue.Title.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || issue.Description.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || issue.Assignee.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || issue.Project.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || issue.Labels.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || issue.Key.Contains(query, StringComparison.OrdinalIgnoreCase);
-
-        var matchesStatus = status == "All" || issue.Status == status;
-        var matchesPriority = priority == "All" || issue.Priority == priority;
-
-        return matchesQuery && matchesStatus && matchesPriority;
     }
 
     private void UpdateMetrics(IReadOnlyCollection<IssueItem> filtered)
@@ -902,12 +994,13 @@ public sealed partial class MainPage : Page
         var done = filtered.Count(issue => issue.Status == "Done");
         var completion = total == 0 ? 0 : (int)Math.Round(done * 100.0 / total);
 
-        TotalMetricTextBlock.Text = total.ToString();
-        ActiveMetricTextBlock.Text = active.ToString();
-        ReviewMetricTextBlock.Text = review.ToString();
-        CompletionMetricTextBlock.Text = $"{completion}%";
-        ScopeTextBlock.Text = $"{ScopeLabel} · {filtered.Count}개 이슈";
-        FluentScopeTextBlock.Text = $"{ScopeLabel} · {filtered.Count}개 이슈";
+        TotalMetricTextBlock.Text = total.ToString(CultureInfo.CurrentCulture);
+        ActiveMetricTextBlock.Text = active.ToString(CultureInfo.CurrentCulture);
+        ReviewMetricTextBlock.Text = review.ToString(CultureInfo.CurrentCulture);
+        CompletionMetricTextBlock.Text = (completion / 100.0).ToString("P0", CultureInfo.CurrentCulture);
+        var scopeText = AppResources.Format("ScopeIssueCount", _viewModel.ScopeLabel, filtered.Count);
+        ScopeTextBlock.Text = scopeText;
+        FluentScopeTextBlock.Text = scopeText;
     }
 
     private void UpdateEmptyState(bool isEmpty)
@@ -951,6 +1044,7 @@ public sealed partial class MainPage : Page
         DetailEmptyState.Visibility = hasSelection ? Visibility.Collapsed : Visibility.Visible;
         FluentDetailEditor.Visibility = hasSelection ? Visibility.Visible : Visibility.Collapsed;
         FluentDetailEmptyState.Visibility = hasSelection ? Visibility.Collapsed : Visibility.Visible;
+        UpdateNarrowSurfaceVisibility();
     }
 
     private void SyncNavigationSelection()
@@ -958,8 +1052,8 @@ public sealed partial class MainPage : Page
         _isSyncingNavigation = true;
         try
         {
-            SelectNavigationItemByTag(ShellNavigation, _navScope);
-            SelectNavigationItemByTag(FluentNativeRoot, _navScope);
+            SelectNavigationItemByTag(ShellNavigation, _viewModel.NavigationScope);
+            SelectNavigationItemByTag(FluentNativeRoot, _viewModel.NavigationScope);
         }
         finally
         {
@@ -984,10 +1078,10 @@ public sealed partial class MainPage : Page
         _isSyncingNativeControls = true;
         try
         {
-            SelectComboBoxByTag(FluentStatusFilterComboBox, _statusFilter);
-            SelectComboBoxByTag(FluentPriorityFilterComboBox, _priorityFilter);
-            SelectDropDownByTag(StatusFilterDropDownButton, _statusFilter);
-            SelectDropDownByTag(PriorityFilterDropDownButton, _priorityFilter);
+            SelectComboBoxByTag(FluentStatusFilterComboBox, _viewModel.StatusFilter);
+            SelectComboBoxByTag(FluentPriorityFilterComboBox, _viewModel.PriorityFilter);
+            SelectDropDownByTag(StatusFilterDropDownButton, _viewModel.StatusFilter);
+            SelectDropDownByTag(PriorityFilterDropDownButton, _viewModel.PriorityFilter);
         }
         finally
         {
@@ -1000,14 +1094,14 @@ public sealed partial class MainPage : Page
         _isSyncingNativeControls = true;
         try
         {
-            if (source != SearchTextBox && SearchTextBox.Text != _searchQuery)
+            if (source != SearchTextBox && SearchTextBox.Text != _viewModel.SearchQuery)
             {
-                SearchTextBox.Text = _searchQuery;
+                SearchTextBox.Text = _viewModel.SearchQuery;
             }
 
-            if (source != FluentSearchTextBox && FluentSearchTextBox.Text != _searchQuery)
+            if (source != FluentSearchTextBox && FluentSearchTextBox.Text != _viewModel.SearchQuery)
             {
-                FluentSearchTextBox.Text = _searchQuery;
+                FluentSearchTextBox.Text = _viewModel.SearchQuery;
             }
         }
         finally
@@ -1038,6 +1132,12 @@ public sealed partial class MainPage : Page
         double incomingScale,
         double incomingSkewX)
     {
+        if (!new UISettings().AnimationsEnabled)
+        {
+            PrepareVisibleSurface(element, show);
+            return;
+        }
+
         EnsureCompositeTransform(element);
 
         if (show)
@@ -1141,6 +1241,7 @@ public sealed partial class MainPage : Page
         }
 
         _selectedIssue = issue;
+        _isShowingNarrowDetail = issue is not null;
 
         if (_selectedIssue is not null)
         {
@@ -1168,9 +1269,9 @@ public sealed partial class MainPage : Page
         SelectedStatusTextBlock.Text = issue.PriorityLabel;
         IssueTitleTextBox.Text = issue.Title;
         IssueDescriptionTextBox.Text = issue.Description;
-        IssueDueDateTextBox.Text = issue.DueDate;
+        IssueDueDatePicker.Date = ParseStorageDate(issue.DueDate);
         IssueLabelsTextBox.Text = issue.Labels;
-        DetailHintTextBlock.Text = $"마지막 선택: {issue.Project} / {issue.Assignee}";
+        DetailHintTextBlock.Text = AppResources.Format("LastSelection", issue.Project, issue.AssigneeDisplay);
 
         SelectDropDownByTag(DetailStatusDropDownButton, issue.Status);
         SelectDropDownByTag(DetailPriorityDropDownButton, issue.Priority);
@@ -1181,9 +1282,9 @@ public sealed partial class MainPage : Page
         FluentSelectedStatusTextBlock.Text = issue.PriorityLabel;
         FluentIssueTitleTextBox.Text = issue.Title;
         FluentIssueDescriptionTextBox.Text = issue.Description;
-        FluentIssueDueDateTextBox.Text = issue.DueDate;
+        FluentIssueDueDatePicker.Date = ParseStorageDate(issue.DueDate);
         FluentIssueLabelsTextBox.Text = issue.Labels;
-        FluentDetailHintTextBlock.Text = $"마지막 선택: {issue.Project} / {issue.Assignee}";
+        FluentDetailHintTextBlock.Text = AppResources.Format("LastSelection", issue.Project, issue.AssigneeDisplay);
 
         SelectComboBoxByTag(FluentDetailStatusComboBox, issue.Status);
         SelectComboBoxByTag(FluentDetailPriorityComboBox, issue.Priority);
@@ -1191,37 +1292,46 @@ public sealed partial class MainPage : Page
         SelectComboBoxByTag(FluentDetailAssigneeComboBox, issue.Assignee);
     }
 
-    private string NextIssueKey()
-    {
-        var max = _issues
-            .Select(issue => issue.Key)
-            .Select(key => key.StartsWith("TD-", StringComparison.OrdinalIgnoreCase) && int.TryParse(key[3..], out var value) ? value : 100)
-            .DefaultIfEmpty(100)
-            .Max();
-
-        return $"TD-{max + 1}";
-    }
-
-    private string ScopeLabel => _navScope switch
-    {
-        "Mine" => "내 작업",
-        "Release" => "릴리즈",
-        "Done" => "완료",
-        _ => "전체 이슈"
-    };
-
-    private static void ReplaceItems(ObservableCollection<IssueItem> target, IEnumerable<IssueItem> source)
-    {
-        target.Clear();
-        foreach (var item in source)
-        {
-            target.Add(item);
-        }
-    }
-
     private static string NormalizeTitle(string value)
     {
         return string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
+    }
+
+    private static DateTimeOffset? ParseStorageDate(string value)
+    {
+        return DateTimeOffset.TryParseExact(
+            value,
+            "yyyy-MM-dd",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out var date)
+            ? date
+            : null;
+    }
+
+    private static string FormatStorageDate(DateTimeOffset? value)
+    {
+        return value?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
+    }
+
+    public static Brush StatusToBrush(string status)
+    {
+        var resourceKey = status switch
+        {
+            "Todo" => "AccentFillColorDefaultBrush",
+            "InProgress" => "SystemFillColorCautionBrush",
+            "Review" => "SystemFillColorAttentionBrush",
+            "Done" => "SystemFillColorSuccessBrush",
+            _ => "TextFillColorSecondaryBrush"
+        };
+
+        if (Application.Current.Resources.TryGetValue(resourceKey, out var resource)
+            && resource is Brush brush)
+        {
+            return brush;
+        }
+
+        return new SolidColorBrush(Colors.Gray);
     }
 
     private static string ReadSelectedTag(DropDownButton button, string fallback)
@@ -1270,7 +1380,7 @@ public sealed partial class MainPage : Page
         return false;
     }
 
-    private void SelectComboBoxByTag(ComboBox comboBox, string tag)
+    private static void SelectComboBoxByTag(ComboBox comboBox, string tag)
     {
         foreach (var item in comboBox.Items.OfType<ComboBoxItem>())
         {
@@ -1442,281 +1552,3 @@ public sealed partial class MainPage : Page
             : Color.FromArgb(0x24, 24, 140, 255));
     }
 }
-
-public sealed class IssueItem : INotifyPropertyChanged
-{
-    private string _title;
-    private string _description;
-    private string _status;
-    private string _priority;
-    private string _assignee;
-    private string _project;
-    private string _dueDate;
-    private string _labels;
-    private bool _isSelected;
-
-    public IssueItem(
-        string id,
-        string key,
-        string title,
-        string description,
-        string status,
-        string priority,
-        string assignee,
-        string project,
-        string dueDate,
-        string labels)
-    {
-        Id = id;
-        Key = key;
-        _title = title;
-        _description = description;
-        _status = status;
-        _priority = priority;
-        _assignee = assignee;
-        _project = project;
-        _dueDate = dueDate;
-        _labels = labels;
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public string Id { get; }
-
-    public string Key { get; }
-
-    public string Title
-    {
-        get => _title;
-        set => SetField(ref _title, value);
-    }
-
-    public string Description
-    {
-        get => _description;
-        set => SetField(ref _description, value);
-    }
-
-    public string Status
-    {
-        get => _status;
-        set
-        {
-            if (SetField(ref _status, value))
-            {
-                OnPropertyChanged(nameof(StatusLabel));
-                OnPropertyChanged(nameof(StatusBrush));
-                OnPropertyChanged(nameof(Metadata));
-                OnPropertyChanged(nameof(AutomationName));
-            }
-        }
-    }
-
-    public string Priority
-    {
-        get => _priority;
-        set
-        {
-            if (SetField(ref _priority, value))
-            {
-                OnPropertyChanged(nameof(PriorityLabel));
-                OnPropertyChanged(nameof(PriorityToken));
-                OnPropertyChanged(nameof(RowSubtitle));
-                OnPropertyChanged(nameof(Metadata));
-            }
-        }
-    }
-
-    public string Assignee
-    {
-        get => _assignee;
-        set
-        {
-            if (SetField(ref _assignee, value))
-            {
-                OnPropertyChanged(nameof(Metadata));
-            }
-        }
-    }
-
-    public string Project
-    {
-        get => _project;
-        set
-        {
-            if (SetField(ref _project, value))
-            {
-                OnPropertyChanged(nameof(RowSubtitle));
-                OnPropertyChanged(nameof(Metadata));
-            }
-        }
-    }
-
-    public string DueDate
-    {
-        get => _dueDate;
-        set
-        {
-            if (SetField(ref _dueDate, value))
-            {
-                OnPropertyChanged(nameof(Metadata));
-            }
-        }
-    }
-
-    public string Labels
-    {
-        get => _labels;
-        set
-        {
-            if (SetField(ref _labels, value))
-            {
-                OnPropertyChanged(nameof(RowSubtitle));
-                OnPropertyChanged(nameof(Metadata));
-            }
-        }
-    }
-
-    public bool IsSelected
-    {
-        get => _isSelected;
-        set
-        {
-            if (_isSelected == value)
-            {
-                return;
-            }
-
-            _isSelected = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(SelectionFillOpacity));
-            OnPropertyChanged(nameof(SelectionRingOpacity));
-        }
-    }
-
-    public string StatusLabel => Status switch
-    {
-        "Backlog" => "백로그",
-        "Todo" => "예정",
-        "InProgress" => "진행 중",
-        "Review" => "리뷰",
-        "Done" => "완료",
-        _ => Status
-    };
-
-    public string PriorityLabel => Priority switch
-    {
-        "Urgent" => "긴급",
-        "High" => "높음",
-        "Medium" => "보통",
-        "Low" => "낮음",
-        _ => Priority
-    };
-
-    public string Metadata => $"{Project} · {Assignee} · {Labels}";
-
-    public SolidColorBrush StatusBrush => new(Status switch
-    {
-        "Backlog" => Color.FromArgb(255, 142, 142, 147),
-        "Todo" => Color.FromArgb(255, 10, 132, 255),
-        "InProgress" => Color.FromArgb(255, 255, 159, 10),
-        "Review" => Color.FromArgb(255, 191, 90, 242),
-        "Done" => Color.FromArgb(255, 50, 215, 75),
-        _ => Color.FromArgb(255, 142, 142, 147)
-    });
-
-    public string PriorityToken => Priority switch
-    {
-        "Urgent" => "P0",
-        "High" => "P1",
-        "Medium" => "P2",
-        "Low" => "P3",
-        _ => "P?"
-    };
-
-    public string RowSubtitle => $"{PriorityToken} · {Project} · {Labels}";
-
-    public string AutomationName => $"{Key} {Title} {StatusLabel}";
-
-    public double SelectionFillOpacity => IsSelected ? 0.10 : 0;
-
-    public double SelectionRingOpacity => IsSelected ? 0.30 : 0;
-
-    public static IssueItem Create(string key, string title)
-    {
-        return new IssueItem(
-            Guid.NewGuid().ToString("N"),
-            key,
-            title,
-            "새로 생성된 이슈입니다. 오른쪽 패널에서 설명과 메타데이터를 정리하세요.",
-            "Todo",
-            "Medium",
-            "나",
-            "Platform",
-            string.Empty,
-            "triage");
-    }
-
-    public static IssueItem FromSnapshot(IssueSnapshot snapshot)
-    {
-        return new IssueItem(
-            string.IsNullOrWhiteSpace(snapshot.Id) ? Guid.NewGuid().ToString("N") : snapshot.Id,
-            string.IsNullOrWhiteSpace(snapshot.Key) ? "TD-100" : snapshot.Key,
-            string.IsNullOrWhiteSpace(snapshot.Title) ? "제목 없음" : snapshot.Title,
-            snapshot.Description ?? string.Empty,
-            string.IsNullOrWhiteSpace(snapshot.Status) ? "Todo" : snapshot.Status,
-            string.IsNullOrWhiteSpace(snapshot.Priority) ? "Medium" : snapshot.Priority,
-            string.IsNullOrWhiteSpace(snapshot.Assignee) ? "나" : snapshot.Assignee,
-            string.IsNullOrWhiteSpace(snapshot.Project) ? "Platform" : snapshot.Project,
-            snapshot.DueDate ?? string.Empty,
-            snapshot.Labels ?? string.Empty);
-    }
-
-    private bool SetField(ref string field, string value, [CallerMemberName] string? propertyName = null)
-    {
-        value ??= string.Empty;
-        if (field == value)
-        {
-            return false;
-        }
-
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-}
-
-public sealed record IssueSnapshot(
-    string Id,
-    string Key,
-    string Title,
-    string Description,
-    string Status,
-    string Priority,
-    string Assignee,
-    string Project,
-    string DueDate,
-    string Labels)
-{
-    public static IssueSnapshot FromItem(IssueItem item)
-    {
-        return new IssueSnapshot(
-            item.Id,
-            item.Key,
-            item.Title,
-            item.Description,
-            item.Status,
-            item.Priority,
-            item.Assignee,
-            item.Project,
-            item.DueDate,
-            item.Labels);
-    }
-}
-
-public sealed record LegacyTodoSnapshot(string Id, string Title, bool IsCompleted);

@@ -38,6 +38,7 @@ Package.StoreAssociation.xml
 # Local app data and logs
 *.log
 *.binlog
+test-artifacts/
 
 # Codex/local assistant artifacts
 .codex/

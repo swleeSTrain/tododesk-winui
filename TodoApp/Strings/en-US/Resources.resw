@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="StatusBacklog" xml:space="preserve"><value>Backlog</value></data>
+  <data name="StatusTodo" xml:space="preserve"><value>Todo</value></data>
+  <data name="StatusInProgress" xml:space="preserve"><value>In progress</value></data>
+  <data name="StatusReview" xml:space="preserve"><value>Review</value></data>
+  <data name="StatusDone" xml:space="preserve"><value>Done</value></data>
+  <data name="PriorityUrgent" xml:space="preserve"><value>Urgent</value></data>
+  <data name="PriorityHigh" xml:space="preserve"><value>High</value></data>
+  <data name="PriorityMedium" xml:space="preserve"><value>Medium</value></data>
+  <data name="PriorityLow" xml:space="preserve"><value>Low</value></data>
+  <data name="AssigneeMe" xml:space="preserve"><value>Me</value></data>
+  <data name="UntitledIssue" xml:space="preserve"><value>Untitled issue</value></data>
+  <data name="NewIssueTitle" xml:space="preserve"><value>New issue</value></data>
+  <data name="NewIssueDescription" xml:space="preserve"><value>This issue was just created. Add its description and metadata in the detail pane.</value></data>
+  <data name="MigratedIssueDescription" xml:space="preserve"><value>Imported from a legacy todo item.</value></data>
+  <data name="SeedIssue1Title" xml:space="preserve"><value>Refine the issue list and detail pane</value></data>
+  <data name="SeedIssue1Description" xml:space="preserve"><value>Select an issue in the list and edit status, owner, and due date in the detail pane.</value></data>
+  <data name="SeedIssue2Title" xml:space="preserve"><value>Review workflow in board view</value></data>
+  <data name="SeedIssue2Description" xml:space="preserve"><value>Review work from backlog to done in status columns.</value></data>
+  <data name="SeedIssue3Title" xml:space="preserve"><value>Prepare the release checklist</value></data>
+  <data name="SeedIssue3Description" xml:space="preserve"><value>Verify icons, package identity, and launch behavior before release.</value></data>
+  <data name="SeedIssue4Title" xml:space="preserve"><value>Migrate saved data</value></data>
+  <data name="SeedIssue4Description" xml:space="preserve"><value>Keep the migration path from legacy todo data to the issue model.</value></data>
+  <data name="SeedIssue5Title" xml:space="preserve"><value>Completed sample issue</value></data>
+  <data name="SeedIssue5Description" xml:space="preserve"><value>A sample used to verify the done state and completion metric.</value></data>
+  <data name="LoadingTitle" xml:space="preserve"><value>Loading issues</value></data>
+  <data name="LoadingMessage" xml:space="preserve"><value>Restoring your saved workspace.</value></data>
+  <data name="LoadFailedTitle" xml:space="preserve"><value>Could not load issue data.</value></data>
+  <data name="LoadFailedMessage" xml:space="preserve"><value>The original file was preserved. Check the recovery file before saving new issues.</value></data>
+  <data name="BackupRecoveredTitle" xml:space="preserve"><value>Issues were recovered from backup.</value></data>
+  <data name="BackupRecoveredMessage" xml:space="preserve"><value>The damaged file was preserved as {0}.</value></data>
+  <data name="SaveFailedTitle" xml:space="preserve"><value>Could not save issues.</value></data>
+  <data name="SaveFailedMessage" xml:space="preserve"><value>Your changes are still in memory. Try again. {0}</value></data>
+  <data name="DeleteDialogTitle" xml:space="preserve"><value>Delete “{0}”?</value></data>
+  <data name="DeleteDialogMessage" xml:space="preserve"><value>This also removes the issue from the saved file.</value></data>
+  <data name="DeleteButtonText" xml:space="preserve"><value>Delete</value></data>
+  <data name="CancelButtonText" xml:space="preserve"><value>Cancel</value></data>
+  <data name="DeleteFailedTitle" xml:space="preserve"><value>Could not complete deletion.</value></data>
+  <data name="DeleteFailedMessage" xml:space="preserve"><value>The issue was restored to the list.</value></data>
+  <data name="ScopeAll" xml:space="preserve"><value>All issues</value></data>
+  <data name="ScopeMine" xml:space="preserve"><value>My work</value></data>
+  <data name="ScopeRelease" xml:space="preserve"><value>Release</value></data>
+  <data name="ScopeDone" xml:space="preserve"><value>Done</value></data>
+  <data name="ScopeIssueCount" xml:space="preserve"><value>{0} · {1} issues</value></data>
+  <data name="LastSelection" xml:space="preserve"><value>Last selection: {0} / {1}</value></data>
+  <data name="NewIssueButton.Content" xml:space="preserve"><value>New issue</value></data>
+  <data name="QuickIssueTextBox.PlaceholderText" xml:space="preserve"><value>New issue title</value></data>
+  <data name="SearchTextBox.PlaceholderText" xml:space="preserve"><value>Search</value></data>
+  <data name="EmptyStateMessage.Text" xml:space="preserve"><value>No issues match the current filters.</value></data>
+  <data name="EmptyStateAction.Content" xml:space="preserve"><value>Create an issue</value></data>
+  <data name="IssueTitleInput.Header" xml:space="preserve"><value>Title</value></data>
+  <data name="IssueDescriptionInput.Header" xml:space="preserve"><value>Description</value></data>
+  <data name="IssueDueDateInput.Header" xml:space="preserve"><value>Due date</value></data>
+  <data name="IssueDueDateInput.PlaceholderText" xml:space="preserve"><value>Pick a date</value></data>
+  <data name="IssueLabelsInput.Header" xml:space="preserve"><value>Labels</value></data>
+  <data name="StatusFilterName" xml:space="preserve"><value>Status filter</value></data>
+  <data name="PriorityFilterName" xml:space="preserve"><value>Priority filter</value></data>
+  <data name="ThemeFilterName" xml:space="preserve"><value>Theme</value></data>
+  <data name="BackButtonText" xml:space="preserve"><value>Back to list</value></data>
+  <data name="NavAll.Content" xml:space="preserve"><value>All issues</value></data>
+  <data name="NavMine.Content" xml:space="preserve"><value>My work</value></data>
+  <data name="NavRelease.Content" xml:space="preserve"><value>Release</value></data>
+  <data name="NavDone.Content" xml:space="preserve"><value>Done</value></data>
+  <data name="WorkspaceTitle.Text" xml:space="preserve"><value>Issues</value></data>
+  <data name="MetricAll.Text" xml:space="preserve"><value>All</value></data>
+  <data name="MetricActive.Text" xml:space="preserve"><value>Active</value></data>
+  <data name="MetricReview.Text" xml:space="preserve"><value>Review</value></data>
+  <data name="MetricCompletion.Text" xml:space="preserve"><value>Completion</value></data>
+  <data name="StatusAll.Content" xml:space="preserve"><value>All statuses</value></data>
+  <data name="StatusBacklogItem.Content" xml:space="preserve"><value>Backlog</value></data>
+  <data name="StatusTodoItem.Content" xml:space="preserve"><value>Todo</value></data>
+  <data name="StatusInProgressItem.Content" xml:space="preserve"><value>In progress</value></data>
+  <data name="StatusReviewItem.Content" xml:space="preserve"><value>Review</value></data>
+  <data name="StatusDoneItem.Content" xml:space="preserve"><value>Done</value></data>
+  <data name="PriorityAll.Content" xml:space="preserve"><value>All priorities</value></data>
+  <data name="PriorityUrgentItem.Content" xml:space="preserve"><value>Urgent</value></data>
+  <data name="PriorityHighItem.Content" xml:space="preserve"><value>High</value></data>
+  <data name="PriorityMediumItem.Content" xml:space="preserve"><value>Medium</value></data>
+  <data name="PriorityLowItem.Content" xml:space="preserve"><value>Low</value></data>
+  <data name="DetailEmptyTitle.Text" xml:space="preserve"><value>Select an issue</value></data>
+  <data name="DetailEmptyMessage.Text" xml:space="preserve"><value>Select an issue from the list or board.</value></data>
+  <data name="IssueTitleInput.PlaceholderText" xml:space="preserve"><value>Title</value></data>
+  <data name="IssueDescriptionInput.PlaceholderText" xml:space="preserve"><value>Description</value></data>
+  <data name="IssueLabelsInput.PlaceholderText" xml:space="preserve"><value>Labels: ux, data</value></data>
+  <data name="StatusInput.Header" xml:space="preserve"><value>Status</value></data>
+  <data name="PriorityInput.Header" xml:space="preserve"><value>Priority</value></data>
+  <data name="ProjectInput.Header" xml:space="preserve"><value>Project</value></data>
+  <data name="AssigneeInput.Header" xml:space="preserve"><value>Assignee</value></data>
+  <data name="SaveAction.Label" xml:space="preserve"><value>Save</value></data>
+  <data name="DeleteAction.Label" xml:space="preserve"><value>Delete</value></data>
+  <data name="BackToList.Content" xml:space="preserve"><value>Back to list</value></data>
+  <data name="LoadingTitleText.Text" xml:space="preserve"><value>Loading issues</value></data>
+  <data name="LoadingMessageText.Text" xml:space="preserve"><value>Restoring your saved workspace.</value></data>
+  <data name="AssigneeMeItem.Content" xml:space="preserve"><value>Me</value></data>
+  <data name="PermissionDeniedTitle" xml:space="preserve"><value>Storage access was denied.</value></data>
+  <data name="PermissionDeniedMessage" xml:space="preserve"><value>Check access to the Windows app data folder, then try again.</value></data>
+  <data name="StatusBacklogText.Text" xml:space="preserve"><value>Backlog</value></data>
+  <data name="StatusTodoText.Text" xml:space="preserve"><value>Todo</value></data>
+  <data name="StatusInProgressText.Text" xml:space="preserve"><value>In progress</value></data>
+  <data name="StatusReviewText.Text" xml:space="preserve"><value>Review</value></data>
+  <data name="StatusDoneText.Text" xml:space="preserve"><value>Done</value></data>
+  <data name="TableKey.Text" xml:space="preserve"><value>Key</value></data>
+  <data name="TableIssue.Text" xml:space="preserve"><value>Issue</value></data>
+  <data name="TableStatus.Text" xml:space="preserve"><value>Status</value></data>
+  <data name="TableOwner.Text" xml:space="preserve"><value>Owner</value></data>
+  <data name="TableDue.Text" xml:space="preserve"><value>Due</value></data>
+  <data name="NewAction.Label" xml:space="preserve"><value>New issue</value></data>
+  <data name="ListAction.Label" xml:space="preserve"><value>List</value></data>
+  <data name="ListViewName" xml:space="preserve"><value>List view</value></data>
+  <data name="BoardViewName" xml:space="preserve"><value>Board view</value></data>
+  <data name="AddIssueName" xml:space="preserve"><value>Add quick issue</value></data>
+  <data name="SaveIssueName" xml:space="preserve"><value>Save issue</value></data>
+  <data name="DeleteIssueName" xml:space="preserve"><value>Delete issue</value></data>
+  <data name="ListViewName" xml:space="preserve"><value>List view</value></data>
+  <data name="BoardViewName" xml:space="preserve"><value>Board view</value></data>
+  <data name="AddIssueName" xml:space="preserve"><value>Add quick issue</value></data>
+  <data name="SaveIssueName" xml:space="preserve"><value>Save issue</value></data>
+  <data name="DeleteIssueName" xml:space="preserve"><value>Delete issue</value></data>
+  <data name="SearchName" xml:space="preserve"><value>Search</value></data>
+  <data name="DueDateName" xml:space="preserve"><value>Due date</value></data>
+</root>

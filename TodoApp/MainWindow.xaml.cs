@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Windows.Graphics;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -115,6 +116,12 @@ public sealed partial class MainWindow : Window
     private void ApplyTitleBar(ThemeDefinition definition)
     {
         var titleBar = AppWindow.TitleBar;
+        if (new AccessibilitySettings().HighContrast)
+        {
+            titleBar.ResetToDefault();
+            return;
+        }
+
         var transparent = Color.FromArgb(0, 0, 0, 0);
         var isDark = RootLayout?.ActualTheme == ElementTheme.Dark;
 
@@ -184,8 +191,17 @@ public sealed partial class MainWindow : Window
     {
         var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
         var extendedStyle = GetWindowLong(hwnd, GwlExStyle);
-        SetWindowLong(hwnd, GwlExStyle, extendedStyle | WsExLayered);
-        SetLayeredWindowAttributes(hwnd, 0, alpha, LwaAlpha);
+        Marshal.SetLastPInvokeError(0);
+        var previousStyle = SetWindowLong(hwnd, GwlExStyle, extendedStyle | WsExLayered);
+        if (previousStyle == 0 && Marshal.GetLastPInvokeError() != 0)
+        {
+            return;
+        }
+
+        if (!SetLayeredWindowAttributes(hwnd, 0, alpha, LwaAlpha))
+        {
+            return;
+        }
     }
 
     private void BackdropDistortion_Loaded(object sender, RoutedEventArgs e)

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="StatusBacklog" xml:space="preserve"><value>백로그</value></data>
+  <data name="StatusTodo" xml:space="preserve"><value>예정</value></data>
+  <data name="StatusInProgress" xml:space="preserve"><value>진행 중</value></data>
+  <data name="StatusReview" xml:space="preserve"><value>리뷰</value></data>
+  <data name="StatusDone" xml:space="preserve"><value>완료</value></data>
+  <data name="PriorityUrgent" xml:space="preserve"><value>긴급</value></data>
+  <data name="PriorityHigh" xml:space="preserve"><value>높음</value></data>
+  <data name="PriorityMedium" xml:space="preserve"><value>보통</value></data>
+  <data name="PriorityLow" xml:space="preserve"><value>낮음</value></data>
+  <data name="AssigneeMe" xml:space="preserve"><value>나</value></data>
+  <data name="UntitledIssue" xml:space="preserve"><value>제목 없음</value></data>
+  <data name="NewIssueTitle" xml:space="preserve"><value>새 이슈</value></data>
+  <data name="NewIssueDescription" xml:space="preserve"><value>새로 생성된 이슈입니다. 상세 패널에서 설명과 메타데이터를 정리하세요.</value></data>
+  <data name="MigratedIssueDescription" xml:space="preserve"><value>기존 Todo 항목에서 가져온 이슈입니다.</value></data>
+  <data name="SeedIssue1Title" xml:space="preserve"><value>이슈 리스트와 상세 패널 정리</value></data>
+  <data name="SeedIssue1Description" xml:space="preserve"><value>리스트에서 바로 선택하고 상세 패널에서 상태, 담당자, 기한을 편집합니다.</value></data>
+  <data name="SeedIssue2Title" xml:space="preserve"><value>보드 보기에서 업무 흐름 확인</value></data>
+  <data name="SeedIssue2Description" xml:space="preserve"><value>상태별 칼럼으로 백로그부터 완료까지 흐름을 확인합니다.</value></data>
+  <data name="SeedIssue3Title" xml:space="preserve"><value>릴리즈 체크리스트 작성</value></data>
+  <data name="SeedIssue3Description" xml:space="preserve"><value>배포 전에 아이콘, 패키지 이름, 실행 경로를 한 번 더 점검합니다.</value></data>
+  <data name="SeedIssue4Title" xml:space="preserve"><value>저장 데이터 마이그레이션</value></data>
+  <data name="SeedIssue4Description" xml:space="preserve"><value>기존 Todo 데이터를 새 이슈 모델로 옮기는 경로를 유지합니다.</value></data>
+  <data name="SeedIssue5Title" xml:space="preserve"><value>완료된 샘플 이슈</value></data>
+  <data name="SeedIssue5Description" xml:space="preserve"><value>완료 상태와 완료율 메트릭을 확인하기 위한 샘플입니다.</value></data>
+  <data name="LoadingTitle" xml:space="preserve"><value>이슈를 불러오는 중</value></data>
+  <data name="LoadingMessage" xml:space="preserve"><value>저장된 작업 공간을 안전하게 복원하고 있습니다.</value></data>
+  <data name="LoadFailedTitle" xml:space="preserve"><value>이슈 데이터를 불러오지 못했습니다.</value></data>
+  <data name="LoadFailedMessage" xml:space="preserve"><value>원본 파일은 보존했습니다. 새 이슈를 저장하기 전에 복구 파일을 확인하세요.</value></data>
+  <data name="BackupRecoveredTitle" xml:space="preserve"><value>백업에서 이슈를 복구했습니다.</value></data>
+  <data name="BackupRecoveredMessage" xml:space="preserve"><value>손상된 파일은 {0} 이름으로 보존했습니다.</value></data>
+  <data name="SaveFailedTitle" xml:space="preserve"><value>이슈를 저장하지 못했습니다.</value></data>
+  <data name="SaveFailedMessage" xml:space="preserve"><value>변경 내용을 유지한 채 다시 시도해 주세요. {0}</value></data>
+  <data name="DeleteDialogTitle" xml:space="preserve"><value>“{0}” 이슈를 삭제할까요?</value></data>
+  <data name="DeleteDialogMessage" xml:space="preserve"><value>이 작업은 저장 파일에서도 이슈를 제거합니다.</value></data>
+  <data name="DeleteButtonText" xml:space="preserve"><value>삭제</value></data>
+  <data name="CancelButtonText" xml:space="preserve"><value>취소</value></data>
+  <data name="DeleteFailedTitle" xml:space="preserve"><value>삭제를 완료하지 못했습니다.</value></data>
+  <data name="DeleteFailedMessage" xml:space="preserve"><value>이슈를 목록에 복원했습니다.</value></data>
+  <data name="ScopeAll" xml:space="preserve"><value>전체 이슈</value></data>
+  <data name="ScopeMine" xml:space="preserve"><value>내 작업</value></data>
+  <data name="ScopeRelease" xml:space="preserve"><value>릴리즈</value></data>
+  <data name="ScopeDone" xml:space="preserve"><value>완료</value></data>
+  <data name="ScopeIssueCount" xml:space="preserve"><value>{0} · 이슈 {1}개</value></data>
+  <data name="LastSelection" xml:space="preserve"><value>마지막 선택: {0} / {1}</value></data>
+  <data name="NewIssueButton.Content" xml:space="preserve"><value>새 이슈</value></data>
+  <data name="QuickIssueTextBox.PlaceholderText" xml:space="preserve"><value>새 이슈 제목</value></data>
+  <data name="SearchTextBox.PlaceholderText" xml:space="preserve"><value>검색</value></data>
+  <data name="EmptyStateMessage.Text" xml:space="preserve"><value>조건에 맞는 이슈가 없습니다.</value></data>
+  <data name="EmptyStateAction.Content" xml:space="preserve"><value>새 이슈 만들기</value></data>
+  <data name="IssueTitleInput.Header" xml:space="preserve"><value>제목</value></data>
+  <data name="IssueDescriptionInput.Header" xml:space="preserve"><value>설명</value></data>
+  <data name="IssueDueDateInput.Header" xml:space="preserve"><value>기한</value></data>
+  <data name="IssueDueDateInput.PlaceholderText" xml:space="preserve"><value>날짜 선택</value></data>
+  <data name="IssueLabelsInput.Header" xml:space="preserve"><value>라벨</value></data>
+  <data name="StatusFilterName" xml:space="preserve"><value>상태 필터</value></data>
+  <data name="PriorityFilterName" xml:space="preserve"><value>우선순위 필터</value></data>
+  <data name="ThemeFilterName" xml:space="preserve"><value>테마</value></data>
+  <data name="BackButtonText" xml:space="preserve"><value>목록으로</value></data>
+  <data name="NavAll.Content" xml:space="preserve"><value>전체 이슈</value></data>
+  <data name="NavMine.Content" xml:space="preserve"><value>내 작업</value></data>
+  <data name="NavRelease.Content" xml:space="preserve"><value>릴리즈</value></data>
+  <data name="NavDone.Content" xml:space="preserve"><value>완료</value></data>
+  <data name="WorkspaceTitle.Text" xml:space="preserve"><value>이슈</value></data>
+  <data name="MetricAll.Text" xml:space="preserve"><value>전체</value></data>
+  <data name="MetricActive.Text" xml:space="preserve"><value>진행</value></data>
+  <data name="MetricReview.Text" xml:space="preserve"><value>리뷰</value></data>
+  <data name="MetricCompletion.Text" xml:space="preserve"><value>완료율</value></data>
+  <data name="StatusAll.Content" xml:space="preserve"><value>모든 상태</value></data>
+  <data name="StatusBacklogItem.Content" xml:space="preserve"><value>백로그</value></data>
+  <data name="StatusTodoItem.Content" xml:space="preserve"><value>예정</value></data>
+  <data name="StatusInProgressItem.Content" xml:space="preserve"><value>진행 중</value></data>
+  <data name="StatusReviewItem.Content" xml:space="preserve"><value>리뷰</value></data>
+  <data name="StatusDoneItem.Content" xml:space="preserve"><value>완료</value></data>
+  <data name="PriorityAll.Content" xml:space="preserve"><value>모든 우선순위</value></data>
+  <data name="PriorityUrgentItem.Content" xml:space="preserve"><value>긴급</value></data>
+  <data name="PriorityHighItem.Content" xml:space="preserve"><value>높음</value></data>
+  <data name="PriorityMediumItem.Content" xml:space="preserve"><value>보통</value></data>
+  <data name="PriorityLowItem.Content" xml:space="preserve"><value>낮음</value></data>
+  <data name="DetailEmptyTitle.Text" xml:space="preserve"><value>이슈 선택</value></data>
+  <data name="DetailEmptyMessage.Text" xml:space="preserve"><value>목록이나 보드에서 이슈를 선택하세요.</value></data>
+  <data name="IssueTitleInput.PlaceholderText" xml:space="preserve"><value>제목</value></data>
+  <data name="IssueDescriptionInput.PlaceholderText" xml:space="preserve"><value>설명</value></data>
+  <data name="IssueLabelsInput.PlaceholderText" xml:space="preserve"><value>라벨: ux, data</value></data>
+  <data name="StatusInput.Header" xml:space="preserve"><value>상태</value></data>
+  <data name="PriorityInput.Header" xml:space="preserve"><value>우선순위</value></data>
+  <data name="ProjectInput.Header" xml:space="preserve"><value>프로젝트</value></data>
+  <data name="AssigneeInput.Header" xml:space="preserve"><value>담당자</value></data>
+  <data name="SaveAction.Label" xml:space="preserve"><value>저장</value></data>
+  <data name="DeleteAction.Label" xml:space="preserve"><value>삭제</value></data>
+  <data name="BackToList.Content" xml:space="preserve"><value>목록으로</value></data>
+  <data name="LoadingTitleText.Text" xml:space="preserve"><value>이슈를 불러오는 중</value></data>
+  <data name="LoadingMessageText.Text" xml:space="preserve"><value>저장된 작업 공간을 안전하게 복원하고 있습니다.</value></data>
+  <data name="AssigneeMeItem.Content" xml:space="preserve"><value>나</value></data>
+  <data name="PermissionDeniedTitle" xml:space="preserve"><value>저장소에 접근할 수 없습니다.</value></data>
+  <data name="PermissionDeniedMessage" xml:space="preserve"><value>Windows 앱 데이터 폴더 권한을 확인한 뒤 다시 시도하세요.</value></data>
+  <data name="StatusBacklogText.Text" xml:space="preserve"><value>백로그</value></data>
+  <data name="StatusTodoText.Text" xml:space="preserve"><value>예정</value></data>
+  <data name="StatusInProgressText.Text" xml:space="preserve"><value>진행 중</value></data>
+  <data name="StatusReviewText.Text" xml:space="preserve"><value>리뷰</value></data>
+  <data name="StatusDoneText.Text" xml:space="preserve"><value>완료</value></data>
+  <data name="TableKey.Text" xml:space="preserve"><value>키</value></data>
+  <data name="TableIssue.Text" xml:space="preserve"><value>이슈</value></data>
+  <data name="TableStatus.Text" xml:space="preserve"><value>상태</value></data>
+  <data name="TableOwner.Text" xml:space="preserve"><value>담당자</value></data>
+  <data name="TableDue.Text" xml:space="preserve"><value>기한</value></data>
+  <data name="NewAction.Label" xml:space="preserve"><value>새 이슈</value></data>
+  <data name="ListAction.Label" xml:space="preserve"><value>리스트</value></data>
+  <data name="ListViewName" xml:space="preserve"><value>리스트 보기</value></data>
+  <data name="BoardViewName" xml:space="preserve"><value>보드 보기</value></data>
+  <data name="AddIssueName" xml:space="preserve"><value>빠른 이슈 추가</value></data>
+  <data name="SaveIssueName" xml:space="preserve"><value>이슈 저장</value></data>
+  <data name="DeleteIssueName" xml:space="preserve"><value>이슈 삭제</value></data>
+  <data name="ListViewName" xml:space="preserve"><value>리스트 보기</value></data>
+  <data name="BoardViewName" xml:space="preserve"><value>보드 보기</value></data>
+  <data name="AddIssueName" xml:space="preserve"><value>빠른 이슈 추가</value></data>
+  <data name="SaveIssueName" xml:space="preserve"><value>이슈 저장</value></data>
+  <data name="DeleteIssueName" xml:space="preserve"><value>이슈 삭제</value></data>
+  <data name="SearchName" xml:space="preserve"><value>검색</value></data>
+  <data name="DueDateName" xml:space="preserve"><value>기한</value></data>
+</root>

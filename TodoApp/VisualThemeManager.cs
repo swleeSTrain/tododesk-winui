@@ -51,6 +51,10 @@ internal static class VisualThemeManager
     private const string SettingsKey = "visual_theme";
     private const AppVisualTheme DefaultTheme = AppVisualTheme.Fluent;
 
+    private static readonly string[] FluentAliases = ["winui", "default", "basic"];
+    private static readonly string[] LiquidAliases = ["liquidglass", "liquid-glass"];
+    private static readonly string[] WindowsXpAliases = ["windowsxp", "windows-xp"];
+    private static readonly string[] AeroAliases = ["vista", "win7"];
     private static readonly ThemeDefinition[] Definitions = CreateDefinitions();
 
     public static event Action<AppVisualTheme>? ThemeApplied;
@@ -200,7 +204,7 @@ internal static class VisualThemeManager
                 AppWindowTreatment.Opaque,
                 CreateFluentPalette(dark: false),
                 CreateFluentPalette(dark: true),
-                new[] { "winui", "default", "basic" }),
+                FluentAliases),
             new ThemeDefinition(
                 AppVisualTheme.Liquid,
                 "liquid",
@@ -208,7 +212,7 @@ internal static class VisualThemeManager
                 AppWindowTreatment.LiquidGlass,
                 CreateLiquidLightPalette(),
                 CreateLiquidDarkPalette(),
-                new[] { "liquidglass", "liquid-glass" }),
+                LiquidAliases),
             new ThemeDefinition(
                 AppVisualTheme.WindowsXp,
                 "xp",
@@ -216,7 +220,7 @@ internal static class VisualThemeManager
                 AppWindowTreatment.LiquidGlass,
                 CreateWindowsXpLightPalette(),
                 CreateWindowsXpDarkPalette(),
-                new[] { "windowsxp", "windows-xp" }),
+                WindowsXpAliases),
             new ThemeDefinition(
                 AppVisualTheme.Aero,
                 "aero",
@@ -224,7 +228,7 @@ internal static class VisualThemeManager
                 AppWindowTreatment.LiquidGlass,
                 CreateAeroLightPalette(),
                 CreateAeroDarkPalette(),
-                new[] { "vista", "win7" })
+                AeroAliases)
         };
     }
 

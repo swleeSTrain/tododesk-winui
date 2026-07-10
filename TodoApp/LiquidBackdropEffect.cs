@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 using CanvasDirectXAlphaMode = Microsoft.Graphics.DirectX.DirectXAlphaMode;
 using CanvasDirectXPixelFormat = Microsoft.Graphics.DirectX.DirectXPixelFormat;
 using WinDirectXPixelFormat = Windows.Graphics.DirectX.DirectXPixelFormat;
@@ -45,6 +46,8 @@ internal static class LiquidBackdropEffect
     private const float ChromaticDisplacementAmountCeiling = 56.0f;
 
     private static readonly ConditionalWeakTable<Compositor, DisplacementMapCache> CurvedDisplacementMaps = new();
+    private static readonly UISettings UserInterfaceSettings = new();
+    private static readonly AccessibilitySettings AccessibilitySettings = new();
 
     private enum ChromaticChannel
     {
@@ -62,7 +65,7 @@ internal static class LiquidBackdropEffect
 
     public static void Attach(FrameworkElement host, string? profileName)
     {
-        if (!VisualThemeManager.CurrentDefinition.UsesLiquidBackdrop)
+        if (!VisualThemeManager.CurrentDefinition.UsesLiquidBackdrop || AccessibilitySettings.HighContrast)
         {
             Detach(host);
             return;
@@ -311,7 +314,7 @@ internal static class LiquidBackdropEffect
         root.Children.InsertAtBottom(sprite);
     }
 
-    private static CompositionBrush CreateSoftMaterialTintBrush(Compositor compositor, bool isDarkTheme)
+    private static CompositionLinearGradientBrush CreateSoftMaterialTintBrush(Compositor compositor, bool isDarkTheme)
     {
         var brush = compositor.CreateLinearGradientBrush();
         brush.StartPoint = new Vector2(0.0f, 0.0f);
@@ -1459,7 +1462,7 @@ internal static class LiquidBackdropEffect
         root.Children.InsertAtTop(reflection);
     }
 
-    private static CompositionBrush CreateAmbientReflectionBrush(
+    private static CompositionLinearGradientBrush CreateAmbientReflectionBrush(
         Compositor compositor,
         Color primaryColor,
         Color secondaryColor)
@@ -1552,7 +1555,7 @@ internal static class LiquidBackdropEffect
         root.Children.InsertAtTop(caustic);
     }
 
-    private static CompositionBrush CreateMicroCausticBrush(
+    private static CompositionLinearGradientBrush CreateMicroCausticBrush(
         Compositor compositor,
         Color hotColor,
         Color tintColor)
@@ -1570,7 +1573,7 @@ internal static class LiquidBackdropEffect
         return brush;
     }
 
-    private static CompositionBrush CreateGlintBrush(Compositor compositor, Color hotColor)
+    private static CompositionLinearGradientBrush CreateGlintBrush(Compositor compositor, Color hotColor)
     {
         var brush = compositor.CreateLinearGradientBrush();
         brush.StartPoint = new Vector2(0.0f, 0.5f);
@@ -1583,7 +1586,7 @@ internal static class LiquidBackdropEffect
         return brush;
     }
 
-    private static CompositionBrush CreateFocusGlintBrush(Compositor compositor, Color hotColor)
+    private static CompositionLinearGradientBrush CreateFocusGlintBrush(Compositor compositor, Color hotColor)
     {
         var brush = compositor.CreateLinearGradientBrush();
         brush.StartPoint = new Vector2(0.0f, 0.5f);
@@ -1699,7 +1702,7 @@ internal static class LiquidBackdropEffect
         root.Children.InsertAtTop(sheen);
     }
 
-    private static CompositionBrush CreateMeniscusEdgeBrush(
+    private static CompositionLinearGradientBrush CreateMeniscusEdgeBrush(
         Compositor compositor,
         RimEdge edge,
         Color hotColor,
@@ -1733,7 +1736,7 @@ internal static class LiquidBackdropEffect
         return brush;
     }
 
-    private static CompositionBrush CreateSurfaceSheenBrush(
+    private static CompositionLinearGradientBrush CreateSurfaceSheenBrush(
         Compositor compositor,
         Color hotColor,
         Color tintColor)
@@ -1790,7 +1793,7 @@ internal static class LiquidBackdropEffect
         root.Children.InsertAtTop(sprite);
     }
 
-    private static CompositionBrush CreateRimDepthBrush(
+    private static CompositionLinearGradientBrush CreateRimDepthBrush(
         Compositor compositor,
         RimEdge edge,
         Color edgeColor,
@@ -1896,7 +1899,7 @@ internal static class LiquidBackdropEffect
         root.Children.InsertAtTop(sprite);
     }
 
-    private static CompositionBrush CreateBackdropSourceBrush(Compositor compositor)
+    private static CompositionBackdropBrush CreateBackdropSourceBrush(Compositor compositor)
     {
         return compositor.CreateBackdropBrush();
     }
@@ -2016,7 +2019,7 @@ internal static class LiquidBackdropEffect
 
             var pixels = CreateCurvedDisplacementPixels(curvature, sampleOffset);
             var canvasDevice = CanvasDevice.GetSharedDevice();
-            var bitmap = CanvasBitmap.CreateFromBytes(
+            using var bitmap = CanvasBitmap.CreateFromBytes(
                 canvasDevice,
                 pixels,
                 DisplacementMapSize,
@@ -2152,7 +2155,7 @@ internal static class LiquidBackdropEffect
         return (byte)Math.Clamp((int)Math.Round(NeutralDisplacementChannel + value * channelScale), 20, 236);
     }
 
-    private static CompositionBrush CreateDirectionalDisplacementMap(Compositor compositor, Vector2 sampleOffset)
+    private static CompositionLinearGradientBrush CreateDirectionalDisplacementMap(Compositor compositor, Vector2 sampleOffset)
     {
         var brush = compositor.CreateLinearGradientBrush();
         var horizontalWeight = Math.Abs(sampleOffset.X) / Math.Max(1.0f, sampleOffset.Length());
@@ -2328,6 +2331,12 @@ internal static class LiquidBackdropEffect
         float driftAmount,
         double durationSeconds)
     {
+        if (!UserInterfaceSettings.AnimationsEnabled)
+        {
+            target.Offset = new Vector3(anchorOffset, 0);
+            return;
+        }
+
         var animation = compositor.CreateVector3KeyFrameAnimation();
         animation.Duration = TimeSpan.FromSeconds(durationSeconds);
         animation.IterationBehavior = AnimationIterationBehavior.Forever;
@@ -2340,6 +2349,12 @@ internal static class LiquidBackdropEffect
 
     private static void StartOpacityBreath(Compositor compositor, Visual target, float baseOpacity, double durationSeconds)
     {
+        if (!UserInterfaceSettings.AnimationsEnabled)
+        {
+            target.Opacity = baseOpacity;
+            return;
+        }
+
         var animation = compositor.CreateScalarKeyFrameAnimation();
         animation.Duration = TimeSpan.FromSeconds(durationSeconds);
         animation.IterationBehavior = AnimationIterationBehavior.Forever;

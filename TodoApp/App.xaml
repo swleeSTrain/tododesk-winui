@@ -12,6 +12,11 @@
 
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="XpTitleBarTopStrokeBrush" Color="#FF7BA9E5" />
+                    <SolidColorBrush x:Key="XpTitleBarBottomStrokeBrush" Color="#FF0A246A" />
+                    <SolidColorBrush x:Key="XpTitleBarForegroundBrush" Color="#FFFFFFFF" />
+                    <SolidColorBrush x:Key="XpTitleBarButtonBorderBrush" Color="#FF0A246A" />
+                    <SolidColorBrush x:Key="XpTitleBarCloseBorderBrush" Color="#FF6A1B00" />
                     <LinearGradientBrush x:Key="LiquidGlassWindowBrush" StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="#3CDDEFFF" Offset="0" />
                         <GradientStop Color="#30FFF0FB" Offset="0.42" />
@@ -163,6 +168,11 @@
                 </ResourceDictionary>
 
                 <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="XpTitleBarTopStrokeBrush" Color="#FF7BA9E5" />
+                    <SolidColorBrush x:Key="XpTitleBarBottomStrokeBrush" Color="#FF0A246A" />
+                    <SolidColorBrush x:Key="XpTitleBarForegroundBrush" Color="#FFFFFFFF" />
+                    <SolidColorBrush x:Key="XpTitleBarButtonBorderBrush" Color="#FF0A246A" />
+                    <SolidColorBrush x:Key="XpTitleBarCloseBorderBrush" Color="#FF6A1B00" />
                     <LinearGradientBrush x:Key="LiquidGlassWindowBrush" StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="#680D1624" Offset="0" />
                         <GradientStop Color="#5C241C33" Offset="0.45" />
@@ -314,6 +324,11 @@
                 </ResourceDictionary>
 
                 <ResourceDictionary x:Key="HighContrast">
+                    <SolidColorBrush x:Key="XpTitleBarTopStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+                    <SolidColorBrush x:Key="XpTitleBarBottomStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+                    <SolidColorBrush x:Key="XpTitleBarForegroundBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+                    <SolidColorBrush x:Key="XpTitleBarButtonBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+                    <SolidColorBrush x:Key="XpTitleBarCloseBorderBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
                     <SolidColorBrush x:Key="LiquidGlassWindowBrush" Color="{ThemeResource SystemColorWindowColor}" />
                     <SolidColorBrush x:Key="LiquidGlassRegularWashBrush" Color="{ThemeResource SystemColorWindowColor}" />
                     <SolidColorBrush x:Key="LiquidGlassContentBackdropWashBrush" Color="{ThemeResource SystemColorWindowColor}" />

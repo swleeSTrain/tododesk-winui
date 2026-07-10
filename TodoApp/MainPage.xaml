@@ -8,9 +8,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="Transparent"
     Loaded="Page_Loaded"
+    SizeChanged="Page_SizeChanged"
     mc:Ignorable="d">
 
-    <Grid Background="Transparent">
+    <Grid x:Name="PageRoot" Background="Transparent">
     <Grid x:Name="CustomThemeRoot" Background="Transparent">
         <Grid.Resources>
         <Style x:Key="MutedCaptionStyle" TargetType="TextBlock">
@@ -765,10 +766,10 @@
                 Margin="0,0,0,6"
                 Padding="0"
                 HorizontalAlignment="Stretch"
+                AutomationProperties.AutomationId="{x:Bind Id, Mode=OneWay}"
                 AutomationProperties.Name="{x:Bind AutomationName, Mode=OneWay}"
                 Click="BoardIssue_Click"
                 PointerEntered="GlassSurface_PointerEntered"
-                PointerMoved="GlassSurface_PointerMoved"
                 PointerExited="GlassSurface_PointerExited"
                 PointerPressed="GlassSurface_PointerPressed"
                 PointerReleased="GlassSurface_PointerReleased"
@@ -873,7 +874,7 @@
                             Width="8"
                             Height="8"
                             VerticalAlignment="Center"
-                            Fill="{x:Bind StatusBrush, Mode=OneWay}" />
+                            Fill="{x:Bind local:MainPage.StatusToBrush(Status), Mode=OneWay}" />
                         <TextBlock
                             Grid.Column="1"
                             Style="{StaticResource CaptionTextBlockStyle}"
@@ -903,7 +904,7 @@
                             Grid.Column="1"
                             Style="{StaticResource CaptionTextBlockStyle}"
                             Foreground="{ThemeResource LiquidGlassTextSecondaryBrush}"
-                            Text="{x:Bind Assignee, Mode=OneWay}" />
+                            Text="{x:Bind AssigneeDisplay, Mode=OneWay}" />
                     </Grid>
                     </Grid>
                 </Grid>
@@ -979,7 +980,7 @@
         IsBackButtonVisible="Collapsed"
         IsSettingsVisible="False"
         OpenPaneLength="184"
-        PaneDisplayMode="Left"
+        PaneDisplayMode="Auto"
         SelectionChanged="ShellNavigation_SelectionChanged">
         <NavigationView.Resources>
             <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
@@ -1014,22 +1015,22 @@
             </Style>
         </NavigationView.Resources>
         <NavigationView.MenuItems>
-            <NavigationViewItem x:Name="AllIssuesNavItem" Content="전체 이슈" Tag="All">
+            <NavigationViewItem x:Name="AllIssuesNavItem" x:Uid="NavAll" AutomationProperties.AutomationId="AllIssuesNavItem" Content="전체 이슈" Tag="All">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="List" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
-            <NavigationViewItem Content="내 작업" Tag="Mine">
+            <NavigationViewItem x:Uid="NavMine" AutomationProperties.AutomationId="MineNavItem" Content="내 작업" Tag="Mine">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="Contact" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
-            <NavigationViewItem Content="릴리즈" Tag="Release">
+            <NavigationViewItem x:Uid="NavRelease" AutomationProperties.AutomationId="ReleaseNavItem" Content="릴리즈" Tag="Release">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="Calendar" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
-            <NavigationViewItem Content="완료" Tag="Done">
+            <NavigationViewItem x:Uid="NavDone" AutomationProperties.AutomationId="DoneNavItem" Content="완료" Tag="Done">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="Accept" />
                 </NavigationViewItem.Icon>
@@ -1037,6 +1038,7 @@
         </NavigationView.MenuItems>
 
         <Grid
+            x:Name="CustomContentRoot"
             Padding="18,14,18,18"
             Background="Transparent"
             RowSpacing="10">
@@ -1293,6 +1295,7 @@
                 <StackPanel Spacing="1">
                     <TextBlock
                         Style="{StaticResource SubtitleTextBlockStyle}"
+                        x:Uid="WorkspaceTitle"
                         Text="Issues" />
                     <TextBlock
                         x:Name="ScopeTextBlock"
@@ -1303,7 +1306,6 @@
                 <Grid
                     Grid.Column="1"
                     PointerEntered="GlassSurface_PointerEntered"
-                    PointerMoved="GlassSurface_PointerMoved"
                     PointerExited="GlassSurface_PointerExited"
                     Translation="0,0,18">
                     <Border
@@ -1345,7 +1347,6 @@
                             AutomationProperties.Name="테마"
                             Click="ThemeDropDownButton_Click"
                             PointerEntered="GlassSurface_PointerEntered"
-                            PointerMoved="GlassSurface_PointerMoved"
                             PointerExited="GlassSurface_PointerExited"
                             PointerPressed="GlassSurface_PointerPressed"
                             PointerReleased="GlassSurface_PointerReleased"
@@ -1354,11 +1355,11 @@
                             <SymbolIcon Symbol="Setting" />
                         </DropDownButton>
                         <Button
+                            x:Name="CustomNewIssueButton"
                             AutomationProperties.AutomationId="NewIssueButton"
                             AutomationProperties.Name="새 이슈"
                             Click="NewIssue_Click"
                             PointerEntered="GlassSurface_PointerEntered"
-                            PointerMoved="GlassSurface_PointerMoved"
                             PointerExited="GlassSurface_PointerExited"
                             PointerPressed="GlassSurface_PointerPressed"
                             PointerReleased="GlassSurface_PointerReleased"
@@ -1373,7 +1374,6 @@
                             Click="ListMode_Click"
                             IsChecked="True"
                             PointerEntered="GlassSurface_PointerEntered"
-                            PointerMoved="GlassSurface_PointerMoved"
                             PointerExited="GlassSurface_PointerExited"
                             PointerPressed="GlassSurface_PointerPressed"
                             PointerReleased="GlassSurface_PointerReleased"
@@ -1387,7 +1387,6 @@
                             AutomationProperties.Name="보드 보기"
                             Click="BoardMode_Click"
                             PointerEntered="GlassSurface_PointerEntered"
-                            PointerMoved="GlassSurface_PointerMoved"
                             PointerExited="GlassSurface_PointerExited"
                             PointerPressed="GlassSurface_PointerPressed"
                             PointerReleased="GlassSurface_PointerReleased"
@@ -1399,11 +1398,15 @@
                 </Grid>
             </Grid>
 
-            <Grid
+            <ScrollViewer
                 Grid.Row="1"
+                HorizontalScrollBarVisibility="Auto"
+                HorizontalScrollMode="Enabled"
+                VerticalScrollBarVisibility="Disabled"
+                VerticalScrollMode="Disabled">
+            <Grid
                 MinHeight="62"
                 PointerEntered="GlassSurface_PointerEntered"
-                PointerMoved="GlassSurface_PointerMoved"
                 PointerExited="GlassSurface_PointerExited">
                     <Border
                         Margin="0,5,0,-5"
@@ -1457,24 +1460,25 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel MinWidth="76" Spacing="0">
-                        <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="전체" />
+                        <TextBlock x:Uid="MetricAll" Style="{StaticResource MutedCaptionStyle}" Text="전체" />
                         <TextBlock x:Name="TotalMetricTextBlock" Style="{StaticResource QuietMetricValueStyle}" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" MinWidth="76" Spacing="0">
-                        <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="진행" />
+                        <TextBlock x:Uid="MetricActive" Style="{StaticResource MutedCaptionStyle}" Text="진행" />
                         <TextBlock x:Name="ActiveMetricTextBlock" Style="{StaticResource QuietMetricValueStyle}" />
                     </StackPanel>
                     <StackPanel Grid.Column="2" MinWidth="76" Spacing="0">
-                        <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="리뷰" />
+                        <TextBlock x:Uid="MetricReview" Style="{StaticResource MutedCaptionStyle}" Text="리뷰" />
                         <TextBlock x:Name="ReviewMetricTextBlock" Style="{StaticResource QuietMetricValueStyle}" />
                     </StackPanel>
                     <StackPanel Grid.Column="3" MinWidth="76" Spacing="0">
-                        <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="완료율" />
+                        <TextBlock x:Uid="MetricCompletion" Style="{StaticResource MutedCaptionStyle}" Text="완료율" />
                         <TextBlock x:Name="CompletionMetricTextBlock" Style="{StaticResource QuietMetricValueStyle}" />
                     </StackPanel>
 
                     <TextBox
                         x:Name="QuickIssueTextBox"
+                        x:Uid="QuickIssueTextBox"
                         Grid.Column="4"
                         MinWidth="180"
                         VerticalAlignment="Center"
@@ -1484,6 +1488,7 @@
                         Style="{StaticResource LiquidGlassTextBoxStyle}" />
                     <TextBox
                         x:Name="SearchTextBox"
+                        x:Uid="SearchTextBox"
                         Grid.Column="5"
                         VerticalAlignment="Center"
                         AutomationProperties.AutomationId="SearchTextBox"
@@ -1492,6 +1497,7 @@
                         TextChanged="SearchTextBox_TextChanged" />
                     <DropDownButton
                         x:Name="StatusFilterDropDownButton"
+                        x:Uid="StatusAll"
                         Grid.Column="6"
                         VerticalAlignment="Center"
                         AutomationProperties.AutomationId="StatusFilterDropDownButton"
@@ -1501,6 +1507,7 @@
                         Tag="All" />
                     <DropDownButton
                         x:Name="PriorityFilterDropDownButton"
+                        x:Uid="PriorityAll"
                         Grid.Column="7"
                         VerticalAlignment="Center"
                         AutomationProperties.AutomationId="PriorityFilterDropDownButton"
@@ -1509,13 +1516,13 @@
                         Style="{StaticResource LiquidGlassDropDownButtonStyle}"
                         Tag="All" />
                     <Button
+                        x:Name="CustomAddQuickIssueButton"
                         Grid.Column="8"
                         VerticalAlignment="Center"
                         AutomationProperties.AutomationId="AddQuickIssueButton"
                         AutomationProperties.Name="빠른 이슈 추가"
                         Click="AddQuickIssue_Click"
                         PointerEntered="GlassSurface_PointerEntered"
-                        PointerMoved="GlassSurface_PointerMoved"
                         PointerExited="GlassSurface_PointerExited"
                         PointerPressed="GlassSurface_PointerPressed"
                         PointerReleased="GlassSurface_PointerReleased"
@@ -1525,16 +1532,17 @@
                     </Button>
                 </Grid>
             </Grid>
+            </ScrollViewer>
 
-            <Grid Grid.Row="2" ColumnSpacing="12">
+            <Grid x:Name="CustomSplitGrid" Grid.Row="2" ColumnSpacing="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="320" />
+                    <ColumnDefinition x:Name="CustomDetailColumn" Width="320" />
                 </Grid.ColumnDefinitions>
 
                 <Grid
+                    x:Name="CustomIssueSurface"
                     PointerEntered="GlassSurface_PointerEntered"
-                    PointerMoved="GlassSurface_PointerMoved"
                     PointerExited="GlassSurface_PointerExited">
                     <Border
                         Margin="0,5,0,-5"
@@ -1595,11 +1603,11 @@
                                 <ColumnDefinition Width="96" />
                                 <ColumnDefinition Width="84" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="KEY" />
-                            <TextBlock Grid.Column="1" Style="{StaticResource MutedCaptionStyle}" Text="ISSUE" />
-                            <TextBlock Grid.Column="2" Style="{StaticResource MutedCaptionStyle}" Text="STATUS" />
-                            <TextBlock Grid.Column="3" Style="{StaticResource MutedCaptionStyle}" Text="OWNER" />
-                            <TextBlock Grid.Column="4" Style="{StaticResource MutedCaptionStyle}" Text="DUE" />
+                            <TextBlock x:Uid="TableKey" Style="{StaticResource MutedCaptionStyle}" Text="KEY" />
+                            <TextBlock x:Uid="TableIssue" Grid.Column="1" Style="{StaticResource MutedCaptionStyle}" Text="ISSUE" />
+                            <TextBlock x:Uid="TableStatus" Grid.Column="2" Style="{StaticResource MutedCaptionStyle}" Text="STATUS" />
+                            <TextBlock x:Uid="TableOwner" Grid.Column="3" Style="{StaticResource MutedCaptionStyle}" Text="OWNER" />
+                            <TextBlock x:Uid="TableDue" Grid.Column="4" Style="{StaticResource MutedCaptionStyle}" Text="DUE" />
                         </Grid>
                     </Border>
 
@@ -1646,7 +1654,6 @@
                                     BorderThickness="1"
                                     CornerRadius="4"
                                     PointerEntered="GlassSurface_PointerEntered"
-                                    PointerMoved="GlassSurface_PointerMoved"
                                     PointerExited="GlassSurface_PointerExited"
                                     PointerPressed="GlassSurface_PointerPressed"
                                     PointerReleased="GlassSurface_PointerReleased"
@@ -1757,7 +1764,7 @@
                                             Width="8"
                                             Height="8"
                                             VerticalAlignment="Center"
-                                            Fill="{x:Bind StatusBrush, Mode=OneWay}" />
+                                            Fill="{x:Bind local:MainPage.StatusToBrush(Status), Mode=OneWay}" />
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
                                         <TextBlock
                                             Text="{x:Bind Title, Mode=OneWay}"
@@ -1778,12 +1785,12 @@
                                         Grid.Column="3"
                                         VerticalAlignment="Center"
                                         Foreground="{ThemeResource LiquidGlassTextSecondaryBrush}"
-                                        Text="{x:Bind Assignee, Mode=OneWay}" />
+                                        Text="{x:Bind AssigneeDisplay, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Column="4"
                                         VerticalAlignment="Center"
                                         Foreground="{ThemeResource LiquidGlassTextSecondaryBrush}"
-                                        Text="{x:Bind DueDate, Mode=OneWay}" />
+                                    Text="{x:Bind DueDateDisplay, Mode=OneWay}" />
                                 </Grid>
                                     </Grid>
                                 </Border>
@@ -1810,7 +1817,6 @@
 
                             <Border
                                 PointerEntered="GlassSurface_PointerEntered"
-                                PointerMoved="GlassSurface_PointerMoved"
                                 PointerExited="GlassSurface_PointerExited"
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
@@ -1818,7 +1824,7 @@
                                     <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
-                                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="백로그" />
+                                            <TextBlock x:Uid="StatusBacklogText" Style="{StaticResource BodyStrongTextBlockStyle}" Text="백로그" />
                                         </Border>
                                         <ListView
                                             AutomationProperties.AutomationId="BacklogBoardListView"
@@ -1834,7 +1840,6 @@
                             <Border
                                 Grid.Column="1"
                                 PointerEntered="GlassSurface_PointerEntered"
-                                PointerMoved="GlassSurface_PointerMoved"
                                 PointerExited="GlassSurface_PointerExited"
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
@@ -1842,7 +1847,7 @@
                                     <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
-                                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="예정" />
+                                            <TextBlock x:Uid="StatusTodoText" Style="{StaticResource BodyStrongTextBlockStyle}" Text="예정" />
                                         </Border>
                                         <ListView
                                             AutomationProperties.AutomationId="TodoBoardListView"
@@ -1858,7 +1863,6 @@
                             <Border
                                 Grid.Column="2"
                                 PointerEntered="GlassSurface_PointerEntered"
-                                PointerMoved="GlassSurface_PointerMoved"
                                 PointerExited="GlassSurface_PointerExited"
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
@@ -1866,7 +1870,7 @@
                                     <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
-                                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="진행 중" />
+                                            <TextBlock x:Uid="StatusInProgressText" Style="{StaticResource BodyStrongTextBlockStyle}" Text="진행 중" />
                                         </Border>
                                         <ListView
                                             AutomationProperties.AutomationId="InProgressBoardListView"
@@ -1882,7 +1886,6 @@
                             <Border
                                 Grid.Column="3"
                                 PointerEntered="GlassSurface_PointerEntered"
-                                PointerMoved="GlassSurface_PointerMoved"
                                 PointerExited="GlassSurface_PointerExited"
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
@@ -1890,7 +1893,7 @@
                                     <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
-                                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="리뷰" />
+                                            <TextBlock x:Uid="StatusReviewText" Style="{StaticResource BodyStrongTextBlockStyle}" Text="리뷰" />
                                         </Border>
                                         <ListView
                                             AutomationProperties.AutomationId="ReviewBoardListView"
@@ -1906,7 +1909,6 @@
                             <Border
                                 Grid.Column="4"
                                 PointerEntered="GlassSurface_PointerEntered"
-                                PointerMoved="GlassSurface_PointerMoved"
                                 PointerExited="GlassSurface_PointerExited"
                                 Style="{StaticResource LiquidGlassBoardLaneStyle}"
                                 Translation="0,0,12">
@@ -1914,7 +1916,7 @@
                                     <Border CornerRadius="3" IsHitTestVisible="False" Loaded="BackdropDistortion_Loaded" Tag="Lane" Unloaded="BackdropDistortion_Unloaded" />
                                     <StackPanel Spacing="8">
                                         <Border Style="{StaticResource LiquidGlassBoardHeaderStyle}">
-                                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="완료" />
+                                            <TextBlock x:Uid="StatusDoneText" Style="{StaticResource BodyStrongTextBlockStyle}" Text="완료" />
                                         </Border>
                                         <ListView
                                             AutomationProperties.AutomationId="DoneBoardListView"
@@ -1942,19 +1944,26 @@
                             Foreground="{ThemeResource LiquidGlassTextSecondaryBrush}"
                             Glyph="&#xE8FD;" />
                         <TextBlock
+                            x:Uid="EmptyStateMessage"
                             HorizontalAlignment="Center"
                             Foreground="{ThemeResource LiquidGlassTextSecondaryBrush}"
                             Style="{StaticResource SubtitleTextBlockStyle}"
                             Text="조건에 맞는 이슈가 없습니다." />
+                        <Button
+                            x:Uid="EmptyStateAction"
+                            HorizontalAlignment="Center"
+                            AutomationProperties.AutomationId="EmptyStateCreateIssueButton"
+                            Click="NewIssue_Click"
+                            Content="새 이슈 만들기" />
                     </StackPanel>
                 </Grid>
                 </Grid>
 
                 <Grid
+                    x:Name="CustomDetailPane"
                     Grid.Column="1"
                     MinWidth="320"
                     PointerEntered="GlassSurface_PointerEntered"
-                    PointerMoved="GlassSurface_PointerMoved"
                     PointerExited="GlassSurface_PointerExited">
                     <Border
                         Margin="0,5,0,-5"
@@ -1996,15 +2005,24 @@
                     </Border>
                     <Grid Margin="14">
                         <StackPanel x:Name="DetailEmptyState" VerticalAlignment="Center" Spacing="8">
-                            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="이슈 선택" />
+                            <TextBlock x:Uid="DetailEmptyTitle" Style="{StaticResource SubtitleTextBlockStyle}" Text="이슈 선택" />
                             <TextBlock
                                 Foreground="{ThemeResource LiquidGlassTextSecondaryBrush}"
+                                x:Uid="DetailEmptyMessage"
                                 Text="왼쪽 리스트나 보드에서 이슈를 선택하세요."
                                 TextWrapping="WrapWholeWords" />
                         </StackPanel>
 
                         <ScrollViewer x:Name="DetailEditor" Visibility="Collapsed">
                             <StackPanel Spacing="10">
+                                <Button
+                                    x:Name="CustomBackToListButton"
+                                    x:Uid="BackToList"
+                                    HorizontalAlignment="Left"
+                                    AutomationProperties.AutomationId="CustomBackToListButton"
+                                    Click="BackToList_Click"
+                                    Content="목록으로"
+                                    Visibility="Collapsed" />
                                 <Grid ColumnSpacing="8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -2024,11 +2042,13 @@
                                 </Grid>
                                 <TextBox
                                     x:Name="IssueTitleTextBox"
+                                    x:Uid="IssueTitleInput"
                                     AutomationProperties.AutomationId="IssueTitleTextBox"
                                     PlaceholderText="제목"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}" />
                                 <TextBox
                                     x:Name="IssueDescriptionTextBox"
+                                    x:Uid="IssueDescriptionInput"
                                     AcceptsReturn="True"
                                     AutomationProperties.AutomationId="IssueDescriptionTextBox"
                                     Height="104"
@@ -2076,13 +2096,16 @@
                                         Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
                                 </Grid>
 
-                                <TextBox
-                                    x:Name="IssueDueDateTextBox"
-                                    AutomationProperties.AutomationId="IssueDueDateTextBox"
-                                    PlaceholderText="기한: 2026-06-12"
-                                    Style="{StaticResource LiquidGlassTextBoxStyle}" />
+                                <CalendarDatePicker
+                                    x:Name="IssueDueDatePicker"
+                                    x:Uid="IssueDueDateInput"
+                                    AutomationProperties.AutomationId="IssueDueDatePicker"
+                                    Header="기한"
+                                    HorizontalAlignment="Stretch"
+                                    PlaceholderText="날짜 선택" />
                                 <TextBox
                                     x:Name="IssueLabelsTextBox"
+                                    x:Uid="IssueLabelsInput"
                                     AutomationProperties.AutomationId="IssueLabelsTextBox"
                                     PlaceholderText="라벨: ux, data"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}" />
@@ -2099,7 +2122,6 @@
                                     <Grid
                                         Grid.Column="1"
                                         PointerEntered="GlassSurface_PointerEntered"
-                                        PointerMoved="GlassSurface_PointerMoved"
                                         PointerExited="GlassSurface_PointerExited">
                                         <Border
                                             Margin="0,4,0,-4"
@@ -2126,11 +2148,11 @@
                                             Orientation="Horizontal"
                                             Spacing="2">
                                             <Button
+                                                x:Name="CustomSaveIssueButton"
                                                 AutomationProperties.AutomationId="SaveIssueButton"
                                                 AutomationProperties.Name="이슈 저장"
                                                 Click="SaveIssue_Click"
                                                 PointerEntered="GlassSurface_PointerEntered"
-                                                PointerMoved="GlassSurface_PointerMoved"
                                                 PointerExited="GlassSurface_PointerExited"
                                                 PointerPressed="GlassSurface_PointerPressed"
                                                 PointerReleased="GlassSurface_PointerReleased"
@@ -2139,11 +2161,11 @@
                                                 <SymbolIcon Symbol="Save" />
                                             </Button>
                                             <Button
+                                                x:Name="CustomDeleteIssueButton"
                                                 AutomationProperties.AutomationId="DeleteIssueButton"
                                                 AutomationProperties.Name="이슈 삭제"
                                                 Click="DeleteSelectedIssue_Click"
                                                 PointerEntered="GlassSurface_PointerEntered"
-                                                PointerMoved="GlassSurface_PointerMoved"
                                                 PointerExited="GlassSurface_PointerExited"
                                                 PointerPressed="GlassSurface_PointerPressed"
                                                 PointerReleased="GlassSurface_PointerReleased"
@@ -2202,10 +2224,10 @@
                         IsHitTestVisible="False"
                         Opacity="0.18" />
                     <StackPanel>
-                        <Button Click="ThemeMenuItem_Click" Content="WinUI Fluent" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="fluent" />
-                        <Button Click="ThemeMenuItem_Click" Content="Liquid Glass" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="liquid" />
-                        <Button Click="ThemeMenuItem_Click" Content="Windows XP" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="xp" />
-                        <Button Click="ThemeMenuItem_Click" Content="Aero" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="aero" />
+                        <Button x:Uid="ThemeFluentItem" AutomationProperties.AutomationId="ThemeMenuFluentButton" Click="ThemeMenuItem_Click" Content="WinUI Fluent" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="fluent" />
+                        <Button x:Uid="ThemeLiquidItem" AutomationProperties.AutomationId="ThemeMenuLiquidButton" Click="ThemeMenuItem_Click" Content="Liquid Glass" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="liquid" />
+                        <Button x:Uid="ThemeXpItem" AutomationProperties.AutomationId="ThemeMenuXpButton" Click="ThemeMenuItem_Click" Content="Windows XP" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="xp" />
+                        <Button x:Uid="ThemeAeroItem" AutomationProperties.AutomationId="ThemeMenuAeroButton" Click="ThemeMenuItem_Click" Content="Aero" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="aero" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -2244,12 +2266,12 @@
                         IsHitTestVisible="False"
                         Opacity="0.18" />
                     <StackPanel>
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="모든 상태" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="All" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="백로그" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backlog" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="예정" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Todo" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="진행 중" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="InProgress" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="리뷰" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Review" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="완료" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Done" />
+                        <Button x:Uid="StatusAll" AutomationProperties.AutomationId="StatusFilterAllButton" Click="StatusFilterMenuFlyoutItem_Click" Content="모든 상태" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="All" />
+                        <Button x:Uid="StatusBacklogItem" AutomationProperties.AutomationId="StatusFilterBacklogButton" Click="StatusFilterMenuFlyoutItem_Click" Content="백로그" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backlog" />
+                        <Button x:Uid="StatusTodoItem" AutomationProperties.AutomationId="StatusFilterTodoButton" Click="StatusFilterMenuFlyoutItem_Click" Content="예정" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Todo" />
+                        <Button x:Uid="StatusInProgressItem" AutomationProperties.AutomationId="StatusFilterInProgressButton" Click="StatusFilterMenuFlyoutItem_Click" Content="진행 중" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="InProgress" />
+                        <Button x:Uid="StatusReviewItem" AutomationProperties.AutomationId="StatusFilterReviewButton" Click="StatusFilterMenuFlyoutItem_Click" Content="리뷰" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Review" />
+                        <Button x:Uid="StatusDoneItem" AutomationProperties.AutomationId="StatusFilterDoneButton" Click="StatusFilterMenuFlyoutItem_Click" Content="완료" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Done" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -2288,11 +2310,11 @@
                         IsHitTestVisible="False"
                         Opacity="0.18" />
                     <StackPanel>
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="모든 우선순위" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="All" />
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="긴급" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Urgent" />
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="높음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="High" />
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="보통" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Medium" />
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="낮음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Low" />
+                        <Button x:Uid="PriorityAll" AutomationProperties.AutomationId="PriorityFilterAllButton" Click="PriorityFilterMenuFlyoutItem_Click" Content="모든 우선순위" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="All" />
+                        <Button x:Uid="PriorityUrgentItem" AutomationProperties.AutomationId="PriorityFilterUrgentButton" Click="PriorityFilterMenuFlyoutItem_Click" Content="긴급" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Urgent" />
+                        <Button x:Uid="PriorityHighItem" AutomationProperties.AutomationId="PriorityFilterHighButton" Click="PriorityFilterMenuFlyoutItem_Click" Content="높음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="High" />
+                        <Button x:Uid="PriorityMediumItem" AutomationProperties.AutomationId="PriorityFilterMediumButton" Click="PriorityFilterMenuFlyoutItem_Click" Content="보통" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Medium" />
+                        <Button x:Uid="PriorityLowItem" AutomationProperties.AutomationId="PriorityFilterLowButton" Click="PriorityFilterMenuFlyoutItem_Click" Content="낮음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Low" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -2314,11 +2336,11 @@
                     <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
                     <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.18" />
                     <StackPanel>
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="백로그" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backlog" />
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="예정" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Todo" />
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="진행 중" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="InProgress" />
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="리뷰" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Review" />
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="완료" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Done" />
+                        <Button x:Uid="StatusBacklogItem" AutomationProperties.AutomationId="DetailStatusBacklogButton" Click="DetailStatusMenuFlyoutItem_Click" Content="백로그" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backlog" />
+                        <Button x:Uid="StatusTodoItem" AutomationProperties.AutomationId="DetailStatusTodoButton" Click="DetailStatusMenuFlyoutItem_Click" Content="예정" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Todo" />
+                        <Button x:Uid="StatusInProgressItem" AutomationProperties.AutomationId="DetailStatusInProgressButton" Click="DetailStatusMenuFlyoutItem_Click" Content="진행 중" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="InProgress" />
+                        <Button x:Uid="StatusReviewItem" AutomationProperties.AutomationId="DetailStatusReviewButton" Click="DetailStatusMenuFlyoutItem_Click" Content="리뷰" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Review" />
+                        <Button x:Uid="StatusDoneItem" AutomationProperties.AutomationId="DetailStatusDoneButton" Click="DetailStatusMenuFlyoutItem_Click" Content="완료" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Done" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -2340,10 +2362,10 @@
                     <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
                     <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.18" />
                     <StackPanel>
-                        <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="긴급" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Urgent" />
-                        <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="높음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="High" />
-                        <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="보통" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Medium" />
-                        <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="낮음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Low" />
+                        <Button x:Uid="PriorityUrgentItem" AutomationProperties.AutomationId="DetailPriorityUrgentButton" Click="DetailPriorityMenuFlyoutItem_Click" Content="긴급" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Urgent" />
+                        <Button x:Uid="PriorityHighItem" AutomationProperties.AutomationId="DetailPriorityHighButton" Click="DetailPriorityMenuFlyoutItem_Click" Content="높음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="High" />
+                        <Button x:Uid="PriorityMediumItem" AutomationProperties.AutomationId="DetailPriorityMediumButton" Click="DetailPriorityMenuFlyoutItem_Click" Content="보통" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Medium" />
+                        <Button x:Uid="PriorityLowItem" AutomationProperties.AutomationId="DetailPriorityLowButton" Click="DetailPriorityMenuFlyoutItem_Click" Content="낮음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Low" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -2365,10 +2387,10 @@
                     <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
                     <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="6" IsHitTestVisible="False" Opacity="0.18" />
                     <StackPanel>
-                        <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Platform" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Platform" />
-                        <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Mobile" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Mobile" />
-                        <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Growth" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Growth" />
-                        <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Ops" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Ops" />
+                        <Button AutomationProperties.AutomationId="DetailProjectPlatformButton" Click="DetailProjectMenuFlyoutItem_Click" Content="Platform" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Platform" />
+                        <Button AutomationProperties.AutomationId="DetailProjectMobileButton" Click="DetailProjectMenuFlyoutItem_Click" Content="Mobile" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Mobile" />
+                        <Button AutomationProperties.AutomationId="DetailProjectGrowthButton" Click="DetailProjectMenuFlyoutItem_Click" Content="Growth" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Growth" />
+                        <Button AutomationProperties.AutomationId="DetailProjectOpsButton" Click="DetailProjectMenuFlyoutItem_Click" Content="Ops" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Ops" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -2390,10 +2412,10 @@
                     <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
                     <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="6" IsHitTestVisible="False" Opacity="0.18" />
                     <StackPanel>
-                        <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="나" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="나" />
-                        <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="Design" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Design" />
-                        <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="Backend" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backend" />
-                        <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="QA" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="QA" />
+                        <Button x:Uid="AssigneeMeItem" AutomationProperties.AutomationId="DetailAssigneeMeButton" Click="DetailAssigneeMenuFlyoutItem_Click" Content="나" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Me" />
+                        <Button AutomationProperties.AutomationId="DetailAssigneeDesignButton" Click="DetailAssigneeMenuFlyoutItem_Click" Content="Design" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Design" />
+                        <Button AutomationProperties.AutomationId="DetailAssigneeBackendButton" Click="DetailAssigneeMenuFlyoutItem_Click" Content="Backend" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backend" />
+                        <Button AutomationProperties.AutomationId="DetailAssigneeQaButton" Click="DetailAssigneeMenuFlyoutItem_Click" Content="QA" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="QA" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -2406,33 +2428,33 @@
         IsBackButtonVisible="Collapsed"
         IsSettingsVisible="False"
         OpenPaneLength="184"
-        PaneDisplayMode="Left"
+        PaneDisplayMode="Auto"
         SelectionChanged="FluentNavigation_SelectionChanged"
         Visibility="Collapsed">
         <NavigationView.MenuItems>
-            <NavigationViewItem Content="전체 이슈" Tag="All">
+            <NavigationViewItem x:Uid="NavAll" AutomationProperties.AutomationId="FluentAllIssuesNavItem" Content="전체 이슈" Tag="All">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="List" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
-            <NavigationViewItem Content="내 작업" Tag="Mine">
+            <NavigationViewItem x:Uid="NavMine" AutomationProperties.AutomationId="FluentMineNavItem" Content="내 작업" Tag="Mine">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="Contact" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
-            <NavigationViewItem Content="릴리즈" Tag="Release">
+            <NavigationViewItem x:Uid="NavRelease" AutomationProperties.AutomationId="FluentReleaseNavItem" Content="릴리즈" Tag="Release">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="Calendar" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
-            <NavigationViewItem Content="완료" Tag="Done">
+            <NavigationViewItem x:Uid="NavDone" AutomationProperties.AutomationId="FluentDoneNavItem" Content="완료" Tag="Done">
                 <NavigationViewItem.Icon>
                     <SymbolIcon Symbol="Accept" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
         </NavigationView.MenuItems>
 
-        <Grid Padding="24,18,24,24" RowSpacing="12">
+        <Grid x:Name="FluentContentRoot" Padding="24,18,24,24" RowSpacing="12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -2449,6 +2471,7 @@
                     <TextBlock
                         FontSize="28"
                         FontWeight="SemiBold"
+                        x:Uid="WorkspaceTitle"
                         Text="Issues" />
                     <TextBlock
                         x:Name="FluentScopeTextBlock"
@@ -2460,6 +2483,7 @@
                     DefaultLabelPosition="Collapsed"
                     IsOpen="False">
                     <AppBarButton
+                        x:Uid="NewAction"
                         AutomationProperties.AutomationId="FluentNewIssueButton"
                         Icon="Add"
                         Label="새 이슈"
@@ -2467,6 +2491,7 @@
                     <AppBarSeparator />
                     <AppBarToggleButton
                         x:Name="FluentListModeButton"
+                        x:Uid="ListAction"
                         AutomationProperties.AutomationId="FluentListModeButton"
                         Icon="List"
                         IsChecked="True"
@@ -2474,7 +2499,13 @@
                 </CommandBar>
             </Grid>
 
-            <Grid Grid.Row="1" ColumnSpacing="12">
+            <ScrollViewer
+                Grid.Row="1"
+                HorizontalScrollBarVisibility="Auto"
+                HorizontalScrollMode="Enabled"
+                VerticalScrollBarVisibility="Disabled"
+                VerticalScrollMode="Disabled">
+            <Grid ColumnSpacing="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="Auto" />
@@ -2487,6 +2518,7 @@
 
                 <TextBox
                     x:Name="FluentQuickIssueTextBox"
+                    x:Uid="QuickIssueTextBox"
                     AutomationProperties.AutomationId="FluentQuickIssueTextBox"
                     PlaceholderText="새 이슈 제목"
                     KeyDown="FluentQuickIssueTextBox_KeyDown" />
@@ -2499,6 +2531,7 @@
                 </Button>
                 <TextBox
                     x:Name="FluentSearchTextBox"
+                    x:Uid="SearchTextBox"
                     Grid.Column="2"
                     AutomationProperties.AutomationId="FluentSearchTextBox"
                     PlaceholderText="검색"
@@ -2509,12 +2542,12 @@
                     MinWidth="140"
                     AutomationProperties.AutomationId="FluentStatusFilterComboBox"
                     SelectionChanged="FluentStatusFilterComboBox_SelectionChanged">
-                    <ComboBoxItem Content="모든 상태" Tag="All" />
-                    <ComboBoxItem Content="백로그" Tag="Backlog" />
-                    <ComboBoxItem Content="예정" Tag="Todo" />
-                    <ComboBoxItem Content="진행 중" Tag="InProgress" />
-                    <ComboBoxItem Content="리뷰" Tag="Review" />
-                    <ComboBoxItem Content="완료" Tag="Done" />
+                    <ComboBoxItem x:Uid="StatusAll" Content="모든 상태" Tag="All" />
+                    <ComboBoxItem x:Uid="StatusBacklogItem" Content="백로그" Tag="Backlog" />
+                    <ComboBoxItem x:Uid="StatusTodoItem" Content="예정" Tag="Todo" />
+                    <ComboBoxItem x:Uid="StatusInProgressItem" Content="진행 중" Tag="InProgress" />
+                    <ComboBoxItem x:Uid="StatusReviewItem" Content="리뷰" Tag="Review" />
+                    <ComboBoxItem x:Uid="StatusDoneItem" Content="완료" Tag="Done" />
                 </ComboBox>
                 <ComboBox
                     x:Name="FluentPriorityFilterComboBox"
@@ -2522,11 +2555,11 @@
                     MinWidth="140"
                     AutomationProperties.AutomationId="FluentPriorityFilterComboBox"
                     SelectionChanged="FluentPriorityFilterComboBox_SelectionChanged">
-                    <ComboBoxItem Content="모든 우선순위" Tag="All" />
-                    <ComboBoxItem Content="긴급" Tag="Urgent" />
-                    <ComboBoxItem Content="높음" Tag="High" />
-                    <ComboBoxItem Content="보통" Tag="Medium" />
-                    <ComboBoxItem Content="낮음" Tag="Low" />
+                    <ComboBoxItem x:Uid="PriorityAll" Content="모든 우선순위" Tag="All" />
+                    <ComboBoxItem x:Uid="PriorityUrgentItem" Content="긴급" Tag="Urgent" />
+                    <ComboBoxItem x:Uid="PriorityHighItem" Content="높음" Tag="High" />
+                    <ComboBoxItem x:Uid="PriorityMediumItem" Content="보통" Tag="Medium" />
+                    <ComboBoxItem x:Uid="PriorityLowItem" Content="낮음" Tag="Low" />
                 </ComboBox>
                 <ComboBox
                     x:Name="FluentThemeComboBox"
@@ -2540,14 +2573,15 @@
                     <ComboBoxItem Content="Aero" Tag="aero" />
                 </ComboBox>
             </Grid>
+            </ScrollViewer>
 
-            <Grid Grid.Row="2" ColumnSpacing="16">
+            <Grid x:Name="FluentSplitGrid" Grid.Row="2" ColumnSpacing="16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="360" />
+                    <ColumnDefinition x:Name="FluentDetailColumn" Width="360" />
                 </Grid.ColumnDefinitions>
 
-                <Grid RowSpacing="8">
+                <Grid x:Name="FluentIssueSurface" RowSpacing="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -2561,11 +2595,11 @@
                             <ColumnDefinition Width="120" />
                             <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Opacity="0.72" Text="KEY" />
-                        <TextBlock Grid.Column="1" Opacity="0.72" Text="ISSUE" />
-                        <TextBlock Grid.Column="2" Opacity="0.72" Text="STATUS" />
-                        <TextBlock Grid.Column="3" Opacity="0.72" Text="OWNER" />
-                        <TextBlock Grid.Column="4" Opacity="0.72" Text="DUE" />
+                        <TextBlock x:Uid="TableKey" Opacity="0.72" Text="KEY" />
+                        <TextBlock x:Uid="TableIssue" Grid.Column="1" Opacity="0.72" Text="ISSUE" />
+                        <TextBlock x:Uid="TableStatus" Grid.Column="2" Opacity="0.72" Text="STATUS" />
+                        <TextBlock x:Uid="TableOwner" Grid.Column="3" Opacity="0.72" Text="OWNER" />
+                        <TextBlock x:Uid="TableDue" Grid.Column="4" Opacity="0.72" Text="DUE" />
                     </Grid>
 
                     <ListView
@@ -2598,7 +2632,7 @@
                                             Width="8"
                                             Height="8"
                                             VerticalAlignment="Center"
-                                            Fill="{x:Bind StatusBrush, Mode=OneWay}" />
+                                            Fill="{x:Bind local:MainPage.StatusToBrush(Status), Mode=OneWay}" />
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                             <TextBlock Text="{x:Bind Title, Mode=OneWay}" />
                                             <TextBlock
@@ -2613,11 +2647,11 @@
                                     <TextBlock
                                         Grid.Column="3"
                                         VerticalAlignment="Center"
-                                        Text="{x:Bind Assignee, Mode=OneWay}" />
+                                        Text="{x:Bind AssigneeDisplay, Mode=OneWay}" />
                                     <TextBlock
                                         Grid.Column="4"
                                         VerticalAlignment="Center"
-                                        Text="{x:Bind DueDate, Mode=OneWay}" />
+                                        Text="{x:Bind DueDateDisplay, Mode=OneWay}" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -2631,11 +2665,17 @@
                         Spacing="8"
                         Visibility="Collapsed">
                         <FontIcon Glyph="&#xE8FD;" />
-                        <TextBlock Text="조건에 맞는 이슈가 없습니다." />
+                        <TextBlock x:Uid="EmptyStateMessage" Text="조건에 맞는 이슈가 없습니다." />
+                        <Button
+                            x:Uid="EmptyStateAction"
+                            HorizontalAlignment="Center"
+                            AutomationProperties.AutomationId="FluentEmptyStateCreateIssueButton"
+                            Click="FluentNewIssue_Click"
+                            Content="새 이슈 만들기" />
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Column="1">
+                <Grid x:Name="FluentDetailPane" Grid.Column="1">
                     <StackPanel
                         x:Name="FluentDetailEmptyState"
                         VerticalAlignment="Center"
@@ -2643,9 +2683,11 @@
                         <TextBlock
                             FontSize="20"
                             FontWeight="SemiBold"
+                            x:Uid="DetailEmptyTitle"
                             Text="이슈 선택" />
                         <TextBlock
                             Opacity="0.72"
+                            x:Uid="DetailEmptyMessage"
                             Text="왼쪽 리스트에서 이슈를 선택하세요."
                             TextWrapping="WrapWholeWords" />
                     </StackPanel>
@@ -2654,6 +2696,14 @@
                         x:Name="FluentDetailEditor"
                         Visibility="Collapsed">
                         <StackPanel Spacing="10">
+                            <Button
+                                x:Name="FluentBackToListButton"
+                                x:Uid="BackToList"
+                                HorizontalAlignment="Left"
+                                AutomationProperties.AutomationId="FluentBackToListButton"
+                                Click="BackToList_Click"
+                                Content="목록으로"
+                                Visibility="Collapsed" />
                             <Grid ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -2672,10 +2722,12 @@
 
                             <TextBox
                                 x:Name="FluentIssueTitleTextBox"
+                                x:Uid="IssueTitleInput"
                                 AutomationProperties.AutomationId="FluentIssueTitleTextBox"
                                 Header="제목" />
                             <TextBox
                                 x:Name="FluentIssueDescriptionTextBox"
+                                x:Uid="IssueDescriptionInput"
                                 AcceptsReturn="True"
                                 AutomationProperties.AutomationId="FluentIssueDescriptionTextBox"
                                 Header="설명"
@@ -2689,25 +2741,27 @@
                                 </Grid.ColumnDefinitions>
                                 <ComboBox
                                     x:Name="FluentDetailStatusComboBox"
+                                        x:Uid="StatusInput"
                                     AutomationProperties.AutomationId="FluentDetailStatusComboBox"
                                     Header="상태"
                                     HorizontalAlignment="Stretch">
-                                    <ComboBoxItem Content="백로그" Tag="Backlog" />
-                                    <ComboBoxItem Content="예정" Tag="Todo" />
-                                    <ComboBoxItem Content="진행 중" Tag="InProgress" />
-                                    <ComboBoxItem Content="리뷰" Tag="Review" />
-                                    <ComboBoxItem Content="완료" Tag="Done" />
+                                    <ComboBoxItem x:Uid="StatusBacklogItem" Content="백로그" Tag="Backlog" />
+                                    <ComboBoxItem x:Uid="StatusTodoItem" Content="예정" Tag="Todo" />
+                                    <ComboBoxItem x:Uid="StatusInProgressItem" Content="진행 중" Tag="InProgress" />
+                                    <ComboBoxItem x:Uid="StatusReviewItem" Content="리뷰" Tag="Review" />
+                                    <ComboBoxItem x:Uid="StatusDoneItem" Content="완료" Tag="Done" />
                                 </ComboBox>
                                 <ComboBox
                                     x:Name="FluentDetailPriorityComboBox"
+                                        x:Uid="PriorityInput"
                                     Grid.Column="1"
                                     AutomationProperties.AutomationId="FluentDetailPriorityComboBox"
                                     Header="우선순위"
                                     HorizontalAlignment="Stretch">
-                                    <ComboBoxItem Content="긴급" Tag="Urgent" />
-                                    <ComboBoxItem Content="높음" Tag="High" />
-                                    <ComboBoxItem Content="보통" Tag="Medium" />
-                                    <ComboBoxItem Content="낮음" Tag="Low" />
+                                    <ComboBoxItem x:Uid="PriorityUrgentItem" Content="긴급" Tag="Urgent" />
+                                    <ComboBoxItem x:Uid="PriorityHighItem" Content="높음" Tag="High" />
+                                    <ComboBoxItem x:Uid="PriorityMediumItem" Content="보통" Tag="Medium" />
+                                    <ComboBoxItem x:Uid="PriorityLowItem" Content="낮음" Tag="Low" />
                                 </ComboBox>
                             </Grid>
 
@@ -2718,6 +2772,7 @@
                                 </Grid.ColumnDefinitions>
                                 <ComboBox
                                     x:Name="FluentDetailProjectComboBox"
+                                        x:Uid="ProjectInput"
                                     AutomationProperties.AutomationId="FluentDetailProjectComboBox"
                                     Header="프로젝트"
                                     HorizontalAlignment="Stretch">
@@ -2728,23 +2783,28 @@
                                 </ComboBox>
                                 <ComboBox
                                     x:Name="FluentDetailAssigneeComboBox"
+                                        x:Uid="AssigneeInput"
                                     Grid.Column="1"
                                     AutomationProperties.AutomationId="FluentDetailAssigneeComboBox"
                                     Header="담당자"
                                     HorizontalAlignment="Stretch">
-                                    <ComboBoxItem Content="나" Tag="나" />
+                                    <ComboBoxItem x:Uid="AssigneeMeItem" Content="나" Tag="Me" />
                                     <ComboBoxItem Content="Design" Tag="Design" />
                                     <ComboBoxItem Content="Backend" Tag="Backend" />
                                     <ComboBoxItem Content="QA" Tag="QA" />
                                 </ComboBox>
                             </Grid>
 
-                            <TextBox
-                                x:Name="FluentIssueDueDateTextBox"
-                                AutomationProperties.AutomationId="FluentIssueDueDateTextBox"
-                                Header="기한" />
+                            <CalendarDatePicker
+                                x:Name="FluentIssueDueDatePicker"
+                                x:Uid="IssueDueDateInput"
+                                AutomationProperties.AutomationId="FluentIssueDueDatePicker"
+                                Header="기한"
+                                HorizontalAlignment="Stretch"
+                                PlaceholderText="날짜 선택" />
                             <TextBox
                                 x:Name="FluentIssueLabelsTextBox"
+                                x:Uid="IssueLabelsInput"
                                 AutomationProperties.AutomationId="FluentIssueLabelsTextBox"
                                 Header="라벨" />
 
@@ -2762,11 +2822,13 @@
                                     DefaultLabelPosition="Collapsed"
                                     IsOpen="False">
                                     <AppBarButton
+                                        x:Uid="SaveAction"
                                         AutomationProperties.AutomationId="FluentSaveIssueButton"
                                         Icon="Save"
                                         Label="저장"
                                         Click="FluentSaveIssue_Click" />
                                     <AppBarButton
+                                        x:Uid="DeleteAction"
                                         AutomationProperties.AutomationId="FluentDeleteIssueButton"
                                         Icon="Delete"
                                         Label="삭제"
@@ -2779,5 +2841,42 @@
             </Grid>
         </Grid>
     </NavigationView>
+
+    <Grid
+        x:Name="LoadingOverlay"
+        AutomationProperties.AutomationId="LoadingOverlay"
+        Background="{ThemeResource LayerFillColorDefaultBrush}">
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="12">
+            <ProgressRing
+                x:Name="LoadingProgressRing"
+                Width="40"
+                Height="40"
+                AutomationProperties.Name="이슈를 불러오는 중"
+                IsActive="True" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                x:Uid="LoadingTitleText"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="이슈를 불러오는 중" />
+            <TextBlock
+                HorizontalAlignment="Center"
+                x:Uid="LoadingMessageText"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="저장된 작업 공간을 안전하게 복원하고 있습니다." />
+        </StackPanel>
+    </Grid>
+
+    <InfoBar
+        x:Name="StatusInfoBar"
+        Margin="16"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Top"
+        MaxWidth="720"
+        AutomationProperties.AutomationId="StatusInfoBar"
+        IsClosable="True"
+        IsOpen="False" />
     </Grid>
 </Page>

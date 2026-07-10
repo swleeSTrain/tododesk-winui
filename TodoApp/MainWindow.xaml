@@ -192,11 +192,11 @@
                     <Border
                         Height="1"
                         VerticalAlignment="Top"
-                        Background="#FF7BA9E5" />
+                        Background="{ThemeResource XpTitleBarTopStrokeBrush}" />
                     <Border
                         Height="1"
                         VerticalAlignment="Bottom"
-                        Background="#FF0A246A" />
+                        Background="{ThemeResource XpTitleBarBottomStrokeBrush}" />
                     <Grid Margin="6,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -215,7 +215,7 @@
                             FontFamily="Segoe UI"
                             FontSize="13"
                             FontWeight="Bold"
-                            Foreground="White"
+                            Foreground="{ThemeResource XpTitleBarForegroundBrush}"
                             Text="TodoDesk" />
                         <Grid
                             Grid.Column="2"
@@ -229,7 +229,7 @@
                             <Border
                                 Width="22"
                                 HorizontalAlignment="Center"
-                                BorderBrush="#FF0A246A"
+                                BorderBrush="{ThemeResource XpTitleBarButtonBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="3">
                                 <Border.Background>
@@ -245,7 +245,7 @@
                                 Grid.Column="1"
                                 Width="22"
                                 HorizontalAlignment="Center"
-                                BorderBrush="#FF0A246A"
+                                BorderBrush="{ThemeResource XpTitleBarButtonBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="3">
                                 <Border.Background>
@@ -261,7 +261,7 @@
                                 Grid.Column="2"
                                 Width="22"
                                 HorizontalAlignment="Center"
-                                BorderBrush="#FF6A1B00"
+                                BorderBrush="{ThemeResource XpTitleBarCloseBorderBrush}"
                                 BorderThickness="1"
                                 CornerRadius="3">
                                 <Border.Background>
