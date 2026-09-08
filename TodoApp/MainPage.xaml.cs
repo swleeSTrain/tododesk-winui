@@ -25,7 +25,9 @@ public sealed partial class MainPage : Page
     private readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
     private IssueItem? _selectedIssue;
     private string _navScope = "All";
-    private bool _isLoading;
+    private bool _isLoading = true;
+    private bool _hasStartedLoading;
+    private bool _storageLoadFailed;
     private bool _isRefreshingSelection;
     private bool _isSyncingNativeControls;
     private bool _isSyncingNavigation;
@@ -58,10 +60,11 @@ public sealed partial class MainPage : Page
         SelectComboBoxByTag(FluentStatusFilterComboBox, _statusFilter);
         SelectComboBoxByTag(FluentPriorityFilterComboBox, _priorityFilter);
         UpdateThemeSurfaceMode();
-        _ = LoadIssuesAsync();
+        ShellNavigation.IsEnabled = false;
+        FluentNativeRoot.IsEnabled = false;
     }
 
-    private void Page_Loaded(object sender, RoutedEventArgs e)
+    private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
         if (_visualTheme != AppVisualTheme.Liquid)
         {
@@ -69,6 +72,11 @@ public sealed partial class MainPage : Page
         }
 
         UpdateThemeSurfaceMode();
+        if (!_hasStartedLoading)
+        {
+            _hasStartedLoading = true;
+            await LoadIssuesAsync();
+        }
     }
 
     private void Page_Unloaded(object sender, RoutedEventArgs e)
@@ -626,7 +634,10 @@ public sealed partial class MainPage : Page
         _selectedIssue.Labels = IssueLabelsTextBox.Text.Trim();
 
         RefreshViews(keepSelection: true);
-        LoadIssueIntoEditor(_selectedIssue);
+        if (_selectedIssue is not null)
+        {
+            LoadIssueIntoEditor(_selectedIssue);
+        }
         await TrySaveIssuesAsync();
     }
 
@@ -647,7 +658,10 @@ public sealed partial class MainPage : Page
         _selectedIssue.Labels = FluentIssueLabelsTextBox.Text.Trim();
 
         RefreshViews(keepSelection: true);
-        LoadIssueIntoEditor(_selectedIssue);
+        if (_selectedIssue is not null)
+        {
+            LoadIssueIntoEditor(_selectedIssue);
+        }
         await TrySaveIssuesAsync();
     }
 
@@ -703,6 +717,7 @@ public sealed partial class MainPage : Page
     private async Task LoadIssuesAsync()
     {
         _isLoading = true;
+        Exception? loadError = null;
 
         try
         {
@@ -721,16 +736,27 @@ public sealed partial class MainPage : Page
                 SeedIssues();
             }
         }
-        catch
+        catch (Exception ex)
         {
             _issues.Clear();
-            SeedIssues();
+            _storageLoadFailed = true;
+            loadError = ex;
         }
         finally
         {
             _isLoading = false;
             RefreshViews();
             SelectIssue(VisibleIssues.FirstOrDefault() ?? _issues.FirstOrDefault());
+            ShellNavigation.IsEnabled = !_storageLoadFailed;
+            FluentNativeRoot.IsEnabled = !_storageLoadFailed;
+        }
+
+        if (loadError is not null)
+        {
+            await ShowStorageErrorAsync(
+                "이슈를 불러오지 못했습니다.",
+                "기존 데이터 보호를 위해 편집과 저장을 중지했습니다. 데이터 파일과 접근 권한을 확인한 뒤 앱을 다시 시작해 주세요.",
+                loadError);
         }
     }
 
@@ -738,10 +764,9 @@ public sealed partial class MainPage : Page
     {
         var json = await FileIO.ReadTextAsync(legacyFile);
         var todos = JsonSerializer.Deserialize<List<LegacyTodoSnapshot>>(json);
-        if (todos is null || todos.Count == 0)
+        if (todos is null)
         {
-            SeedIssues();
-            return;
+            throw new JsonException("Todo 데이터는 JSON 배열이어야 합니다.");
         }
 
         var index = 101;
@@ -764,10 +789,9 @@ public sealed partial class MainPage : Page
     private void LoadSnapshots(List<IssueSnapshot>? snapshots)
     {
         _issues.Clear();
-        if (snapshots is null || snapshots.Count == 0)
+        if (snapshots is null)
         {
-            SeedIssues();
-            return;
+            throw new JsonException("이슈 데이터는 JSON 배열이어야 합니다.");
         }
 
         foreach (var snapshot in snapshots)
@@ -818,9 +842,9 @@ public sealed partial class MainPage : Page
 
     private async Task SaveIssuesAsync()
     {
-        if (_isLoading)
+        if (_isLoading || _storageLoadFailed)
         {
-            return;
+            throw new InvalidOperationException("데이터를 정상적으로 불러오기 전에는 저장할 수 없습니다.");
         }
 
         var snapshots = _issues.Select(IssueSnapshot.FromItem).ToList();

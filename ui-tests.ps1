@@ -111,19 +111,25 @@ Test-UI "Search filters created issue" {
     winapp ui wait-for "FluentIssueTitleTextBox" -a $AppPid --value $testTitle -t 3000
 }
 
-$updatedTitle = $testTitle + " 저장"
+$updatedTitle = "필터 밖으로 변경된 이슈 " + [Guid]::NewGuid().ToString("N")
 
-Test-UI "Edit and save selected issue" {
+Test-UI "Save issue after title no longer matches search" {
     winapp ui set-value "FluentIssueTitleTextBox" $updatedTitle -a $AppPid
     winapp ui set-value "FluentIssueDescriptionTextBox" "UI 자동화 테스트에서 저장된 설명입니다." -a $AppPid
     winapp ui invoke "FluentSaveIssueButton" -a $AppPid
-    winapp ui wait-for "FluentIssueTitleTextBox" -a $AppPid --value $updatedTitle -t 3000
+    winapp ui wait-for "조건에 맞는 이슈가 없습니다." -a $AppPid -t 3000
 }
 
 Test-UI "Update search after renamed issue" {
     winapp ui wait-for "FluentSearchTextBox" -a $AppPid -t 3000
     Invoke-WithRetry { winapp ui set-value "FluentSearchTextBox" $updatedTitle -a $AppPid }
     winapp ui wait-for "FluentSearchTextBox" -a $AppPid --value $updatedTitle -t 2000
+    $tree = winapp ui inspect FluentIssueListView -a $AppPid --json | ConvertFrom-Json
+    $items = @($tree.windows[0].elements[0].children | Where-Object { $_.type -eq 'ListItem' })
+    if ($items.Count -ne 1) {
+        throw "Expected one renamed issue in the filtered list, found $($items.Count)."
+    }
+    winapp ui invoke $items[0].selector -a $AppPid
     winapp ui wait-for "FluentIssueTitleTextBox" -a $AppPid --value $updatedTitle -t 3000
 }
 
