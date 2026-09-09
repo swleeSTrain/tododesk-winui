@@ -280,7 +280,7 @@ internal static class VisualThemeManager
         return CreatePalette(
             new[]
             {
-                ("ContentMaterialStrokeBrush", "#B4FFFFFF"),
+                ("ContentMaterialStrokeBrush", "#50778698"),
                 ("LiquidGlassSurfaceBrush", "#34FFFFFF"),
                 ("LiquidGlassToolbarBrush", "#22FFFFFF"),
                 ("LiquidGlassRowBrush", "#1CFFFFFF"),
@@ -327,20 +327,20 @@ internal static class VisualThemeManager
         return CreatePalette(
             new[]
             {
-                ("ContentMaterialStrokeBrush", "#FF0A246A"),
-                ("LiquidGlassSurfaceBrush", "#FFECE9D8"),
-                ("LiquidGlassToolbarBrush", "#FFECE9D8"),
-                ("LiquidGlassRowBrush", "#FFF7F3E3"),
-                ("LiquidGlassControlCheckedBrush", "#FF6DA843"),
-                ("LiquidGlassHighlightBrush", "#FFFFFFFF"),
-                ("LiquidGlassHoverBrush", "#FFD7E8FF"),
-                ("LiquidGlassSelectedBrush", "#FF8CC152"),
+                ("ContentMaterialStrokeBrush", "#FF9DB8D6"),
+                ("LiquidGlassSurfaceBrush", "#FF252D3A"),
+                ("LiquidGlassToolbarBrush", "#FF252D3A"),
+                ("LiquidGlassRowBrush", "#FF303B4B"),
+                ("LiquidGlassControlCheckedBrush", "#FF385A80"),
+                ("LiquidGlassHighlightBrush", "#FF394658"),
+                ("LiquidGlassHoverBrush", "#FF3E5874"),
+                ("LiquidGlassSelectedBrush", "#FF426B96"),
                 ("LiquidGlassStrokeBrush", "#FF316AC5"),
                 ("LiquidGlassShadowStrokeBrush", "#66000000"),
                 ("LiquidGlassCastShadowBrush", "#44000000"),
-                ("LiquidGlassTextPrimaryBrush", "#FFFFFFFF"),
-                ("LiquidGlassTextSecondaryBrush", "#FFECE9D8"),
-                ("LiquidGlassAccentBrush", "#FF316AC5"),
+                ("LiquidGlassTextPrimaryBrush", "#FFF1F5FB"),
+                ("LiquidGlassTextSecondaryBrush", "#FFBFCDE0"),
+                ("LiquidGlassAccentBrush", "#FF83B8FF"),
                 ("LiquidGlassAccentSoftBrush", "#FF9DB9E8"),
                 ("LiquidGlassChromaticWarmStrokeBrush", "#FF6DA843"),
                 ("LiquidGlassChromaticCoolStrokeBrush", "#FF316AC5"),
@@ -351,11 +351,11 @@ internal static class VisualThemeManager
             {
                 Gradient("LiquidGlassWindowBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
                 Gradient("LiquidGlassRegularWashBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
-                Gradient("LiquidGlassContentBackdropWashBrush", "#FFECE9D8", "#FFF7F3E3", "#FFE5E0C9"),
-                Gradient("ContentMaterialSurfaceBrush", "#FFF7F3E3", "#FFECE9D8", "#FFF7F3E3"),
-                Gradient("ContentMaterialRowBrush", "#FFFFFFFF", "#FFF7F3E3", "#FFFFFFFF"),
-                Gradient("LiquidGlassSidebarBrush", "#FFD6E9FF", "#FFC2DCF9", "#FFD6E9FF"),
-                Gradient("LiquidGlassDropDownBrush", "#FFFFFFFF", "#FFF7F3E3", "#FFFFFFFF"),
+                Gradient("LiquidGlassContentBackdropWashBrush", "#FF252D3A", "#FF303B4B", "#FF202835"),
+                Gradient("ContentMaterialSurfaceBrush", "#FF303B4B", "#FF252D3A", "#FF303B4B"),
+                Gradient("ContentMaterialRowBrush", "#FF394658", "#FF303B4B", "#FF394658"),
+                Gradient("LiquidGlassSidebarBrush", "#FF293F5E", "#FF223550", "#FF293F5E"),
+                Gradient("LiquidGlassDropDownBrush", "#FF394658", "#FF303B4B", "#FF394658"),
                 Gradient("LiquidGlassContentInfusionBrush", "#FF245EDB", "#FF3F8CFF", "#FF245EDB"),
                 Gradient("LiquidGlassCoolContentBrush", "#FF245EDB", "#FF3F8CFF", "#FF0F3DA8"),
                 Gradient("LiquidGlassWarmContentBrush", "#FF6DA843", "#FF8CC152", "#FF6DA843"),
@@ -363,7 +363,7 @@ internal static class VisualThemeManager
                 Gradient("LiquidGlassSecondaryRefractionBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF"),
                 Gradient("LiquidGlassSpecularBrush", "#55FFFFFF", "#22FFFFFF", "#00FFFFFF"),
                 Gradient("LiquidGlassEdgeGlowBrush", "#FF7BA9E5", "#FF316AC5", "#FF0A246A"),
-                Gradient("LiquidGlassRimBrush", "#FFFFFFFF", "#FF7BA9E5", "#FF316AC5"),
+                Gradient("LiquidGlassRimBrush", "#FF394658", "#FF7BA9E5", "#FF316AC5"),
                 Gradient("LiquidGlassCausticBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF"),
                 Gradient("LiquidGlassDistortionBrush", "#00FFFFFF", "#00FFFFFF", "#00FFFFFF")
             },
@@ -375,14 +375,14 @@ internal static class VisualThemeManager
         return CreatePalette(
             new[]
             {
-                ("ContentMaterialStrokeBrush", "#FF7BA9E5"),
+                ("ContentMaterialStrokeBrush", "#FF718399"),
                 ("LiquidGlassSurfaceBrush", "#FFECE9D8"),
                 ("LiquidGlassToolbarBrush", "#FFECE9D8"),
                 ("LiquidGlassRowBrush", "#FFFFFFFF"),
-                ("LiquidGlassControlCheckedBrush", "#FF8CC152"),
+                ("LiquidGlassControlCheckedBrush", "#FFCCE2FA"),
                 ("LiquidGlassHighlightBrush", "#FFFFFFFF"),
                 ("LiquidGlassHoverBrush", "#FFD7E8FF"),
-                ("LiquidGlassSelectedBrush", "#FF8CC152"),
+                ("LiquidGlassSelectedBrush", "#FFB6D6F7"),
                 ("LiquidGlassStrokeBrush", "#FF316AC5"),
                 ("LiquidGlassShadowStrokeBrush", "#66000000"),
                 ("LiquidGlassCastShadowBrush", "#44000000"),
@@ -478,7 +478,7 @@ internal static class VisualThemeManager
                 Gradient("LiquidGlassRegularWashBrush", "#46141D28", "#301E3546", "#3A0C1218"),
                 Gradient("LiquidGlassContentBackdropWashBrush", "#4018212C", "#2A1F3949", "#340C131A"),
                 Gradient("ContentMaterialSurfaceBrush", "#6E1D2B38", "#58233D4F", "#6221323D"),
-                Gradient("ContentMaterialRowBrush", "#52233240", "#402D4658", "#48223542"),
+                Gradient("ContentMaterialRowBrush", "#DE233240", "#DA2D4658", "#DE223542"),
                 Gradient("LiquidGlassSidebarBrush", "#6C18232F", "#50263D4E", "#5A101821"),
                 Gradient("LiquidGlassDropDownBrush", "#B51B2935", "#9E274457", "#AA172631"),
                 Gradient("LiquidGlassContentInfusionBrush", "#00000000", "#2038BDF8", "#187AD7FF", "#24C271FF", "#10000000"),
@@ -499,7 +499,7 @@ internal static class VisualThemeManager
         return CreatePalette(
             new[]
             {
-                ("ContentMaterialStrokeBrush", "#B8FFFFFF"),
+                ("ContentMaterialStrokeBrush", "#60698BA0"),
                 ("LiquidGlassSurfaceBrush", "#3CFFFFFF"),
                 ("LiquidGlassToolbarBrush", "#30FFFFFF"),
                 ("LiquidGlassRowBrush", "#26FFFFFF"),
@@ -525,7 +525,7 @@ internal static class VisualThemeManager
                 Gradient("LiquidGlassRegularWashBrush", "#38FFFFFF", "#24D8F2FF", "#2FFFFFFF"),
                 Gradient("LiquidGlassContentBackdropWashBrush", "#36FFFFFF", "#20D8F4FF", "#2AFFFFFF"),
                 Gradient("ContentMaterialSurfaceBrush", "#76FFFFFF", "#58DDF5FF", "#68FFFFFF"),
-                Gradient("ContentMaterialRowBrush", "#54FFFFFF", "#3BDDF5FF", "#48FFFFFF"),
+                Gradient("ContentMaterialRowBrush", "#DCFFFFFF", "#D8F2F8FC", "#DCFFFFFF"),
                 Gradient("LiquidGlassSidebarBrush", "#70FFFFFF", "#50D1F1FF", "#60FFFFFF"),
                 Gradient("LiquidGlassDropDownBrush", "#CFFFFFFF", "#A8DDF5FF", "#B8FFFFFF"),
                 Gradient("LiquidGlassContentInfusionBrush", "#00FFFFFF", "#1D0078D7", "#18C271FF", "#1BFF7AD9", "#12FFFFFF"),

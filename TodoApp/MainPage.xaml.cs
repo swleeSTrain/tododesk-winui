@@ -310,11 +310,6 @@ public sealed partial class MainPage : Page
         }
     }
 
-    private void ThemeDropDownButton_Click(object sender, RoutedEventArgs e)
-    {
-        ToggleFilterOverlay(ThemeDropDownButton, ThemeOverlay);
-    }
-
     private void ThemeMenuItem_Click(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { Tag: string tag }
@@ -323,11 +318,13 @@ public sealed partial class MainPage : Page
             ApplyVisualTheme(theme, save: true);
         }
 
-        CloseFilterOverlay();
+        CloseMenus();
     }
 
     private void ApplyVisualTheme(AppVisualTheme theme, bool save)
     {
+        var draft = _selectedIssue is null ? null : ReadEditorDraft(UsesNativeFluentSurface);
+        var quickTitle = UsesNativeFluentSurface ? FluentQuickIssueTextBox.Text : QuickIssueTextBox.Text;
         _visualTheme = theme;
         VisualThemeManager.Apply(theme);
 
@@ -338,6 +335,9 @@ public sealed partial class MainPage : Page
 
         UpdateThemeDropDownSelection();
         UpdateThemeSurfaceMode();
+        if (draft is not null) LoadIssueIntoEditor(draft);
+        QuickIssueTextBox.Text = quickTitle;
+        FluentQuickIssueTextBox.Text = quickTitle;
     }
 
     private bool UsesNativeFluentSurface => VisualThemeManager.CurrentDefinition.WindowTreatment == AppWindowTreatment.Opaque;
@@ -352,7 +352,7 @@ public sealed partial class MainPage : Page
 
         if (useNativeFluent)
         {
-            CloseFilterOverlay();
+            CloseMenus();
         }
 
         SyncNavigationSelection();
@@ -373,6 +373,12 @@ public sealed partial class MainPage : Page
     {
         var showDecorativeLayers = !UsesNativeFluentSurface && definition.UsesDecorativeGlassLayers;
         var visibility = showDecorativeLayers ? Visibility.Visible : Visibility.Collapsed;
+        // Keep animated reflections subordinate to text and input surfaces.
+        ContentInfusionLayer.Opacity = 0.10;
+        PrimaryRefractionLayer.Opacity = 0.04;
+        SecondaryRefractionLayer.Opacity = 0.04;
+        SheenRefractionLayer.Opacity = 0.04;
+        DistortionRefractionLayer.Opacity = 0.03;
 
         ContentInfusionLayer.Visibility = visibility;
         PrimaryRefractionLayer.Visibility = visibility;
@@ -404,42 +410,12 @@ public sealed partial class MainPage : Page
         SelectComboBoxByTag(FluentThemeComboBox, tag);
     }
 
-    private void StatusFilterDropDownButton_Click(object sender, RoutedEventArgs e)
-    {
-        ToggleFilterOverlay(StatusFilterDropDownButton, StatusFilterOverlay);
-    }
-
-    private void PriorityFilterDropDownButton_Click(object sender, RoutedEventArgs e)
-    {
-        ToggleFilterOverlay(PriorityFilterDropDownButton, PriorityFilterOverlay);
-    }
-
-    private void DetailStatusDropDownButton_Click(object sender, RoutedEventArgs e)
-    {
-        ToggleFilterOverlay(DetailStatusDropDownButton, DetailStatusOverlay);
-    }
-
-    private void DetailPriorityDropDownButton_Click(object sender, RoutedEventArgs e)
-    {
-        ToggleFilterOverlay(DetailPriorityDropDownButton, DetailPriorityOverlay);
-    }
-
-    private void DetailProjectDropDownButton_Click(object sender, RoutedEventArgs e)
-    {
-        ToggleFilterOverlay(DetailProjectDropDownButton, DetailProjectOverlay);
-    }
-
-    private void DetailAssigneeDropDownButton_Click(object sender, RoutedEventArgs e)
-    {
-        ToggleFilterOverlay(DetailAssigneeDropDownButton, DetailAssigneeOverlay);
-    }
-
-    private void StatusFilterMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+private void StatusFilterMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
     {
         UpdateDropDownSelection(StatusFilterDropDownButton, sender);
         _statusFilter = ReadSelectedTag(StatusFilterDropDownButton, "All");
         SelectComboBoxByTag(FluentStatusFilterComboBox, _statusFilter);
-        CloseFilterOverlay();
+        CloseMenus();
         RefreshViews();
     }
 
@@ -448,89 +424,41 @@ public sealed partial class MainPage : Page
         UpdateDropDownSelection(PriorityFilterDropDownButton, sender);
         _priorityFilter = ReadSelectedTag(PriorityFilterDropDownButton, "All");
         SelectComboBoxByTag(FluentPriorityFilterComboBox, _priorityFilter);
-        CloseFilterOverlay();
+        CloseMenus();
         RefreshViews();
     }
 
-    private void FilterOverlayHost_Tapped(object sender, TappedRoutedEventArgs e)
+    private void CloseMenus()
     {
-        CloseFilterOverlay();
-    }
-
-    private void FilterOverlayPanel_Tapped(object sender, TappedRoutedEventArgs e)
-    {
-        e.Handled = true;
-    }
-
-    private void ToggleFilterOverlay(DropDownButton button, FrameworkElement overlay)
-    {
-        var shouldOpen = FilterOverlayHost.Visibility != Visibility.Visible || overlay.Visibility != Visibility.Visible;
-        CloseFilterOverlay();
-
-        if (!shouldOpen)
+        foreach (var button in new[] { ThemeDropDownButton, StatusFilterDropDownButton,
+            PriorityFilterDropDownButton, DetailStatusDropDownButton, DetailPriorityDropDownButton,
+            DetailProjectDropDownButton, DetailAssigneeDropDownButton })
         {
-            return;
+            button.Flyout?.Hide();
         }
-
-        FilterOverlayHost.Visibility = Visibility.Visible;
-        FilterOverlayHost.UpdateLayout();
-        FilterOverlayCanvas.UpdateLayout();
-        overlay.UpdateLayout();
-        PositionFilterOverlay(button, overlay);
-        overlay.Visibility = Visibility.Visible;
-        RefreshDropDownMenuSelection(button);
     }
-
-    private void PositionFilterOverlay(FrameworkElement anchor, FrameworkElement overlay)
-    {
-        var transform = anchor.TransformToVisual(FilterOverlayCanvas);
-        var point = transform.TransformPoint(new Point(0, anchor.ActualHeight + 7));
-        var overlayWidth = overlay.ActualWidth > 0 ? overlay.ActualWidth : overlay.Width;
-        if (double.IsNaN(overlayWidth) || overlayWidth <= 0)
-        {
-            overlayWidth = anchor.ActualWidth;
-        }
-
-        var maxLeft = Math.Max(0, FilterOverlayCanvas.ActualWidth - overlayWidth - 8);
-        var left = Math.Min(Math.Max(8, point.X), maxLeft);
-        Canvas.SetLeft(overlay, Math.Round(left));
-        Canvas.SetTop(overlay, Math.Round(point.Y));
-    }
-
-    private void CloseFilterOverlay()
-    {
-        ThemeOverlay.Visibility = Visibility.Collapsed;
-        StatusFilterOverlay.Visibility = Visibility.Collapsed;
-        PriorityFilterOverlay.Visibility = Visibility.Collapsed;
-        DetailStatusOverlay.Visibility = Visibility.Collapsed;
-        DetailPriorityOverlay.Visibility = Visibility.Collapsed;
-        DetailProjectOverlay.Visibility = Visibility.Collapsed;
-        DetailAssigneeOverlay.Visibility = Visibility.Collapsed;
-        FilterOverlayHost.Visibility = Visibility.Collapsed;
-    }
-
     private void DetailStatusMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
     {
         UpdateDropDownSelection(DetailStatusDropDownButton, sender);
-        CloseFilterOverlay();
+        CloseMenus();
     }
 
     private void DetailPriorityMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
     {
         UpdateDropDownSelection(DetailPriorityDropDownButton, sender);
-        CloseFilterOverlay();
+        CloseMenus();
     }
 
     private void DetailProjectMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
     {
         UpdateDropDownSelection(DetailProjectDropDownButton, sender);
-        CloseFilterOverlay();
+        CloseMenus();
     }
 
     private void DetailAssigneeMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
     {
         UpdateDropDownSelection(DetailAssigneeDropDownButton, sender);
-        CloseFilterOverlay();
+        CloseMenus();
     }
 
     private void ShellNavigation_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -618,53 +546,40 @@ public sealed partial class MainPage : Page
     }
 
     private async void SaveIssue_Click(object sender, RoutedEventArgs e)
-    {
-        if (_selectedIssue is null)
-        {
-            return;
-        }
-
-        _selectedIssue.Title = NormalizeTitle(IssueTitleTextBox.Text);
-        _selectedIssue.Description = IssueDescriptionTextBox.Text.Trim();
-        _selectedIssue.Status = ReadSelectedTag(DetailStatusDropDownButton, "Todo");
-        _selectedIssue.Priority = ReadSelectedTag(DetailPriorityDropDownButton, "Medium");
-        _selectedIssue.Project = ReadSelectedTag(DetailProjectDropDownButton, "Platform");
-        _selectedIssue.Assignee = ReadSelectedTag(DetailAssigneeDropDownButton, "나");
-        _selectedIssue.DueDate = IssueDueDateTextBox.Text.Trim();
-        _selectedIssue.Labels = IssueLabelsTextBox.Text.Trim();
-
-        RefreshViews(keepSelection: true);
-        if (_selectedIssue is not null)
-        {
-            LoadIssueIntoEditor(_selectedIssue);
-        }
-        await TrySaveIssuesAsync();
-    }
+        => await SaveEditorAsync(native: false);
 
     private async void FluentSaveIssue_Click(object sender, RoutedEventArgs e)
+        => await SaveEditorAsync(native: true);
+
+    // Snapshot editor values without mutating the stored issue during theme changes.
+    private IssueItem ReadEditorDraft(bool native) => new(_selectedIssue?.Id ?? "", _selectedIssue?.Key ?? "", "", "", "Todo", "Medium", "나", "Platform", "", "")
     {
-        if (_selectedIssue is null)
-        {
-            return;
-        }
+        Title = native ? FluentIssueTitleTextBox.Text : IssueTitleTextBox.Text,
+        Description = native ? FluentIssueDescriptionTextBox.Text : IssueDescriptionTextBox.Text,
+        DueDate = native ? FluentIssueDueDateTextBox.Text : IssueDueDateTextBox.Text,
+        Labels = native ? FluentIssueLabelsTextBox.Text : IssueLabelsTextBox.Text,
+        Status = native ? ReadSelectedComboBoxTag(FluentDetailStatusComboBox, "Todo") : ReadSelectedTag(DetailStatusDropDownButton, "Todo"),
+        Priority = native ? ReadSelectedComboBoxTag(FluentDetailPriorityComboBox, "Medium") : ReadSelectedTag(DetailPriorityDropDownButton, "Medium"),
+        Project = native ? ReadSelectedComboBoxTag(FluentDetailProjectComboBox, "Platform") : ReadSelectedTag(DetailProjectDropDownButton, "Platform"),
+        Assignee = native ? ReadSelectedComboBoxTag(FluentDetailAssigneeComboBox, "나") : ReadSelectedTag(DetailAssigneeDropDownButton, "나")
+    };
 
-        _selectedIssue.Title = NormalizeTitle(FluentIssueTitleTextBox.Text);
-        _selectedIssue.Description = FluentIssueDescriptionTextBox.Text.Trim();
-        _selectedIssue.Status = ReadSelectedComboBoxTag(FluentDetailStatusComboBox, "Todo");
-        _selectedIssue.Priority = ReadSelectedComboBoxTag(FluentDetailPriorityComboBox, "Medium");
-        _selectedIssue.Project = ReadSelectedComboBoxTag(FluentDetailProjectComboBox, "Platform");
-        _selectedIssue.Assignee = ReadSelectedComboBoxTag(FluentDetailAssigneeComboBox, "나");
-        _selectedIssue.DueDate = FluentIssueDueDateTextBox.Text.Trim();
-        _selectedIssue.Labels = FluentIssueLabelsTextBox.Text.Trim();
-
+    private async System.Threading.Tasks.Task SaveEditorAsync(bool native)
+    {
+        if (_selectedIssue is null) return;
+        var draft = ReadEditorDraft(native);
+        _selectedIssue.Title = NormalizeTitle(draft.Title);
+        _selectedIssue.Description = draft.Description.Trim();
+        _selectedIssue.Status = draft.Status;
+        _selectedIssue.Priority = draft.Priority;
+        _selectedIssue.Project = draft.Project;
+        _selectedIssue.Assignee = draft.Assignee;
+        _selectedIssue.DueDate = draft.DueDate.Trim();
+        _selectedIssue.Labels = draft.Labels.Trim();
         RefreshViews(keepSelection: true);
-        if (_selectedIssue is not null)
-        {
-            LoadIssueIntoEditor(_selectedIssue);
-        }
+        if (_selectedIssue is not null) LoadIssueIntoEditor(_selectedIssue);
         await TrySaveIssuesAsync();
     }
-
     private async void DeleteSelectedIssue_Click(object sender, RoutedEventArgs e)
     {
         if (_selectedIssue is null)
@@ -918,6 +833,33 @@ public sealed partial class MainPage : Page
         return matchesQuery && matchesStatus && matchesPriority;
     }
 
+    private void FluentIssueColumns_SizeChanged(object sender, SizeChangedEventArgs e)
+        => IssueTableLayout.Update(sender as Grid, 64, 80);
+
+    private void CustomIssueColumns_SizeChanged(object sender, SizeChangedEventArgs e)
+        => IssueTableLayout.Update(sender as Grid, 96, 84);
+
+    private void CustomPageLayout_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (CustomInspector is null) return;
+        var stacked = e.NewSize.Width < 900;
+        var narrow = e.NewSize.Width < 640;
+        Grid.SetColumnSpan(SearchTextBox, narrow ? 4 : 2);
+        Grid.SetRow(StatusFilterDropDownButton, narrow ? 2 : 1);
+        Grid.SetColumn(StatusFilterDropDownButton, narrow ? 0 : 2);
+        Grid.SetColumnSpan(StatusFilterDropDownButton, narrow ? 2 : 1);
+        Grid.SetRow(PriorityFilterDropDownButton, narrow ? 2 : 1);
+        Grid.SetColumn(PriorityFilterDropDownButton, narrow ? 2 : 3);
+        Grid.SetColumnSpan(PriorityFilterDropDownButton, narrow ? 2 : 1);
+        Grid.SetRow(QuickIssueTextBox, narrow ? 3 : 2);
+        Grid.SetRow(AddQuickIssueButton, narrow ? 3 : 2);
+        CustomSidebarDecoration.Visibility = ActualWidth >= 1280 ? Visibility.Visible : Visibility.Collapsed;
+        Grid.SetColumn(CustomInspector, stacked ? 0 : 1);
+        Grid.SetRow(CustomInspector, stacked ? 1 : 0);
+        CustomInspectorColumn.Width = new GridLength(stacked ? 0 : 320);
+        CustomInspectorRow.Height = stacked ? new GridLength(1.15, GridUnitType.Star) : new GridLength(0);
+        CustomPageLayout.Padding = new Thickness(16, ActualWidth < 1280 ? 52 : 20, 16, 16);
+    }
     private void UpdateMetrics(IReadOnlyCollection<IssueItem> filtered)
     {
         var total = filtered.Count;
@@ -931,7 +873,8 @@ public sealed partial class MainPage : Page
         ReviewMetricTextBlock.Text = review.ToString();
         CompletionMetricTextBlock.Text = $"{completion}%";
         ScopeTextBlock.Text = $"{ScopeLabel} · {filtered.Count}개 이슈";
-        FluentScopeTextBlock.Text = $"{ScopeLabel} · {filtered.Count}개 이슈";
+        FluentPageTitle.Text = ScopeLabel;
+        FluentScopeTextBlock.Text = $"{filtered.Count}개 이슈 · 진행 중 {InProgressIssues.Count} · 리뷰 {review} · 완료 {done}";
     }
 
     private void UpdateEmptyState(bool isEmpty)
@@ -1267,7 +1210,7 @@ public sealed partial class MainPage : Page
 
     private void SelectDropDownByTag(DropDownButton button, string tag)
     {
-        if (TryGetOverlayForButton(button, out var overlay) && TrySelectDropDownByTag(overlay, button, tag))
+        if (TryGetMenuForButton(button, out var overlay) && TrySelectDropDownByTag(overlay, button, tag))
         {
             return;
         }
@@ -1309,9 +1252,9 @@ public sealed partial class MainPage : Page
 
     private bool TrySelectDropDownByTag(DependencyObject root, DropDownButton button, string tag)
     {
-        foreach (var item in EnumerateFlyoutButtons(root))
+        foreach (var item in EnumerateMenuItems(root))
         {
-            var itemText = item.Content?.ToString() ?? string.Empty;
+            var itemText = item.Text ?? string.Empty;
             var itemTag = item.Tag as string ?? itemText;
             if (itemTag == tag)
             {
@@ -1327,80 +1270,37 @@ public sealed partial class MainPage : Page
 
     private void RefreshDropDownMenuSelection(DropDownButton button)
     {
-        if (TryGetOverlayForButton(button, out var overlay))
+        if (TryGetMenuForButton(button, out var overlay))
         {
-            RefreshDropDownButtonSelection(overlay, button);
+            RefreshMenuSelection(overlay, button);
             return;
         }
 
     }
 
-    private bool TryGetOverlayForButton(DropDownButton button, out DependencyObject overlay)
+    private static bool TryGetMenuForButton(DropDownButton button, out DependencyObject overlay)
     {
-        if (button == ThemeDropDownButton)
-        {
-            overlay = ThemeOverlay;
-            return true;
-        }
-
-        if (button == StatusFilterDropDownButton)
-        {
-            overlay = StatusFilterOverlay;
-            return true;
-        }
-
-        if (button == PriorityFilterDropDownButton)
-        {
-            overlay = PriorityFilterOverlay;
-            return true;
-        }
-
-        if (button == DetailStatusDropDownButton)
-        {
-            overlay = DetailStatusOverlay;
-            return true;
-        }
-
-        if (button == DetailPriorityDropDownButton)
-        {
-            overlay = DetailPriorityOverlay;
-            return true;
-        }
-
-        if (button == DetailProjectDropDownButton)
-        {
-            overlay = DetailProjectOverlay;
-            return true;
-        }
-
-        if (button == DetailAssigneeDropDownButton)
-        {
-            overlay = DetailAssigneeOverlay;
-            return true;
-        }
-
-        overlay = null!;
-        return false;
+        overlay = button.Flyout!;
+        return overlay is MenuFlyout;
     }
-
-    private static void RefreshDropDownButtonSelection(DependencyObject root, DropDownButton button)
+    private static void RefreshMenuSelection(DependencyObject root, DropDownButton button)
     {
         var selectedTag = ReadSelectedTag(button, string.Empty);
-        foreach (var item in EnumerateFlyoutButtons(root))
+        foreach (var item in EnumerateMenuItems(root))
         {
-            var itemText = item.Content?.ToString() ?? string.Empty;
+            var itemText = item.Text ?? string.Empty;
             var itemTag = item.Tag as string ?? itemText;
             var isSelected = string.Equals(itemTag, selectedTag, StringComparison.Ordinal);
-            item.Background = isSelected ? CreateSelectedMenuItemBrush(button.ActualTheme) : new SolidColorBrush(Colors.Transparent);
+            item.Icon = isSelected ? new SymbolIcon(Symbol.Accept) : null;
             item.FontWeight = isSelected ? FontWeights.SemiBold : FontWeights.Normal;
         }
     }
 
     private static bool TryGetDropDownItemData(object source, out string text, out string tag)
     {
-        if (source is Button button)
+        if (source is MenuFlyoutItem button)
         {
-            text = button.Content?.ToString() ?? string.Empty;
+            text = button.Text ?? string.Empty;
             tag = button.Tag as string ?? text;
             return true;
         }
@@ -1410,61 +1310,8 @@ public sealed partial class MainPage : Page
         return false;
     }
 
-    private static IEnumerable<Button> EnumerateFlyoutButtons(DependencyObject root)
-    {
-        if (root is Button rootButton)
-        {
-            yield return rootButton;
-        }
-
-        if (root is Border { Child: DependencyObject borderChild })
-        {
-            foreach (var descendant in EnumerateFlyoutButtons(borderChild))
-            {
-                yield return descendant;
-            }
-        }
-
-        if (root is Panel panel)
-        {
-            foreach (var child in panel.Children.OfType<DependencyObject>())
-            {
-                foreach (var descendant in EnumerateFlyoutButtons(child))
-                {
-                    yield return descendant;
-                }
-            }
-        }
-
-        if (root is ContentControl { Content: DependencyObject content })
-        {
-            foreach (var descendant in EnumerateFlyoutButtons(content))
-            {
-                yield return descendant;
-            }
-        }
-
-        var childCount = VisualTreeHelper.GetChildrenCount(root);
-        for (var i = 0; i < childCount; i++)
-        {
-            var child = VisualTreeHelper.GetChild(root, i);
-            foreach (var descendant in EnumerateFlyoutButtons(child))
-            {
-                yield return descendant;
-            }
-        }
-    }
-
-    private static SolidColorBrush CreateSelectedMenuItemBrush(ElementTheme theme)
-    {
-        var resolvedTheme = theme == ElementTheme.Default && Application.Current.RequestedTheme == ApplicationTheme.Dark
-            ? ElementTheme.Dark
-            : theme;
-
-        return new SolidColorBrush(resolvedTheme == ElementTheme.Dark
-            ? Color.FromArgb(0x34, 98, 154, 255)
-            : Color.FromArgb(0x24, 24, 140, 255));
-    }
+    private static IEnumerable<MenuFlyoutItem> EnumerateMenuItems(DependencyObject root)
+        => root is MenuFlyout flyout ? flyout.Items.OfType<MenuFlyoutItem>() : Enumerable.Empty<MenuFlyoutItem>();
 }
 
 public sealed class IssueItem : INotifyPropertyChanged
@@ -1662,9 +1509,9 @@ public sealed class IssueItem : INotifyPropertyChanged
 
     public string AutomationName => $"{Key} {Title} {StatusLabel}";
 
-    public double SelectionFillOpacity => IsSelected ? 0.10 : 0;
+    public double SelectionFillOpacity => IsSelected ? 0.55 : 0;
 
-    public double SelectionRingOpacity => IsSelected ? 0.30 : 0;
+    public double SelectionRingOpacity => IsSelected ? 1.0 : 0;
 
     public static IssueItem Create(string key, string title)
     {

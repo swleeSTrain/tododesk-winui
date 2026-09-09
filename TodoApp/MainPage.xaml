@@ -11,6 +11,51 @@
     mc:Ignorable="d">
 
     <Grid Background="Transparent">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState x:Name="FluentWide">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="1000" />
+                        </VisualState.StateTriggers>
+                    </VisualState>
+                    <VisualState x:Name="FluentStacked">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="640" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="FluentInspector.(Grid.Column)" Value="0" />
+                            <Setter Target="FluentInspector.(Grid.Row)" Value="1" />
+                            <Setter Target="FluentInspectorColumn.Width" Value="0" />
+                            <Setter Target="FluentInspectorRow.Height" Value="1.15*" />
+                            <Setter Target="FluentBody.RowSpacing" Value="16" />
+                            <Setter Target="FluentPageLayout.Padding" Value="20,52,20,20" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="FluentNarrow">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="0" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="FluentInspector.(Grid.Column)" Value="0" />
+                            <Setter Target="FluentInspector.(Grid.Row)" Value="1" />
+                            <Setter Target="FluentInspectorColumn.Width" Value="0" />
+                            <Setter Target="FluentInspectorRow.Height" Value="1.15*" />
+                            <Setter Target="FluentBody.RowSpacing" Value="12" />
+                            <Setter Target="FluentPageLayout.Padding" Value="16,52,16,16" />
+                            <Setter Target="FluentPageLayout.RowSpacing" Value="12" />
+                            <Setter Target="FluentThemeHost.(Grid.Row)" Value="1" />
+                            <Setter Target="FluentThemeHost.(Grid.Column)" Value="0" />
+                            <Setter Target="FluentThemeHost.(Grid.ColumnSpan)" Value="3" />
+                            <Setter Target="FluentThemeHost.HorizontalAlignment" Value="Left" />
+                            <Setter Target="FluentSearchHost.(Grid.ColumnSpan)" Value="3" />
+                            <Setter Target="FluentStatusHost.(Grid.Row)" Value="1" />
+                            <Setter Target="FluentStatusHost.(Grid.Column)" Value="0" />
+                            <Setter Target="FluentPriorityHost.(Grid.Row)" Value="1" />
+                            <Setter Target="FluentPriorityHost.(Grid.Column)" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
     <Grid x:Name="CustomThemeRoot" Background="Transparent">
         <Grid.Resources>
         <Style x:Key="MutedCaptionStyle" TargetType="TextBlock">
@@ -267,8 +312,8 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="UseSystemFocusVisuals" Value="False" />
-            <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource LiquidGlassEdgeGlowBrush}" />
+            <Setter Property="UseSystemFocusVisuals" Value="True" />
+            <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource LiquidGlassAccentBrush}" />
             <Setter Property="FocusVisualSecondaryBrush" Value="{ThemeResource LiquidGlassStrokeBrush}" />
             <Setter Property="Width" Value="40" />
             <Setter Property="Height" Value="36" />
@@ -293,8 +338,8 @@
             <Setter Property="Height" Value="36" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="UseSystemFocusVisuals" Value="False" />
-            <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource LiquidGlassEdgeGlowBrush}" />
+            <Setter Property="UseSystemFocusVisuals" Value="True" />
+            <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource LiquidGlassAccentBrush}" />
             <Setter Property="FocusVisualSecondaryBrush" Value="{ThemeResource LiquidGlassStrokeBrush}" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
             <Setter Property="Template">
@@ -403,8 +448,8 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="UseSystemFocusVisuals" Value="False" />
-            <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource LiquidGlassEdgeGlowBrush}" />
+            <Setter Property="UseSystemFocusVisuals" Value="True" />
+            <Setter Property="FocusVisualPrimaryBrush" Value="{ThemeResource LiquidGlassAccentBrush}" />
             <Setter Property="FocusVisualSecondaryBrush" Value="{ThemeResource LiquidGlassStrokeBrush}" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
             <Setter Property="Template">
@@ -546,7 +591,7 @@
             <Setter Property="MinHeight" Value="30" />
             <Setter Property="MinWidth" Value="132" />
             <Setter Property="Padding" Value="12,4" />
-            <Setter Property="UseSystemFocusVisuals" Value="False" />
+            <Setter Property="UseSystemFocusVisuals" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -888,7 +933,7 @@
                     <TextBlock
                         Grid.Row="1"
                         Text="{x:Bind Title, Mode=OneWay}"
-                        TextWrapping="WrapWholeWords" />
+                        TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind Title, Mode=OneWay}" />
                     <Grid Grid.Row="2" ColumnSpacing="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -915,7 +960,7 @@
         IsHitTestVisible="False" />
 
     <Grid
-        Width="184"
+        x:Name="CustomSidebarDecoration" Width="184"
         Margin="8,8,0,12"
         HorizontalAlignment="Left"
         IsHitTestVisible="False"
@@ -979,7 +1024,7 @@
         IsBackButtonVisible="Collapsed"
         IsSettingsVisible="False"
         OpenPaneLength="184"
-        PaneDisplayMode="Left"
+        PaneDisplayMode="Auto" ExpandedModeThresholdWidth="1280" CompactModeThresholdWidth="1120"
         SelectionChanged="ShellNavigation_SelectionChanged">
         <NavigationView.Resources>
             <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
@@ -1010,7 +1055,7 @@
             <StaticResource x:Key="NavigationViewItemForegroundSelectedPressed" ResourceKey="LiquidGlassTextPrimaryBrush" />
             <Style TargetType="NavigationViewItem">
                 <Setter Property="CornerRadius" Value="3" />
-                <Setter Property="UseSystemFocusVisuals" Value="False" />
+                <Setter Property="UseSystemFocusVisuals" Value="True" />
             </Style>
         </NavigationView.Resources>
         <NavigationView.MenuItems>
@@ -1037,7 +1082,7 @@
         </NavigationView.MenuItems>
 
         <Grid
-            Padding="18,14,18,18"
+            x:Name="CustomPageLayout" SizeChanged="CustomPageLayout_SizeChanged" Padding="18,52,18,18"
             Background="Transparent"
             RowSpacing="10">
             <Grid.RowDefinitions>
@@ -1293,7 +1338,7 @@
                 <StackPanel Spacing="1">
                     <TextBlock
                         Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="Issues" />
+                        Text="이슈" />
                     <TextBlock
                         x:Name="ScopeTextBlock"
                         Style="{StaticResource CaptionTextBlockStyle}"
@@ -1340,10 +1385,9 @@
                         Spacing="2">
                         <DropDownButton
                             x:Name="ThemeDropDownButton"
-                            Width="54"
+                            Width="86"
                             AutomationProperties.AutomationId="ThemeDropDownButton"
                             AutomationProperties.Name="테마"
-                            Click="ThemeDropDownButton_Click"
                             PointerEntered="GlassSurface_PointerEntered"
                             PointerMoved="GlassSurface_PointerMoved"
                             PointerExited="GlassSurface_PointerExited"
@@ -1351,8 +1395,16 @@
                             PointerReleased="GlassSurface_PointerReleased"
                             Style="{StaticResource LiquidGlassDropDownButtonStyle}"
                             ToolTipService.ToolTip="테마">
-                            <SymbolIcon Symbol="Setting" />
-                        </DropDownButton>
+                            <TextBlock Text="테마" />
+                        <DropDownButton.Flyout>
+<MenuFlyout>
+<MenuFlyoutItem Text="WinUI Fluent" Tag="fluent" Click="ThemeMenuItem_Click" AutomationProperties.AutomationId="ThemeOptionfluent" />
+<MenuFlyoutItem Text="Liquid Glass" Tag="liquid" Click="ThemeMenuItem_Click" AutomationProperties.AutomationId="ThemeOptionliquid" />
+<MenuFlyoutItem Text="Windows XP" Tag="xp" Click="ThemeMenuItem_Click" AutomationProperties.AutomationId="ThemeOptionxp" />
+<MenuFlyoutItem Text="Aero" Tag="aero" Click="ThemeMenuItem_Click" AutomationProperties.AutomationId="ThemeOptionaero" />
+</MenuFlyout>
+</DropDownButton.Flyout>
+</DropDownButton>
                         <Button
                             AutomationProperties.AutomationId="NewIssueButton"
                             AutomationProperties.Name="새 이슈"
@@ -1443,40 +1495,41 @@
                             <CompositeTransform ScaleX="1.10" SkewX="-5" />
                         </Border.RenderTransform>
                     </Border>
-                <Grid Margin="10,8" ColumnSpacing="16">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="160" />
-                        <ColumnDefinition Width="128" />
-                        <ColumnDefinition Width="128" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                <Grid x:Name="CustomToolbar" Margin="10,8" ColumnSpacing="12" RowSpacing="8">
+<Grid.RowDefinitions>
+<RowDefinition Height="Auto" />
+<RowDefinition Height="Auto" />
+<RowDefinition Height="Auto" />
+<RowDefinition Height="Auto" />
+</Grid.RowDefinitions>
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="*" />
+<ColumnDefinition Width="*" />
+<ColumnDefinition Width="*" />
+<ColumnDefinition Width="*" />
+</Grid.ColumnDefinitions>
 
-                    <StackPanel MinWidth="76" Spacing="0">
+                    <StackPanel MinWidth="0" Spacing="0">
                         <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="전체" />
                         <TextBlock x:Name="TotalMetricTextBlock" Style="{StaticResource QuietMetricValueStyle}" />
                     </StackPanel>
-                    <StackPanel Grid.Column="1" MinWidth="76" Spacing="0">
+                    <StackPanel Grid.Column="1" MinWidth="0" Spacing="0">
                         <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="진행" />
                         <TextBlock x:Name="ActiveMetricTextBlock" Style="{StaticResource QuietMetricValueStyle}" />
                     </StackPanel>
-                    <StackPanel Grid.Column="2" MinWidth="76" Spacing="0">
+                    <StackPanel Grid.Column="2" MinWidth="0" Spacing="0">
                         <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="리뷰" />
                         <TextBlock x:Name="ReviewMetricTextBlock" Style="{StaticResource QuietMetricValueStyle}" />
                     </StackPanel>
-                    <StackPanel Grid.Column="3" MinWidth="76" Spacing="0">
+                    <StackPanel Grid.Column="3" MinWidth="0" Spacing="0">
                         <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="완료율" />
                         <TextBlock x:Name="CompletionMetricTextBlock" Style="{StaticResource QuietMetricValueStyle}" />
                     </StackPanel>
 
                     <TextBox
                         x:Name="QuickIssueTextBox"
-                        Grid.Column="4"
-                        MinWidth="180"
+                        Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                        MinWidth="0"
                         VerticalAlignment="Center"
                         AutomationProperties.AutomationId="QuickIssueTextBox"
                         KeyDown="QuickIssueTextBox_KeyDown"
@@ -1484,7 +1537,7 @@
                         Style="{StaticResource LiquidGlassTextBoxStyle}" />
                     <TextBox
                         x:Name="SearchTextBox"
-                        Grid.Column="5"
+                        Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                         VerticalAlignment="Center"
                         AutomationProperties.AutomationId="SearchTextBox"
                         PlaceholderText="검색"
@@ -1492,26 +1545,45 @@
                         TextChanged="SearchTextBox_TextChanged" />
                     <DropDownButton
                         x:Name="StatusFilterDropDownButton"
-                        Grid.Column="6"
+                        Grid.Row="1" Grid.Column="2"
                         VerticalAlignment="Center"
                         AutomationProperties.AutomationId="StatusFilterDropDownButton"
-                        Click="StatusFilterDropDownButton_Click"
                         Content="모든 상태"
                         Style="{StaticResource LiquidGlassDropDownButtonStyle}"
-                        Tag="All" />
+                        Tag="All" >
+<DropDownButton.Flyout>
+<MenuFlyout>
+<MenuFlyoutItem Text="모든 상태" Tag="All" Click="StatusFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="StatusFilterOptionAll" />
+<MenuFlyoutItem Text="백로그" Tag="Backlog" Click="StatusFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="StatusFilterOptionBacklog" />
+<MenuFlyoutItem Text="예정" Tag="Todo" Click="StatusFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="StatusFilterOptionTodo" />
+<MenuFlyoutItem Text="진행 중" Tag="InProgress" Click="StatusFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="StatusFilterOptionInProgress" />
+<MenuFlyoutItem Text="리뷰" Tag="Review" Click="StatusFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="StatusFilterOptionReview" />
+<MenuFlyoutItem Text="완료" Tag="Done" Click="StatusFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="StatusFilterOptionDone" />
+</MenuFlyout>
+</DropDownButton.Flyout>
+</DropDownButton>
                     <DropDownButton
                         x:Name="PriorityFilterDropDownButton"
-                        Grid.Column="7"
+                        Grid.Row="1" Grid.Column="3"
                         VerticalAlignment="Center"
                         AutomationProperties.AutomationId="PriorityFilterDropDownButton"
-                        Click="PriorityFilterDropDownButton_Click"
                         Content="모든 우선순위"
                         Style="{StaticResource LiquidGlassDropDownButtonStyle}"
-                        Tag="All" />
+                        Tag="All" >
+<DropDownButton.Flyout>
+<MenuFlyout>
+<MenuFlyoutItem Text="모든 우선순위" Tag="All" Click="PriorityFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="PriorityFilterOptionAll" />
+<MenuFlyoutItem Text="긴급" Tag="Urgent" Click="PriorityFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="PriorityFilterOptionUrgent" />
+<MenuFlyoutItem Text="높음" Tag="High" Click="PriorityFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="PriorityFilterOptionHigh" />
+<MenuFlyoutItem Text="보통" Tag="Medium" Click="PriorityFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="PriorityFilterOptionMedium" />
+<MenuFlyoutItem Text="낮음" Tag="Low" Click="PriorityFilterMenuFlyoutItem_Click" AutomationProperties.AutomationId="PriorityFilterOptionLow" />
+</MenuFlyout>
+</DropDownButton.Flyout>
+</DropDownButton>
                     <Button
-                        Grid.Column="8"
+                        Grid.Row="2" Grid.Column="3"
                         VerticalAlignment="Center"
-                        AutomationProperties.AutomationId="AddQuickIssueButton"
+                        x:Name="AddQuickIssueButton" AutomationProperties.AutomationId="AddQuickIssueButton"
                         AutomationProperties.Name="빠른 이슈 추가"
                         Click="AddQuickIssue_Click"
                         PointerEntered="GlassSurface_PointerEntered"
@@ -1526,10 +1598,14 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="2" ColumnSpacing="12">
+            <Grid x:Name="CustomBody" Grid.Row="2" ColumnSpacing="12" RowSpacing="12">
+<Grid.RowDefinitions>
+<RowDefinition Height="*" />
+<RowDefinition x:Name="CustomInspectorRow" Height="0" />
+</Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="320" />
+                    <ColumnDefinition x:Name="CustomInspectorColumn" Width="320" />
                 </Grid.ColumnDefinitions>
 
                 <Grid
@@ -1587,7 +1663,7 @@
                         BorderBrush="{ThemeResource LiquidGlassStrokeBrush}"
                         BorderThickness="0,0,0,1"
                         CornerRadius="16,16,0,0">
-                        <Grid ColumnSpacing="12">
+                        <Grid ColumnSpacing="12" SizeChanged="CustomIssueColumns_SizeChanged">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="72" />
                                 <ColumnDefinition Width="*" />
@@ -1595,11 +1671,11 @@
                                 <ColumnDefinition Width="96" />
                                 <ColumnDefinition Width="84" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="KEY" />
-                            <TextBlock Grid.Column="1" Style="{StaticResource MutedCaptionStyle}" Text="ISSUE" />
-                            <TextBlock Grid.Column="2" Style="{StaticResource MutedCaptionStyle}" Text="STATUS" />
-                            <TextBlock Grid.Column="3" Style="{StaticResource MutedCaptionStyle}" Text="OWNER" />
-                            <TextBlock Grid.Column="4" Style="{StaticResource MutedCaptionStyle}" Text="DUE" />
+                            <TextBlock Style="{StaticResource MutedCaptionStyle}" Text="번호" />
+                            <TextBlock Grid.Column="1" Style="{StaticResource MutedCaptionStyle}" Text="제목" />
+                            <TextBlock Grid.Column="2" Style="{StaticResource MutedCaptionStyle}" Text="상태" />
+                            <TextBlock Grid.Column="3" Style="{StaticResource MutedCaptionStyle}" Text="담당자" />
+                            <TextBlock Grid.Column="4" Style="{StaticResource MutedCaptionStyle}" Text="기한" />
                         </Grid>
                     </Border>
 
@@ -1650,90 +1726,21 @@
                                     PointerExited="GlassSurface_PointerExited"
                                     PointerPressed="GlassSurface_PointerPressed"
                                     PointerReleased="GlassSurface_PointerReleased"
-                                    Shadow="{StaticResource LiquidGlassCardShadow}"
-                                    Translation="0,0,6">
+
+                                    Translation="0,0,0">
                                     <Grid>
-                                        <Border
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Loaded="BackdropDistortion_Loaded"
-                                            Tag="Card"
-                                            Unloaded="BackdropDistortion_Unloaded" />
-                                        <Border
-                                            Background="{ThemeResource LiquidGlassSpecularBrush}"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.058" />
-                                        <Border
-                                            Background="{ThemeResource LiquidGlassRefractionBrush}"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.082">
-                                            <Border.RenderTransform>
-                                                <CompositeTransform ScaleX="1.08" SkewX="-4" />
-                                            </Border.RenderTransform>
-                                        </Border>
-                                        <Border
-                                            Height="12"
-                                            Margin="14,3,14,0"
-                                            VerticalAlignment="Top"
-                                            Background="{ThemeResource LiquidGlassSpecularBrush}"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.15" />
-                                        <Border
-                                            Height="1"
-                                            Margin="22,2,22,0"
-                                            VerticalAlignment="Top"
-                                            Background="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.22" />
-                                        <Border
-                                            Background="{ThemeResource LiquidGlassCausticBrush}"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.030" />
-                                        <Border
-                                            Background="{ThemeResource LiquidGlassDistortionBrush}"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.004">
-                                            <Border.RenderTransform>
-                                                <CompositeTransform ScaleX="1.12" SkewX="-6" />
-                                            </Border.RenderTransform>
-                                        </Border>
-                                        <Border
-                                            BorderBrush="{ThemeResource LiquidGlassChromaticCoolStrokeBrush}"
-                                            BorderThickness="1,0,0,1"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.065"
-                                            Translation="-1,0,0" />
-                                        <Border
-                                            BorderBrush="{ThemeResource LiquidGlassChromaticWarmStrokeBrush}"
-                                            BorderThickness="0,1,1,0"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.050"
-                                            Translation="1,0,0" />
-                                        <Border
-                                            BorderBrush="{ThemeResource ContentMaterialStrokeBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.24" />
-                                        <Border
+<Border
                                             Background="{ThemeResource LiquidGlassSelectedBrush}"
                                             CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="{x:Bind SelectionFillOpacity, Mode=OneWay}" />
                                         <Border
-                                            BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
+                                            BorderBrush="{ThemeResource LiquidGlassAccentBrush}"
                                             BorderThickness="1"
                                             CornerRadius="3"
                                             IsHitTestVisible="False"
                                             Opacity="{x:Bind SelectionRingOpacity, Mode=OneWay}" />
-                                <Grid MinHeight="58" Padding="10,6" ColumnSpacing="12">
+                                <Grid MinHeight="64" Padding="10,8" ColumnSpacing="12" SizeChanged="CustomIssueColumns_SizeChanged">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="72" />
                                         <ColumnDefinition Width="*" />
@@ -1761,7 +1768,7 @@
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
                                         <TextBlock
                                             Text="{x:Bind Title, Mode=OneWay}"
-                                            TextWrapping="WrapWholeWords" />
+                                            TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind Title, Mode=OneWay}" />
                                         <TextBlock
                                             Style="{StaticResource CaptionTextBlockStyle}"
                                             Foreground="{ThemeResource LiquidGlassTextSecondaryBrush}"
@@ -1951,8 +1958,7 @@
                 </Grid>
 
                 <Grid
-                    Grid.Column="1"
-                    MinWidth="320"
+                    x:Name="CustomInspector" Grid.Column="1" MinWidth="0"
                     PointerEntered="GlassSurface_PointerEntered"
                     PointerMoved="GlassSurface_PointerMoved"
                     PointerExited="GlassSurface_PointerExited">
@@ -1994,7 +2000,11 @@
                             <CompositeTransform ScaleX="1.10" SkewX="-5" />
                         </Border.RenderTransform>
                     </Border>
-                    <Grid Margin="14">
+                    <Grid Margin="14" RowSpacing="8">
+<Grid.RowDefinitions>
+<RowDefinition Height="*" />
+<RowDefinition Height="Auto" />
+</Grid.RowDefinitions>
                         <StackPanel x:Name="DetailEmptyState" VerticalAlignment="Center" Spacing="8">
                             <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="이슈 선택" />
                             <TextBlock
@@ -2023,12 +2033,12 @@
                                         Foreground="{ThemeResource LiquidGlassAccentBrush}" />
                                 </Grid>
                                 <TextBox
-                                    x:Name="IssueTitleTextBox"
+                                    x:Name="IssueTitleTextBox" Header="제목"
                                     AutomationProperties.AutomationId="IssueTitleTextBox"
                                     PlaceholderText="제목"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}" />
                                 <TextBox
-                                    x:Name="IssueDescriptionTextBox"
+                                    x:Name="IssueDescriptionTextBox" Header="설명"
                                     AcceptsReturn="True"
                                     AutomationProperties.AutomationId="IssueDescriptionTextBox"
                                     Height="104"
@@ -2041,19 +2051,42 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <DropDownButton
+                                    <StackPanel Spacing="4">
+<TextBlock Text="상태" Style="{StaticResource MutedCaptionStyle}" />
+<DropDownButton
                                         x:Name="DetailStatusDropDownButton"
                                         AutomationProperties.AutomationId="DetailStatusDropDownButton"
-                                        Click="DetailStatusDropDownButton_Click"
                                         Content="상태"
-                                        Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
-                                    <DropDownButton
+                                        Style="{StaticResource LiquidGlassDropDownButtonStyle}" >
+<DropDownButton.Flyout>
+<MenuFlyout>
+<MenuFlyoutItem Text="백로그" Tag="Backlog" Click="DetailStatusMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailStatusOptionBacklog" />
+<MenuFlyoutItem Text="예정" Tag="Todo" Click="DetailStatusMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailStatusOptionTodo" />
+<MenuFlyoutItem Text="진행 중" Tag="InProgress" Click="DetailStatusMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailStatusOptionInProgress" />
+<MenuFlyoutItem Text="리뷰" Tag="Review" Click="DetailStatusMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailStatusOptionReview" />
+<MenuFlyoutItem Text="완료" Tag="Done" Click="DetailStatusMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailStatusOptionDone" />
+</MenuFlyout>
+</DropDownButton.Flyout>
+</DropDownButton>
+</StackPanel>
+                                    <StackPanel Grid.Column="1" Spacing="4">
+<TextBlock Text="우선순위" Style="{StaticResource MutedCaptionStyle}" />
+<DropDownButton
                                         x:Name="DetailPriorityDropDownButton"
-                                        Grid.Column="1"
+
                                         AutomationProperties.AutomationId="DetailPriorityDropDownButton"
-                                        Click="DetailPriorityDropDownButton_Click"
                                         Content="우선순위"
-                                        Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
+                                        Style="{StaticResource LiquidGlassDropDownButtonStyle}" >
+<DropDownButton.Flyout>
+<MenuFlyout>
+<MenuFlyoutItem Text="긴급" Tag="Urgent" Click="DetailPriorityMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailPriorityOptionUrgent" />
+<MenuFlyoutItem Text="높음" Tag="High" Click="DetailPriorityMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailPriorityOptionHigh" />
+<MenuFlyoutItem Text="보통" Tag="Medium" Click="DetailPriorityMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailPriorityOptionMedium" />
+<MenuFlyoutItem Text="낮음" Tag="Low" Click="DetailPriorityMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailPriorityOptionLow" />
+</MenuFlyout>
+</DropDownButton.Flyout>
+</DropDownButton>
+</StackPanel>
                                 </Grid>
 
                                 <Grid ColumnSpacing="10">
@@ -2061,354 +2094,105 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <DropDownButton
+                                    <StackPanel Spacing="4">
+<TextBlock Text="프로젝트" Style="{StaticResource MutedCaptionStyle}" />
+<DropDownButton
                                         x:Name="DetailProjectDropDownButton"
                                         AutomationProperties.AutomationId="DetailProjectDropDownButton"
-                                        Click="DetailProjectDropDownButton_Click"
                                         Content="프로젝트"
-                                        Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
-                                    <DropDownButton
+                                        Style="{StaticResource LiquidGlassDropDownButtonStyle}" >
+<DropDownButton.Flyout>
+<MenuFlyout>
+<MenuFlyoutItem Text="Platform" Tag="Platform" Click="DetailProjectMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailProjectOptionPlatform" />
+<MenuFlyoutItem Text="Mobile" Tag="Mobile" Click="DetailProjectMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailProjectOptionMobile" />
+<MenuFlyoutItem Text="Growth" Tag="Growth" Click="DetailProjectMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailProjectOptionGrowth" />
+<MenuFlyoutItem Text="Ops" Tag="Ops" Click="DetailProjectMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailProjectOptionOps" />
+</MenuFlyout>
+</DropDownButton.Flyout>
+</DropDownButton>
+</StackPanel>
+                                    <StackPanel Grid.Column="1" Spacing="4">
+<TextBlock Text="담당자" Style="{StaticResource MutedCaptionStyle}" />
+<DropDownButton
                                         x:Name="DetailAssigneeDropDownButton"
-                                        Grid.Column="1"
+
                                         AutomationProperties.AutomationId="DetailAssigneeDropDownButton"
-                                        Click="DetailAssigneeDropDownButton_Click"
                                         Content="담당자"
-                                        Style="{StaticResource LiquidGlassDropDownButtonStyle}" />
+                                        Style="{StaticResource LiquidGlassDropDownButtonStyle}" >
+<DropDownButton.Flyout>
+<MenuFlyout>
+<MenuFlyoutItem Text="나" Tag="나" Click="DetailAssigneeMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailAssigneeOption나" />
+<MenuFlyoutItem Text="Design" Tag="Design" Click="DetailAssigneeMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailAssigneeOptionDesign" />
+<MenuFlyoutItem Text="Backend" Tag="Backend" Click="DetailAssigneeMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailAssigneeOptionBackend" />
+<MenuFlyoutItem Text="QA" Tag="QA" Click="DetailAssigneeMenuFlyoutItem_Click" AutomationProperties.AutomationId="DetailAssigneeOptionQA" />
+</MenuFlyout>
+</DropDownButton.Flyout>
+</DropDownButton>
+</StackPanel>
                                 </Grid>
 
                                 <TextBox
-                                    x:Name="IssueDueDateTextBox"
+                                    x:Name="IssueDueDateTextBox" Header="기한"
                                     AutomationProperties.AutomationId="IssueDueDateTextBox"
                                     PlaceholderText="기한: 2026-06-12"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}" />
                                 <TextBox
-                                    x:Name="IssueLabelsTextBox"
+                                    x:Name="IssueLabelsTextBox" Header="라벨"
                                     AutomationProperties.AutomationId="IssueLabelsTextBox"
                                     PlaceholderText="라벨: ux, data"
                                     Style="{StaticResource LiquidGlassTextBoxStyle}" />
 
-                                <Grid ColumnSpacing="8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        x:Name="DetailHintTextBlock"
-                                        VerticalAlignment="Center"
-                                        Foreground="{ThemeResource LiquidGlassTextSecondaryBrush}" />
-                                    <Grid
-                                        Grid.Column="1"
-                                        PointerEntered="GlassSurface_PointerEntered"
-                                        PointerMoved="GlassSurface_PointerMoved"
-                                        PointerExited="GlassSurface_PointerExited">
-                                        <Border
-                                            Margin="0,4,0,-4"
-                                            Background="{ThemeResource LiquidGlassCastShadowBrush}"
-                                            CornerRadius="4"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.26" />
-                                        <Border Style="{StaticResource LiquidGlassControlGroupStyle}" />
-                                        <Border
-                                            CornerRadius="4"
-                                            IsHitTestVisible="False"
-                                            Loaded="BackdropDistortion_Loaded"
-                                            Tag="Toolbar"
-                                            Unloaded="BackdropDistortion_Unloaded" />
-                                        <Border
-                                            Margin="1"
-                                            BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="3"
-                                            IsHitTestVisible="False"
-                                            Opacity="0.30" />
-                                        <StackPanel
-                                            Margin="4"
-                                            Orientation="Horizontal"
-                                            Spacing="2">
-                                            <Button
-                                                AutomationProperties.AutomationId="SaveIssueButton"
-                                                AutomationProperties.Name="이슈 저장"
-                                                Click="SaveIssue_Click"
-                                                PointerEntered="GlassSurface_PointerEntered"
-                                                PointerMoved="GlassSurface_PointerMoved"
-                                                PointerExited="GlassSurface_PointerExited"
-                                                PointerPressed="GlassSurface_PointerPressed"
-                                                PointerReleased="GlassSurface_PointerReleased"
-                                                Style="{StaticResource LiquidGlassToolbarButtonStyle}"
-                                                ToolTipService.ToolTip="이슈 저장">
-                                                <SymbolIcon Symbol="Save" />
-                                            </Button>
-                                            <Button
-                                                AutomationProperties.AutomationId="DeleteIssueButton"
-                                                AutomationProperties.Name="이슈 삭제"
-                                                Click="DeleteSelectedIssue_Click"
-                                                PointerEntered="GlassSurface_PointerEntered"
-                                                PointerMoved="GlassSurface_PointerMoved"
-                                                PointerExited="GlassSurface_PointerExited"
-                                                PointerPressed="GlassSurface_PointerPressed"
-                                                PointerReleased="GlassSurface_PointerReleased"
-                                                Style="{StaticResource LiquidGlassToolbarButtonStyle}"
-                                                ToolTipService.ToolTip="이슈 삭제">
-                                                <SymbolIcon Symbol="Delete" />
-                                            </Button>
-                                        </StackPanel>
-                                    </Grid>
-                                </Grid>
-                            </StackPanel>
-                        </ScrollViewer>
+                                </StackPanel>
+</ScrollViewer>
+<Grid Grid.Row="1" ColumnSpacing="8" Visibility="{Binding Visibility, ElementName=DetailEditor}">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="*" />
+<ColumnDefinition Width="Auto" />
+<ColumnDefinition Width="Auto" />
+</Grid.ColumnDefinitions>
+<TextBlock x:Name="DetailHintTextBlock" Visibility="Collapsed" />
+<Button Grid.Column="1" Content="삭제" AutomationProperties.AutomationId="DeleteIssueButton"
+AutomationProperties.Name="이슈 삭제" Click="DeleteSelectedIssue_Click" Style="{StaticResource LiquidGlassActionButtonStyle}" />
+<Button Grid.Column="2" Content="저장" AutomationProperties.AutomationId="SaveIssueButton"
+AutomationProperties.Name="이슈 저장" Click="SaveIssue_Click" Style="{StaticResource LiquidGlassActionButtonStyle}" />
+</Grid>
                     </Grid>
                 </Grid>
             </Grid>
         </Grid>
     </NavigationView>
 
-    <Grid
-        x:Name="FilterOverlayHost"
-        Background="Transparent"
-        Tapped="FilterOverlayHost_Tapped"
-        Visibility="Collapsed">
-        <Canvas x:Name="FilterOverlayCanvas">
-            <Border
-                x:Name="ThemeOverlay"
-                Width="178"
-                Padding="5"
-                Background="{ThemeResource LiquidGlassDropDownBrush}"
-                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Shadow="{StaticResource LiquidGlassPanelShadow}"
-                Tapped="FilterOverlayPanel_Tapped"
-                Translation="0,0,96"
-                Visibility="Collapsed">
-                <Grid>
-                    <Border
-                        Background="{ThemeResource LiquidGlassRefractionBrush}"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.22" />
-                    <Border
-                        Margin="1"
-                        BorderBrush="{ThemeResource LiquidGlassSpecularBrush}"
-                        BorderThickness="1"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.38" />
-                    <Border
-                        Height="11"
-                        Margin="12,3,12,0"
-                        VerticalAlignment="Top"
-                        Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.18" />
-                    <StackPanel>
-                        <Button Click="ThemeMenuItem_Click" Content="WinUI Fluent" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="fluent" />
-                        <Button Click="ThemeMenuItem_Click" Content="Liquid Glass" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="liquid" />
-                        <Button Click="ThemeMenuItem_Click" Content="Windows XP" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="xp" />
-                        <Button Click="ThemeMenuItem_Click" Content="Aero" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="aero" />
-                    </StackPanel>
-                </Grid>
-            </Border>
 
-            <Border
-                x:Name="StatusFilterOverlay"
-                Width="142"
-                Padding="5"
-                Background="{ThemeResource LiquidGlassDropDownBrush}"
-                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Shadow="{StaticResource LiquidGlassPanelShadow}"
-                Tapped="FilterOverlayPanel_Tapped"
-                Translation="0,0,96"
-                Visibility="Collapsed">
-                <Grid>
-                    <Border
-                        Background="{ThemeResource LiquidGlassRefractionBrush}"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.22" />
-                    <Border
-                        Margin="1"
-                        BorderBrush="{ThemeResource LiquidGlassSpecularBrush}"
-                        BorderThickness="1"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.38" />
-                    <Border
-                        Height="11"
-                        Margin="12,3,12,0"
-                        VerticalAlignment="Top"
-                        Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.18" />
-                    <StackPanel>
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="모든 상태" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="All" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="백로그" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backlog" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="예정" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Todo" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="진행 중" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="InProgress" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="리뷰" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Review" />
-                        <Button Click="StatusFilterMenuFlyoutItem_Click" Content="완료" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Done" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <Border
-                x:Name="PriorityFilterOverlay"
-                Width="154"
-                Padding="5"
-                Background="{ThemeResource LiquidGlassDropDownBrush}"
-                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Shadow="{StaticResource LiquidGlassPanelShadow}"
-                Tapped="FilterOverlayPanel_Tapped"
-                Translation="0,0,96"
-                Visibility="Collapsed">
-                <Grid>
-                    <Border
-                        Background="{ThemeResource LiquidGlassRefractionBrush}"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.22" />
-                    <Border
-                        Margin="1"
-                        BorderBrush="{ThemeResource LiquidGlassSpecularBrush}"
-                        BorderThickness="1"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.38" />
-                    <Border
-                        Height="11"
-                        Margin="12,3,12,0"
-                        VerticalAlignment="Top"
-                        Background="{ThemeResource LiquidGlassSpecularBrush}"
-                        CornerRadius="3"
-                        IsHitTestVisible="False"
-                        Opacity="0.18" />
-                    <StackPanel>
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="모든 우선순위" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="All" />
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="긴급" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Urgent" />
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="높음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="High" />
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="보통" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Medium" />
-                        <Button Click="PriorityFilterMenuFlyoutItem_Click" Content="낮음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Low" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <Border
-                x:Name="DetailStatusOverlay"
-                Width="154"
-                Padding="5"
-                Background="{ThemeResource LiquidGlassDropDownBrush}"
-                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Shadow="{StaticResource LiquidGlassPanelShadow}"
-                Tapped="FilterOverlayPanel_Tapped"
-                Translation="0,0,96"
-                Visibility="Collapsed">
-                <Grid>
-                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.22" />
-                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
-                    <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.18" />
-                    <StackPanel>
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="백로그" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backlog" />
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="예정" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Todo" />
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="진행 중" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="InProgress" />
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="리뷰" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Review" />
-                        <Button Click="DetailStatusMenuFlyoutItem_Click" Content="완료" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Done" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <Border
-                x:Name="DetailPriorityOverlay"
-                Width="154"
-                Padding="5"
-                Background="{ThemeResource LiquidGlassDropDownBrush}"
-                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Shadow="{StaticResource LiquidGlassPanelShadow}"
-                Tapped="FilterOverlayPanel_Tapped"
-                Translation="0,0,96"
-                Visibility="Collapsed">
-                <Grid>
-                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.22" />
-                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
-                    <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.18" />
-                    <StackPanel>
-                        <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="긴급" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Urgent" />
-                        <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="높음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="High" />
-                        <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="보통" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Medium" />
-                        <Button Click="DetailPriorityMenuFlyoutItem_Click" Content="낮음" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Low" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <Border
-                x:Name="DetailProjectOverlay"
-                Width="154"
-                Padding="5"
-                Background="{ThemeResource LiquidGlassDropDownBrush}"
-                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Shadow="{StaticResource LiquidGlassPanelShadow}"
-                Tapped="FilterOverlayPanel_Tapped"
-                Translation="0,0,96"
-                Visibility="Collapsed">
-                <Grid>
-                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.22" />
-                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
-                    <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="6" IsHitTestVisible="False" Opacity="0.18" />
-                    <StackPanel>
-                        <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Platform" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Platform" />
-                        <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Mobile" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Mobile" />
-                        <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Growth" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Growth" />
-                        <Button Click="DetailProjectMenuFlyoutItem_Click" Content="Ops" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Ops" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <Border
-                x:Name="DetailAssigneeOverlay"
-                Width="154"
-                Padding="5"
-                Background="{ThemeResource LiquidGlassDropDownBrush}"
-                BorderBrush="{ThemeResource LiquidGlassEdgeGlowBrush}"
-                BorderThickness="1"
-                CornerRadius="4"
-                Shadow="{StaticResource LiquidGlassPanelShadow}"
-                Tapped="FilterOverlayPanel_Tapped"
-                Translation="0,0,96"
-                Visibility="Collapsed">
-                <Grid>
-                    <Border Background="{ThemeResource LiquidGlassRefractionBrush}" CornerRadius="3" IsHitTestVisible="False" Opacity="0.22" />
-                    <Border Margin="1" BorderBrush="{ThemeResource LiquidGlassSpecularBrush}" BorderThickness="1" CornerRadius="3" IsHitTestVisible="False" Opacity="0.38" />
-                    <Border Height="11" Margin="12,3,12,0" VerticalAlignment="Top" Background="{ThemeResource LiquidGlassSpecularBrush}" CornerRadius="6" IsHitTestVisible="False" Opacity="0.18" />
-                    <StackPanel>
-                        <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="나" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="나" />
-                        <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="Design" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Design" />
-                        <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="Backend" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="Backend" />
-                        <Button Click="DetailAssigneeMenuFlyoutItem_Click" Content="QA" Style="{StaticResource LiquidGlassFlyoutButtonStyle}" Tag="QA" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </Canvas>
-    </Grid>
     </Grid>
 
     <NavigationView
         x:Name="FluentNativeRoot"
         IsBackButtonVisible="Collapsed"
         IsSettingsVisible="False"
-        OpenPaneLength="184"
-        PaneDisplayMode="Left"
+        OpenPaneLength="196"
+        CompactModeThresholdWidth="1120"
+        ExpandedModeThresholdWidth="1280"
+        PaneDisplayMode="Auto"
         SelectionChanged="FluentNavigation_SelectionChanged"
         Visibility="Collapsed">
+        <NavigationView.Resources>
+            <Style x:Key="FluentColumnHeading" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            </Style>
+            <Style x:Key="FluentMetadata" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            </Style>
+        </NavigationView.Resources>
+        <NavigationView.PaneHeader>
+            <StackPanel Margin="16,12,0,24" Spacing="4">
+                <TextBlock Text="TodoDesk" FontSize="20" FontWeight="SemiBold" />
+                <TextBlock Text="내 워크스페이스" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+        </NavigationView.PaneHeader>
         <NavigationView.MenuItems>
             <NavigationViewItem Content="전체 이슈" Tag="All">
                 <NavigationViewItem.Icon>
@@ -2431,81 +2215,71 @@
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
         </NavigationView.MenuItems>
+        <Grid x:Name="FluentPageLayout" Padding="28,24,24,24" RowSpacing="20">
 
-        <Grid Padding="24,18,24,24" RowSpacing="12">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-
-            <Grid ColumnSpacing="16">
+            <Grid ColumnSpacing="16" RowSpacing="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
-                <StackPanel Spacing="2">
-                    <TextBlock
-                        FontSize="28"
-                        FontWeight="SemiBold"
-                        Text="Issues" />
-                    <TextBlock
-                        x:Name="FluentScopeTextBlock"
-                        Opacity="0.72" />
+                <StackPanel Spacing="6">
+                    <TextBlock x:Name="FluentPageTitle" Text="전체 이슈" FontSize="28" FontWeight="SemiBold" />
+                    <TextBlock x:Name="FluentScopeTextBlock" TextWrapping="Wrap" FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
-
-                <CommandBar
-                    Grid.Column="1"
-                    DefaultLabelPosition="Collapsed"
-                    IsOpen="False">
-                    <AppBarButton
+                <Grid x:Name="FluentThemeHost" Grid.Column="1" VerticalAlignment="Center">
+                    <ComboBox
+                    x:Name="FluentThemeComboBox"
+                    MinWidth="145"
+                    AutomationProperties.AutomationId="FluentThemeComboBox"
+                    SelectionChanged="FluentThemeComboBox_SelectionChanged">
+                    <ComboBoxItem Content="WinUI Fluent" Tag="fluent" />
+                    <ComboBoxItem Content="Liquid Glass" Tag="liquid" />
+                    <ComboBoxItem Content="Windows XP" Tag="xp" />
+                    <ComboBoxItem Content="Aero" Tag="aero" />
+                </ComboBox>
+                </Grid>
+                <Button Grid.Column="2" VerticalAlignment="Center" Padding="18,10"
+                        Style="{StaticResource AccentButtonStyle}"
                         AutomationProperties.AutomationId="FluentNewIssueButton"
-                        Icon="Add"
-                        Label="새 이슈"
-                        Click="FluentNewIssue_Click" />
-                    <AppBarSeparator />
-                    <AppBarToggleButton
-                        x:Name="FluentListModeButton"
-                        AutomationProperties.AutomationId="FluentListModeButton"
-                        Icon="List"
-                        IsChecked="True"
-                        Label="리스트" />
-                </CommandBar>
-            </Grid>
-
-            <Grid Grid.Row="1" ColumnSpacing="12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="145" />
-                    <ColumnDefinition Width="145" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="150" />
-                </Grid.ColumnDefinitions>
-
-                <TextBox
-                    x:Name="FluentQuickIssueTextBox"
-                    AutomationProperties.AutomationId="FluentQuickIssueTextBox"
-                    PlaceholderText="새 이슈 제목"
-                    KeyDown="FluentQuickIssueTextBox_KeyDown" />
-                <Button
-                    Grid.Column="1"
-                    AutomationProperties.AutomationId="FluentAddQuickIssueButton"
-                    AutomationProperties.Name="빠른 이슈 추가"
-                    Click="FluentAddQuickIssue_Click">
-                    <SymbolIcon Symbol="Add" />
+                        Click="FluentNewIssue_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE710;" FontSize="14" />
+                        <TextBlock Text="새 이슈" FontWeight="SemiBold" />
+                    </StackPanel>
                 </Button>
-                <TextBox
-                    x:Name="FluentSearchTextBox"
-                    Grid.Column="2"
-                    AutomationProperties.AutomationId="FluentSearchTextBox"
-                    PlaceholderText="검색"
-                    TextChanged="FluentSearchTextBox_TextChanged" />
-                <ComboBox
+            </Grid>
+            <Grid Grid.Row="1" ColumnSpacing="12" RowSpacing="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid x:Name="FluentSearchHost" HorizontalAlignment="Stretch">
+                    <TextBox x:Name="FluentSearchTextBox" Padding="36,8,12,8"
+                             AutomationProperties.AutomationId="FluentSearchTextBox"
+                             PlaceholderText="이슈 제목, 담당자, 라벨 검색"
+                             TextChanged="FluentSearchTextBox_TextChanged" />
+                    <FontIcon Glyph="&#xE721;" FontSize="14" Margin="12,0,0,0"
+                              HorizontalAlignment="Left" IsHitTestVisible="False"
+                              Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </Grid>
+                <Grid x:Name="FluentStatusHost" Grid.Column="1">
+                    <ComboBox
                     x:Name="FluentStatusFilterComboBox"
-                    Grid.Column="3"
                     MinWidth="140"
                     AutomationProperties.AutomationId="FluentStatusFilterComboBox"
                     SelectionChanged="FluentStatusFilterComboBox_SelectionChanged">
@@ -2516,9 +2290,10 @@
                     <ComboBoxItem Content="리뷰" Tag="Review" />
                     <ComboBoxItem Content="완료" Tag="Done" />
                 </ComboBox>
-                <ComboBox
+                </Grid>
+                <Grid x:Name="FluentPriorityHost" Grid.Column="2">
+                    <ComboBox
                     x:Name="FluentPriorityFilterComboBox"
-                    Grid.Column="4"
                     MinWidth="140"
                     AutomationProperties.AutomationId="FluentPriorityFilterComboBox"
                     SelectionChanged="FluentPriorityFilterComboBox_SelectionChanged">
@@ -2528,132 +2303,127 @@
                     <ComboBoxItem Content="보통" Tag="Medium" />
                     <ComboBoxItem Content="낮음" Tag="Low" />
                 </ComboBox>
-                <ComboBox
-                    x:Name="FluentThemeComboBox"
-                    Grid.Column="6"
-                    MinWidth="145"
-                    AutomationProperties.AutomationId="FluentThemeComboBox"
-                    SelectionChanged="FluentThemeComboBox_SelectionChanged">
-                    <ComboBoxItem Content="WinUI Fluent" Tag="fluent" />
-                    <ComboBoxItem Content="Liquid Glass" Tag="liquid" />
-                    <ComboBoxItem Content="Windows XP" Tag="xp" />
-                    <ComboBoxItem Content="Aero" Tag="aero" />
-                </ComboBox>
+                </Grid>
             </Grid>
-
-            <Grid Grid.Row="2" ColumnSpacing="16">
+            <Grid x:Name="FluentBody" Grid.Row="2" ColumnSpacing="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition x:Name="FluentInspectorRow" Height="0" />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="360" />
+                    <ColumnDefinition x:Name="FluentInspectorColumn" Width="336" />
                 </Grid.ColumnDefinitions>
-
-                <Grid RowSpacing="8">
+                <Grid RowSpacing="12">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-
-                    <Grid Padding="12,0" ColumnSpacing="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="92" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="100" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Opacity="0.72" Text="KEY" />
-                        <TextBlock Grid.Column="1" Opacity="0.72" Text="ISSUE" />
-                        <TextBlock Grid.Column="2" Opacity="0.72" Text="STATUS" />
-                        <TextBlock Grid.Column="3" Opacity="0.72" Text="OWNER" />
-                        <TextBlock Grid.Column="4" Opacity="0.72" Text="DUE" />
-                    </Grid>
-
-                    <ListView
-                        x:Name="FluentIssueListView"
-                        Grid.Row="1"
-                        AutomationProperties.AutomationId="FluentIssueListView"
-                        ItemsSource="{x:Bind VisibleIssues, Mode=OneWay}"
-                        SelectionChanged="FluentIssueListView_SelectionChanged"
-                        SelectionMode="Single">
+                    <Border BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,0,0,1" Padding="12,0,12,12">
+                        <Grid ColumnSpacing="12" SizeChanged="FluentIssueColumns_SizeChanged">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="76" />
+                                <ColumnDefinition Width="64" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource FluentColumnHeading}" Text="번호" />
+                            <TextBlock Grid.Column="1" Style="{StaticResource FluentColumnHeading}" Text="이슈" />
+                            <TextBlock Grid.Column="2" Style="{StaticResource FluentColumnHeading}" Text="상태" />
+                            <TextBlock Grid.Column="3" Style="{StaticResource FluentColumnHeading}" Text="담당자" />
+                            <TextBlock Grid.Column="4" Style="{StaticResource FluentColumnHeading}" Text="기한" />
+                        </Grid>
+                    </Border>
+                    <ListView x:Name="FluentIssueListView" Grid.Row="1"
+                              AutomationProperties.AutomationId="FluentIssueListView"
+                              ItemsSource="{x:Bind VisibleIssues, Mode=OneWay}"
+                              SelectionChanged="FluentIssueListView_SelectionChanged" SelectionMode="Single">
+                        <ListView.Resources>
+                            <x:Boolean x:Key="ListViewItemSelectionIndicatorVisualEnabled">True</x:Boolean>
+                            <CornerRadius x:Key="ListViewItemCornerRadius">6</CornerRadius>
+                        </ListView.Resources>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0,0,0,2" />
+                                <Setter Property="CornerRadius" Value="6" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="local:IssueItem">
-                                <Grid MinHeight="56" Padding="12,8" ColumnSpacing="12">
+                                <Grid MinHeight="64" Padding="12,10" ColumnSpacing="12" SizeChanged="FluentIssueColumns_SizeChanged"
+                                      AutomationProperties.Name="{x:Bind AutomationName, Mode=OneWay}">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="92" />
+                                        <ColumnDefinition Width="60" />
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="120" />
-                                        <ColumnDefinition Width="120" />
-                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="76" />
+                                        <ColumnDefinition Width="64" />
+                                        <ColumnDefinition Width="80" />
                                     </Grid.ColumnDefinitions>
-
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind Key, Mode=OneWay}" />
-                                    <Grid Grid.Column="1" ColumnSpacing="8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Ellipse
-                                            Width="8"
-                                            Height="8"
-                                            VerticalAlignment="Center"
-                                            Fill="{x:Bind StatusBrush, Mode=OneWay}" />
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="{x:Bind Title, Mode=OneWay}" />
-                                            <TextBlock
-                                                Opacity="0.72"
-                                                Text="{x:Bind RowSubtitle, Mode=OneWay}" />
-                                        </StackPanel>
-                                    </Grid>
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind StatusLabel, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Column="3"
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind Assignee, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Column="4"
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind DueDate, Mode=OneWay}" />
+                                    <TextBlock VerticalAlignment="Center" Style="{StaticResource FluentMetadata}" Text="{x:Bind Key, Mode=OneWay}" />
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="6">
+                                        <TextBlock Text="{x:Bind Title, Mode=OneWay}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                                   ToolTipService.ToolTip="{x:Bind Title, Mode=OneWay}" />
+                                        <TextBlock Style="{StaticResource FluentMetadata}" Text="{x:Bind RowSubtitle, Mode=OneWay}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="6">
+                                        <Ellipse Width="6" Height="6" Fill="{x:Bind StatusBrush, Mode=OneWay}" />
+                                        <TextBlock FontSize="12" Text="{x:Bind StatusLabel, Mode=OneWay}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="3" VerticalAlignment="Center" Style="{StaticResource FluentMetadata}" Text="{x:Bind Assignee, Mode=OneWay}" />
+                                    <TextBlock Grid.Column="4" VerticalAlignment="Center" Style="{StaticResource FluentMetadata}" Text="{x:Bind DueDate, Mode=OneWay}" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-
-                    <StackPanel
-                        x:Name="FluentEmptyState"
-                        Grid.Row="1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Spacing="8"
-                        Visibility="Collapsed">
-                        <FontIcon Glyph="&#xE8FD;" />
-                        <TextBlock Text="조건에 맞는 이슈가 없습니다." />
+                    <StackPanel x:Name="FluentEmptyState" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" Visibility="Collapsed">
+                        <FontIcon Glyph="&#xE721;" FontSize="28" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock Text="조건에 맞는 이슈가 없습니다." FontSize="16" FontWeight="SemiBold" />
+                        <TextBlock Text="검색어나 필터를 바꿔 다시 찾아보세요." FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
+                    <Grid Grid.Row="2" ColumnSpacing="8" Padding="0,12,0,0" BorderThickness="0,1,0,0" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="FluentQuickIssueTextBox" AutomationProperties.AutomationId="FluentQuickIssueTextBox"
+                                 PlaceholderText="빠르게 추가할 이슈 제목" KeyDown="FluentQuickIssueTextBox_KeyDown" />
+                        <Button Grid.Column="1" AutomationProperties.AutomationId="FluentAddQuickIssueButton"
+                                AutomationProperties.Name="빠른 이슈 추가" Click="FluentAddQuickIssue_Click" Content="추가" Padding="18,8" />
+                    </Grid>
                 </Grid>
-
-                <Grid Grid.Column="1">
-                    <StackPanel
-                        x:Name="FluentDetailEmptyState"
-                        VerticalAlignment="Center"
-                        Spacing="8">
-                        <TextBlock
-                            FontSize="20"
-                            FontWeight="SemiBold"
-                            Text="이슈 선택" />
-                        <TextBlock
-                            Opacity="0.72"
-                            Text="왼쪽 리스트에서 이슈를 선택하세요."
-                            TextWrapping="WrapWholeWords" />
-                    </StackPanel>
-
-                    <ScrollViewer
+                <Border x:Name="FluentInspector" Grid.Column="1" Padding="16" CornerRadius="8" Background="{ThemeResource LayerFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                    <Grid RowSpacing="12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <StackPanel x:Name="FluentDetailEmptyState" VerticalAlignment="Center" Spacing="12">
+                            <FontIcon Glyph="&#xE8A5;" FontSize="28" HorizontalAlignment="Left" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            <TextBlock Text="이슈를 선택하세요" FontSize="20" FontWeight="SemiBold" />
+                            <TextBlock Text="목록에서 이슈를 선택하면 여기서 내용과 진행 상태를 확인할 수 있습니다."
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ScrollViewer
                         x:Name="FluentDetailEditor"
                         Visibility="Collapsed">
-                        <StackPanel Spacing="10">
+                        <ScrollViewer.Resources>
+                            <DataTemplate x:Key="FluentFieldHeader">
+                                <TextBlock Text="{Binding}" FontSize="12" FontWeight="Normal" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </DataTemplate>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}">
+                                <Setter Property="HeaderTemplate" Value="{StaticResource FluentFieldHeader}" />
+                            </Style>
+                            <Style TargetType="ComboBox" BasedOn="{StaticResource DefaultComboBoxStyle}">
+                                <Setter Property="HeaderTemplate" Value="{StaticResource FluentFieldHeader}" />
+                            </Style>
+                        </ScrollViewer.Resources>
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="이슈 상세" FontSize="20" FontWeight="SemiBold" />
                             <Grid ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -2662,7 +2432,7 @@
                                 <TextBlock
                                     x:Name="FluentSelectedKeyTextBlock"
                                     VerticalAlignment="Center"
-                                    Opacity="0.72" />
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                 <TextBlock
                                     x:Name="FluentSelectedStatusTextBlock"
                                     Grid.Column="1"
@@ -2673,13 +2443,13 @@
                             <TextBox
                                 x:Name="FluentIssueTitleTextBox"
                                 AutomationProperties.AutomationId="FluentIssueTitleTextBox"
-                                Header="제목" />
+                                Header="제목" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" AcceptsReturn="False" />
                             <TextBox
                                 x:Name="FluentIssueDescriptionTextBox"
                                 AcceptsReturn="True"
                                 AutomationProperties.AutomationId="FluentIssueDescriptionTextBox"
                                 Header="설명"
-                                Height="104"
+                                Height="92"
                                 TextWrapping="Wrap" />
 
                             <Grid ColumnSpacing="10">
@@ -2742,24 +2512,30 @@
                             <TextBox
                                 x:Name="FluentIssueDueDateTextBox"
                                 AutomationProperties.AutomationId="FluentIssueDueDateTextBox"
-                                Header="기한" />
+                                Header="기한" PlaceholderText="YYYY-MM-DD" />
                             <TextBox
                                 x:Name="FluentIssueLabelsTextBox"
                                 AutomationProperties.AutomationId="FluentIssueLabelsTextBox"
-                                Header="라벨" />
+                                Header="라벨" PlaceholderText="예: ux, core" />
 
+
+                        </StackPanel>
+                    </ScrollViewer>
+                        <Border Grid.Row="1" BorderThickness="0,1,0,0" Padding="0,8,0,0"
+                                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                Visibility="{Binding Visibility, ElementName=FluentDetailEditor}">
                             <Grid ColumnSpacing="8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
-                                    x:Name="FluentDetailHintTextBlock"
+                                    x:Name="FluentDetailHintTextBlock" Visibility="Collapsed"
                                     VerticalAlignment="Center"
-                                    Opacity="0.72" />
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                                 <CommandBar
                                     Grid.Column="1"
-                                    DefaultLabelPosition="Collapsed"
+                                    DefaultLabelPosition="Right"
                                     IsOpen="False">
                                     <AppBarButton
                                         AutomationProperties.AutomationId="FluentSaveIssueButton"
@@ -2773,9 +2549,9 @@
                                         Click="DeleteSelectedIssue_Click" />
                                 </CommandBar>
                             </Grid>
-                        </StackPanel>
-                    </ScrollViewer>
-                </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
             </Grid>
         </Grid>
     </NavigationView>

@@ -23,7 +23,7 @@ This project targets:
 
 ```text
 net10.0-windows10.0.26100.0
-Microsoft.WindowsAppSDK 2.1.3
+Microsoft.WindowsAppSDK 2.4.0
 Microsoft.Graphics.Win2D 1.4.0
 ```
 

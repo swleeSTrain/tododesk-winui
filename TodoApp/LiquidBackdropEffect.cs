@@ -1,52 +1,32 @@
 using System.Numerics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using Microsoft.Graphics.Canvas;
+
 using Microsoft.Graphics.Canvas.Effects;
-using Microsoft.Graphics.Canvas.UI.Composition;
+
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI;
-using CanvasDirectXAlphaMode = Microsoft.Graphics.DirectX.DirectXAlphaMode;
-using CanvasDirectXPixelFormat = Microsoft.Graphics.DirectX.DirectXPixelFormat;
-using WinDirectXPixelFormat = Windows.Graphics.DirectX.DirectXPixelFormat;
 
 namespace TodoApp;
 
 internal static class LiquidBackdropEffect
 {
     private const string BackdropSourceName = "Backdrop";
-    private const string DisplacementMapSourceName = "DisplacementMap";
-    private const string LiquidDisplacementEffectName = "LiquidDisplacement";
-    private const string LiquidBackdropTransformEffectName = "LiquidBackdropTransform";
     private const string LiquidMaterialBlurEffectName = "LiquidMaterialBlur";
-    private const string LiquidDisplacementAmountProperty = "LiquidDisplacement.Amount";
-    private const string LiquidBackdropTransformMatrixProperty = "LiquidBackdropTransform.TransformMatrix";
-    private const string LiquidSampleBaseXProperty = "LiquidSampleBaseX";
-    private const string LiquidSampleBaseYProperty = "LiquidSampleBaseY";
     private const string GlintPeakProperty = "LiquidGlintPeak";
     private const string GlintRestProperty = "LiquidGlintRest";
     private const string GlintScaleXProperty = "LiquidGlintScaleX";
     private const string GlintScaleYProperty = "LiquidGlintScaleY";
     private const string BaseRotationProperty = "LiquidBaseRotation";
     private const string PassiveRimLayerProperty = "LiquidPassiveRim";
-    private const byte NeutralDisplacementChannel = 128;
-    private const int DisplacementMapSize = 128;
     private const int GlintLayerCount = 4;
     private const int EdgeBandCount = 4;
     private const int SamplePassCount = 3;
-    private const float BackdropSamplePull = 0.96f;
-    private const float ChromaticBackdropSamplePull = 1.10f;
-    private const float DisplacementAmountFloor = 8.0f;
-    private const float DisplacementAmountCeiling = 50.0f;
-    private const float ChromaticDisplacementAmountCeiling = 56.0f;
 
-    private static readonly ConditionalWeakTable<Compositor, DisplacementMapCache> CurvedDisplacementMaps = new();
-
-    private enum ChromaticChannel
+private enum ChromaticChannel
     {
         Cyan,
         Warm
@@ -73,6 +53,7 @@ internal static class LiquidBackdropEffect
         var hostVisual = ElementCompositionPreview.GetElementVisual(host);
         var compositor = hostVisual.Compositor;
         var root = compositor.CreateContainerVisual();
+        root.Opacity = 0.15f; // Decorative refraction must not compete with content.
 
         BindSize(compositor, root, hostVisual);
         ApplyRoundedClip(compositor, hostVisual, profile.CornerRadius);
@@ -416,7 +397,6 @@ internal static class LiquidBackdropEffect
         {
             AnimateLensRegion(compositor, lensRegions[i], targetOffset, magnitude, isResting, duration, i);
             AnimateRefractionSampleFlow(compositor, lensRegions[i], targetOffset, magnitude, isResting, duration, i);
-            AnimateDisplacementBrushes(compositor, lensRegions[i], magnitude, isResting, duration);
         }
 
         var sprites = root.Children
@@ -428,7 +408,6 @@ internal static class LiquidBackdropEffect
         {
             AnimateEdgeBand(compositor, edgeBands[i], targetOffset, magnitude, isResting, duration, i);
             AnimateRefractionSampleFlow(compositor, edgeBands[i], targetOffset, magnitude, isResting, duration, i + 5);
-            AnimateDisplacementBrushes(compositor, edgeBands[i], magnitude, isResting, duration);
         }
 
         var samplePasses = sprites.Skip(GlintLayerCount + EdgeBandCount).Take(SamplePassCount).ToArray();
@@ -436,61 +415,8 @@ internal static class LiquidBackdropEffect
         {
             AnimateSamplePass(compositor, samplePasses[i], targetOffset, magnitude, isResting, duration, i);
             AnimateRefractionSampleFlow(compositor, samplePasses[i], targetOffset, magnitude, isResting, duration, i + 11);
-            AnimateDisplacementBrushes(compositor, samplePasses[i], magnitude, isResting, duration);
         }
 
-    }
-
-    private static void AnimateDisplacementBrushes(
-        Compositor compositor,
-        Visual visual,
-        float magnitude,
-        bool isResting,
-        TimeSpan duration)
-    {
-        if (visual is SpriteVisual sprite)
-        {
-            AnimateDisplacementBrush(compositor, sprite, magnitude, isResting, duration);
-            return;
-        }
-
-        if (visual is not ContainerVisual container)
-        {
-            return;
-        }
-
-        foreach (var child in container.Children)
-        {
-            AnimateDisplacementBrushes(compositor, child, magnitude, isResting, duration);
-        }
-    }
-
-    private static void AnimateDisplacementBrush(
-        Compositor compositor,
-        SpriteVisual sprite,
-        float magnitude,
-        bool isResting,
-        TimeSpan duration)
-    {
-        if (sprite.Brush is not CompositionEffectBrush brush)
-        {
-            return;
-        }
-
-        try
-        {
-            var amount = isResting
-                ? DisplacementAmountFloor
-                : Math.Clamp(9.5f + magnitude * 12.0f, DisplacementAmountFloor, 24.0f);
-            var animation = compositor.CreateScalarKeyFrameAnimation();
-            animation.Duration = duration;
-            animation.InsertKeyFrame(1.0f, amount);
-            brush.Properties.StartAnimation(LiquidDisplacementAmountProperty, animation);
-        }
-        catch
-        {
-            // Some effect brushes only wrap a transform fallback and do not expose displacement properties.
-        }
     }
 
     private static void AnimateRefractionSampleFlow(
@@ -509,8 +435,6 @@ internal static class LiquidBackdropEffect
                 return;
             }
 
-            AnimateBackdropSampleTransform(compositor, brush, targetOffset, magnitude, isResting, depth);
-
             var animation = compositor.CreateVector3KeyFrameAnimation();
             animation.Duration = duration;
             animation.InsertKeyFrame(1.0f, Vector3.Zero);
@@ -528,73 +452,6 @@ internal static class LiquidBackdropEffect
         {
             AnimateRefractionSampleFlow(compositor, child, targetOffset, magnitude, isResting, duration, depth + childIndex + 1);
             childIndex++;
-        }
-    }
-
-    private static void AnimateBackdropSampleTransform(
-        Compositor compositor,
-        CompositionBrush brush,
-        Vector3 targetOffset,
-        float magnitude,
-        bool isResting,
-        int depth)
-    {
-        if (brush is not CompositionEffectBrush effectBrush)
-        {
-            return;
-        }
-
-        TryAnimateBackdropSampleTransform(compositor, effectBrush, targetOffset, magnitude, isResting, depth);
-
-        try
-        {
-            if (effectBrush.GetSourceParameter(BackdropSourceName) is CompositionBrush backdropSource)
-            {
-                AnimateBackdropSampleTransform(compositor, backdropSource, targetOffset, magnitude, isResting, depth + 1);
-            }
-        }
-        catch
-        {
-            // Not every effect in the chain exposes a backdrop source parameter.
-        }
-    }
-
-    private static void TryAnimateBackdropSampleTransform(
-        Compositor compositor,
-        CompositionEffectBrush brush,
-        Vector3 targetOffset,
-        float magnitude,
-        bool isResting,
-        int depth)
-    {
-        try
-        {
-            if (brush.Properties.TryGetScalar(LiquidSampleBaseXProperty, out var baseX) != CompositionGetValueStatus.Succeeded
-                || brush.Properties.TryGetScalar(LiquidSampleBaseYProperty, out var baseY) != CompositionGetValueStatus.Succeeded)
-            {
-                return;
-            }
-
-            var direction = depth % 2 == 0 ? 1.0f : -1.0f;
-            var pointerPull = 0.16f + magnitude * 0.10f + Math.Min(depth, 8) * 0.010f;
-            var tangentPull = 0.040f + magnitude * 0.040f;
-            var targetX = baseX;
-            var targetY = baseY;
-            if (!isResting)
-            {
-                var deltaX = targetOffset.X * pointerPull - targetOffset.Y * tangentPull * direction;
-                var deltaY = targetOffset.Y * (pointerPull * 0.78f) + targetOffset.X * tangentPull * direction;
-                targetX += Math.Clamp(deltaX, -0.48f, 0.48f);
-                targetY += Math.Clamp(deltaY, -0.42f, 0.42f);
-            }
-
-            var sampleAnimation = compositor.CreateExpressionAnimation("sampleMatrix");
-            sampleAnimation.SetMatrix3x2Parameter("sampleMatrix", Matrix3x2.CreateTranslation(targetX, targetY));
-            brush.Properties.StartAnimation(LiquidBackdropTransformMatrixProperty, sampleAnimation);
-        }
-        catch
-        {
-            // Matrix effect-property animation is opportunistic; the static sample transform still renders correctly.
         }
     }
 
@@ -1308,43 +1165,19 @@ internal static class LiquidBackdropEffect
     }
 
     private static CompositionBrush CreateChromaticDisplacedBackdropBrush(
-        Compositor compositor,
-        Vector2 sampleOffset,
-        float amountScale,
-        ChromaticChannel channel,
-        CurvatureProfile curvature)
+        Compositor compositor, Vector2 sampleOffset, float amountScale,
+        ChromaticChannel channel, CurvatureProfile curvature)
     {
-        try
+        var tint = new ColorMatrixEffect
         {
-            var displacement = new DisplacementMapEffect
-            {
-                Name = LiquidDisplacementEffectName,
-                Source = new CompositionEffectSourceParameter(BackdropSourceName),
-                Displacement = new CompositionEffectSourceParameter(DisplacementMapSourceName),
-                Amount = Math.Clamp(sampleOffset.Length() * amountScale, DisplacementAmountFloor, ChromaticDisplacementAmountCeiling),
-                XChannelSelect = EffectChannelSelect.Red,
-                YChannelSelect = EffectChannelSelect.Green
-            };
-
-            var chromaticSplit = new ColorMatrixEffect
-            {
-                Source = displacement,
-                ColorMatrix = CreateChromaticMatrix(channel)
-            };
-
-            var factory = compositor.CreateEffectFactory(chromaticSplit, [LiquidDisplacementAmountProperty]);
-            var brush = factory.CreateBrush();
-            brush.Properties.InsertScalar(LiquidDisplacementAmountProperty, displacement.Amount);
-            brush.SetSourceParameter(BackdropSourceName, CreateRefractedBackdropBrush(compositor, sampleOffset * ChromaticBackdropSamplePull));
-            brush.SetSourceParameter(DisplacementMapSourceName, CreateCurvedDisplacementMap(compositor, sampleOffset, curvature));
-            return brush;
-        }
-        catch
-        {
-            return CreateDisplacedBackdropBrush(compositor, sampleOffset, amountScale, curvature);
-        }
+            Source = new CompositionEffectSourceParameter(BackdropSourceName),
+            ColorMatrix = CreateChromaticMatrix(channel)
+        };
+        using var factory = compositor.CreateEffectFactory(tint);
+        var brush = factory.CreateBrush();
+        brush.SetSourceParameter(BackdropSourceName, CreateBackdropSourceBrush(compositor));
+        return brush;
     }
-
     private static Matrix5x4 CreateChromaticMatrix(ChromaticChannel channel)
     {
         return channel == ChromaticChannel.Cyan
@@ -1903,35 +1736,10 @@ internal static class LiquidBackdropEffect
 
     private static CompositionBrush CreateRefractedBackdropBrush(Compositor compositor, Vector2 sampleOffset)
     {
-        if (sampleOffset.LengthSquared() < 0.01f)
-        {
-            return CreateBackdropSourceBrush(compositor);
-        }
-
-        try
-        {
-            var transformMatrix = Matrix3x2.CreateTranslation(sampleOffset);
-            var transform = new Transform2DEffect
-            {
-                Name = LiquidBackdropTransformEffectName,
-                Source = new CompositionEffectSourceParameter(BackdropSourceName),
-                TransformMatrix = transformMatrix
-            };
-
-            var factory = compositor.CreateEffectFactory(transform, [LiquidBackdropTransformMatrixProperty]);
-            var brush = factory.CreateBrush();
-            brush.Properties.InsertMatrix3x2(LiquidBackdropTransformMatrixProperty, transformMatrix);
-            brush.Properties.InsertScalar(LiquidSampleBaseXProperty, sampleOffset.X);
-            brush.Properties.InsertScalar(LiquidSampleBaseYProperty, sampleOffset.Y);
-            brush.SetSourceParameter(BackdropSourceName, CreateBackdropSourceBrush(compositor));
-            return brush;
-        }
-        catch
-        {
-            return CreateBackdropSourceBrush(compositor);
-        }
+        // Backdrop sources cannot be transformed. Keep movement on the visual;
+        // use a supported blur graph instead of a Transform2DEffect or nested effect brush.
+        return CreateBlurredBackdropBrush(compositor, 1.5f, 1.05f);
     }
-
     private static CompositionBrush CreateBlurredBackdropBrush(
         Compositor compositor,
         float blurAmount,
@@ -1965,230 +1773,11 @@ internal static class LiquidBackdropEffect
     }
 
     private static CompositionBrush CreateDisplacedBackdropBrush(
-        Compositor compositor,
-        Vector2 sampleOffset,
-        float amountScale,
-        CurvatureProfile curvature)
+        Compositor compositor, Vector2 sampleOffset, float amountScale, CurvatureProfile curvature)
     {
-        if (sampleOffset.LengthSquared() < 0.01f)
-        {
-            return CreateBackdropSourceBrush(compositor);
-        }
-
-        try
-        {
-            var displacement = new DisplacementMapEffect
-            {
-                Name = LiquidDisplacementEffectName,
-                Source = new CompositionEffectSourceParameter(BackdropSourceName),
-                Displacement = new CompositionEffectSourceParameter(DisplacementMapSourceName),
-                Amount = Math.Clamp(sampleOffset.Length() * amountScale, DisplacementAmountFloor, DisplacementAmountCeiling),
-                XChannelSelect = EffectChannelSelect.Red,
-                YChannelSelect = EffectChannelSelect.Green
-            };
-
-            var factory = compositor.CreateEffectFactory(displacement, [LiquidDisplacementAmountProperty]);
-            var brush = factory.CreateBrush();
-            brush.Properties.InsertScalar(LiquidDisplacementAmountProperty, displacement.Amount);
-            brush.SetSourceParameter(BackdropSourceName, CreateRefractedBackdropBrush(compositor, sampleOffset * BackdropSamplePull));
-            brush.SetSourceParameter(DisplacementMapSourceName, CreateCurvedDisplacementMap(compositor, sampleOffset, curvature));
-            return brush;
-        }
-        catch
-        {
-            return CreateRefractedBackdropBrush(compositor, sampleOffset);
-        }
+        // Displacement is not supported for backdrop sources either.
+        return CreateBlurredBackdropBrush(compositor, 2.5f, 1.08f);
     }
-
-    private static CompositionBrush CreateCurvedDisplacementMap(
-        Compositor compositor,
-        Vector2 sampleOffset,
-        CurvatureProfile curvature)
-    {
-        try
-        {
-            var cache = CurvedDisplacementMaps.GetValue(compositor, _ => new DisplacementMapCache());
-            var cacheKey = CreateDisplacementMapKey(curvature, sampleOffset);
-            if (cache.Brushes.TryGetValue(cacheKey, out var cachedBrush))
-            {
-                return cachedBrush;
-            }
-
-            var pixels = CreateCurvedDisplacementPixels(curvature, sampleOffset);
-            var canvasDevice = CanvasDevice.GetSharedDevice();
-            var bitmap = CanvasBitmap.CreateFromBytes(
-                canvasDevice,
-                pixels,
-                DisplacementMapSize,
-                DisplacementMapSize,
-                WinDirectXPixelFormat.B8G8R8A8UIntNormalized);
-
-            var graphicsDevice = CanvasComposition.CreateCompositionGraphicsDevice(compositor, canvasDevice);
-            var surface = graphicsDevice.CreateDrawingSurface(
-                new Size(DisplacementMapSize, DisplacementMapSize),
-                CanvasDirectXPixelFormat.B8G8R8A8UIntNormalized,
-                CanvasDirectXAlphaMode.Premultiplied);
-
-            using (var drawingSession = CanvasComposition.CreateDrawingSession(surface))
-            {
-                drawingSession.Clear(Color.FromArgb(255, NeutralDisplacementChannel, NeutralDisplacementChannel, NeutralDisplacementChannel));
-                drawingSession.DrawImage(bitmap);
-            }
-
-            var surfaceBrush = compositor.CreateSurfaceBrush(surface);
-            surfaceBrush.Stretch = CompositionStretch.Fill;
-            surfaceBrush.HorizontalAlignmentRatio = 0.5f;
-            surfaceBrush.VerticalAlignmentRatio = 0.5f;
-
-            cache.Brushes[cacheKey] = surfaceBrush;
-            return surfaceBrush;
-        }
-        catch
-        {
-            return CreateDirectionalDisplacementMap(compositor, sampleOffset);
-        }
-    }
-
-    private static string CreateDisplacementMapKey(CurvatureProfile curvature, Vector2 sampleOffset)
-    {
-        return $"{curvature.Key}:{QuantizeDirection(sampleOffset.X)}:{QuantizeDirection(sampleOffset.Y)}";
-    }
-
-    private static int QuantizeDirection(float value)
-    {
-        return (int)Math.Clamp(MathF.Round(value / 4.0f), -12.0f, 12.0f);
-    }
-
-    private static byte[] CreateCurvedDisplacementPixels(CurvatureProfile curvature, Vector2 sampleOffset)
-    {
-        var pixels = new byte[DisplacementMapSize * DisplacementMapSize * 4];
-        var center = (DisplacementMapSize - 1) * 0.5f;
-        var sampleLength = MathF.Max(1.0f, sampleOffset.Length());
-        var directionX = sampleOffset.X / sampleLength;
-        var directionY = sampleOffset.Y / sampleLength;
-        var tangentX = -directionY;
-        var tangentY = directionX;
-
-        for (var y = 0; y < DisplacementMapSize; y++)
-        {
-            for (var x = 0; x < DisplacementMapSize; x++)
-            {
-                var normalizedX = (x - center) / center;
-                var normalizedY = (y - center) / center;
-                var ellipticalX = normalizedX / curvature.EllipseX;
-                var ellipticalY = normalizedY / curvature.EllipseY;
-                var radius = MathF.Sqrt(ellipticalX * ellipticalX + ellipticalY * ellipticalY);
-
-                var softenedRadius = Math.Clamp(radius, 0.0f, 1.0f);
-                var bodySlope = SmoothStep(curvature.CenterSoftness, 0.68f, softenedRadius) * (1.0f - SmoothStep(0.88f, 1.0f, softenedRadius));
-                var rimSlope = SmoothStep(curvature.RimStart, curvature.RimEnd, softenedRadius) * (1.0f - SmoothStep(0.94f, 1.0f, softenedRadius));
-                var meniscusSlope = SmoothStep(curvature.MeniscusStart, curvature.MeniscusEnd, softenedRadius) * (1.0f - SmoothStep(0.985f, 1.0f, softenedRadius));
-                var slope = Math.Clamp(
-                    bodySlope * curvature.BodyStrength
-                    + rimSlope * curvature.RimStrength
-                    + meniscusSlope * curvature.MeniscusStrength,
-                    0.0f,
-                    1.0f);
-
-                var reciprocalRadius = radius <= 0.001f ? 0.0f : 1.0f / radius;
-                var normalX = ellipticalX * reciprocalRadius;
-                var normalY = ellipticalY * reciprocalRadius;
-                var innerLensSlope = SmoothStep(0.02f, 0.44f, softenedRadius) * (1.0f - SmoothStep(0.74f, 0.96f, softenedRadius));
-                var shoulderSlope = SmoothStep(0.36f, 0.62f, softenedRadius) * (1.0f - SmoothStep(0.80f, 0.98f, softenedRadius));
-                var rimReturnSlope = SmoothStep(0.74f, 0.92f, softenedRadius) * (1.0f - SmoothStep(0.965f, 1.0f, softenedRadius));
-                var diagonalShear = (normalizedX - normalizedY) * curvature.ShearStrength * (1.0f - SmoothStep(0.76f, 1.0f, softenedRadius));
-                var meniscusPull = (meniscusSlope - rimSlope * 0.35f) * curvature.MeniscusPull;
-                var directionalDot = (normalX * directionX) + (normalY * directionY);
-                var directionalBend = rimSlope * directionalDot * curvature.RimStrength * 0.78f;
-                var axialPull = (bodySlope + innerLensSlope * 0.72f) * directionalDot * curvature.BodyStrength * 0.30f;
-                var tangentCoordinate = (normalizedX * tangentX) + (normalizedY * tangentY);
-                var flowWave = MathF.Sin((tangentCoordinate * MathF.PI * 2.35f) + ((directionX - directionY) * 0.72f))
-                    * (bodySlope + shoulderSlope * 0.68f)
-                    * curvature.ShearStrength
-                    * 0.96f;
-                var crossCurve = normalizedX * normalizedY * rimSlope * curvature.ShearStrength * 0.82f;
-                var tangentBend = tangentCoordinate * rimSlope * curvature.ShearStrength * 0.52f;
-                var opticalSlope = slope
-                    + innerLensSlope * curvature.BodyStrength * 0.46f
-                    + shoulderSlope * curvature.RimStrength * 0.34f
-                    - rimReturnSlope * curvature.MeniscusStrength * 0.24f;
-
-                var red = NormalToChannel(
-                    normalX * opticalSlope
-                    + diagonalShear
-                    + crossCurve
-                    - meniscusPull
-                    + directionX * (directionalBend + axialPull)
-                    + tangentX * (flowWave + tangentBend),
-                    curvature.ChannelScale);
-                var green = NormalToChannel(
-                    normalY * opticalSlope
-                    - diagonalShear
-                    - crossCurve
-                    + meniscusPull
-                    + directionY * (directionalBend + axialPull)
-                    + tangentY * (flowWave + tangentBend),
-                    curvature.ChannelScale);
-                var index = (y * DisplacementMapSize + x) * 4;
-
-                pixels[index] = NeutralDisplacementChannel;
-                pixels[index + 1] = green;
-                pixels[index + 2] = red;
-                pixels[index + 3] = 255;
-            }
-        }
-
-        return pixels;
-    }
-
-    private static float SmoothStep(float edge0, float edge1, float value)
-    {
-        var normalized = Math.Clamp((value - edge0) / (edge1 - edge0), 0.0f, 1.0f);
-        return normalized * normalized * (3.0f - 2.0f * normalized);
-    }
-
-    private static byte NormalToChannel(float value, float channelScale)
-    {
-        return (byte)Math.Clamp((int)Math.Round(NeutralDisplacementChannel + value * channelScale), 20, 236);
-    }
-
-    private static CompositionBrush CreateDirectionalDisplacementMap(Compositor compositor, Vector2 sampleOffset)
-    {
-        var brush = compositor.CreateLinearGradientBrush();
-        var horizontalWeight = Math.Abs(sampleOffset.X) / Math.Max(1.0f, sampleOffset.Length());
-        var verticalWeight = 1.0f - horizontalWeight;
-        var horizontalDirection = sampleOffset.X >= 0 ? 1.0f : -1.0f;
-        var verticalDirection = sampleOffset.Y >= 0 ? 1.0f : -1.0f;
-
-        brush.StartPoint = horizontalWeight >= verticalWeight ? new Vector2(0.0f, 0.5f) : new Vector2(0.5f, 0.0f);
-        brush.EndPoint = horizontalWeight >= verticalWeight ? new Vector2(1.0f, 0.5f) : new Vector2(0.5f, 1.0f);
-
-        var leftRed = DisplacementChannel(-horizontalDirection, horizontalWeight);
-        var leftGreen = DisplacementChannel(-verticalDirection, verticalWeight);
-        var rightRed = DisplacementChannel(horizontalDirection, horizontalWeight);
-        var rightGreen = DisplacementChannel(verticalDirection, verticalWeight);
-
-        brush.ColorStops.Add(compositor.CreateColorGradientStop(0.0f, Color.FromArgb(255, leftRed, leftGreen, NeutralDisplacementChannel)));
-        brush.ColorStops.Add(compositor.CreateColorGradientStop(0.18f, Color.FromArgb(255, BlendChannel(leftRed, NeutralDisplacementChannel, 0.38f), BlendChannel(leftGreen, NeutralDisplacementChannel, 0.38f), NeutralDisplacementChannel)));
-        brush.ColorStops.Add(compositor.CreateColorGradientStop(0.50f, Color.FromArgb(255, NeutralDisplacementChannel, NeutralDisplacementChannel, NeutralDisplacementChannel)));
-        brush.ColorStops.Add(compositor.CreateColorGradientStop(0.82f, Color.FromArgb(255, BlendChannel(rightRed, NeutralDisplacementChannel, 0.38f), BlendChannel(rightGreen, NeutralDisplacementChannel, 0.38f), NeutralDisplacementChannel)));
-        brush.ColorStops.Add(compositor.CreateColorGradientStop(1.0f, Color.FromArgb(255, rightRed, rightGreen, NeutralDisplacementChannel)));
-
-        return brush;
-    }
-
-    private static byte DisplacementChannel(float direction, float weight)
-    {
-        var weightedOffset = 112.0f * Math.Clamp(weight, 0.22f, 1.0f) * Math.Clamp(direction, -1.0f, 1.0f);
-        return (byte)Math.Clamp((int)Math.Round(NeutralDisplacementChannel + weightedOffset), 24, 232);
-    }
-
-    private static byte BlendChannel(byte value, byte neutral, float neutralWeight)
-    {
-        var blended = value * (1.0f - neutralWeight) + neutral * neutralWeight;
-        return (byte)Math.Clamp((int)Math.Round(blended), 0, 255);
-    }
-
     private static void BindSize(Compositor compositor, Visual target, Visual source)
     {
         var sizeExpression = compositor.CreateExpressionAnimation("source.Size");
@@ -2347,11 +1936,6 @@ internal static class LiquidBackdropEffect
         animation.InsertKeyFrame(0.0f, Math.Max(0, baseOpacity - 0.03f));
         animation.InsertKeyFrame(1.0f, Math.Min(1, baseOpacity + 0.035f));
         target.StartAnimation("Opacity", animation);
-    }
-
-    private sealed class DisplacementMapCache
-    {
-        public Dictionary<string, CompositionBrush> Brushes { get; } = new(StringComparer.Ordinal);
     }
 
     private readonly record struct CurvatureProfile(

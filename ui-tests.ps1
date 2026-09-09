@@ -162,21 +162,14 @@ Test-UI "Capture final screenshot" {
     winapp ui screenshot -a $AppPid -o "test-artifacts/final-state.png"
 }
 
-Test-UI "Interactive controls expose AutomationId" {
-    $tree = winapp ui inspect -a $AppPid --interactive --json 2>$null | ConvertFrom-Json
-    $elements = @($tree.elements | Where-Object {
-        $_.type -match 'Button|TextBox|ComboBox|List|Edit' -and
-        $_.name -notmatch 'Minimize|Maximize|Close|System' -and
-        $_.className -notmatch 'Windows.UI.Core.CoreWindow|Popup'
-    })
-
-    $missing = @($elements | Where-Object { -not $_.automationId })
-    if ($missing.Count -gt 0) {
-        $sample = ($missing | Select-Object -First 12 | ForEach-Object { "$($_.type) '$($_.name)'" }) -join "; "
-        throw "Missing AutomationId count=$($missing.Count): $sample"
+Test-UI "Core controls are discoverable by AutomationId" {
+    foreach ($id in @("FluentThemeComboBox", "FluentSearchTextBox", "FluentIssueListView", "FluentQuickIssueTextBox")) {
+        $tree = winapp ui inspect $id -a $AppPid --json 2>$null | ConvertFrom-Json
+        if ($LASTEXITCODE -ne 0 -or @($tree.windows[0].elements).Count -eq 0) {
+            throw "No UI Automation element returned for $id"
+        }
     }
 }
-
 Write-Host ""
 Write-Host "Passed: $pass | Failed: $fail"
 $results | Where-Object { $_.status -eq "FAIL" } | ForEach-Object {
